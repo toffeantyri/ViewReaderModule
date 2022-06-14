@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/nav_graph" app:startDestination="@id/listFragment">
+
+    <fragment android:id="@+id/listFragment" android:name="ru.reader.viewpagermodule.screens.ListFragment"
+              android:label="ListFragment">
+        <action android:id="@+id/action_listFragment_to_viewPagerFragment" app:destination="@id/viewPagerFragment"/>
+    </fragment>
+    <fragment android:id="@+id/viewPagerFragment" android:name="ru.reader.viewpagermodule.screens.ViewPagerFragment"
+              android:label="ViewPagerFragment">
+        <action android:id="@+id/action_viewPagerFragment_to_listFragment" app:destination="@id/listFragment"
+                app:launchSingleTop="true" app:popUpTo="@+id/nav_graph" app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"/>
+    </fragment>
+</navigation>
