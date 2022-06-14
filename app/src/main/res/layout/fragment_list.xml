@@ -5,6 +5,14 @@
              android:layout_height="match_parent"
              tools:context=".screens.ListFragment">
 
+    <TextView
+            android:text="list fragment"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_rv"
             android:layout_width="match_parent"

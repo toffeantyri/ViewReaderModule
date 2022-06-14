@@ -26,7 +26,7 @@ android {
         targetCompatibility = 1.8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = 1.8
     }
 }
 
@@ -58,5 +58,9 @@ dependencies {
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+    implementation 'com.github.HamedTaherpour:ht-epub-reader-android:0.0.5'
 
 }
