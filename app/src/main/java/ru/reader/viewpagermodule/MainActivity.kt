@@ -30,19 +30,22 @@ class MainActivity : AppCompatActivity() {
         navHostController = Navigation.findNavController(this@MainActivity, R.id.nav_host_main)
         checkAndTakePermision()
 
-        val file = this.getFileFromAssets("bg_fb2.fb2")
+        val list = this.getListFB2NameFromAsset()
+        list.forEach { Log.d("MyLog", "mainActivity, name $it") }
 
-        try {
-            val fb2 = FictionBook(file)
-            Log.d("MyLog", fb2.description.titleInfo.bookTitle)
-
-        } catch (e: ParserConfigurationException) {
-            e.stackTraceToString()
-        } catch (e: IOException) {
-            e.stackTraceToString()
-        } catch (e: SAXException) {
-            e.stackTraceToString()
-        }
+//        val file = this.getFileFromAssets("bg_fb2.fb2")
+//
+//        try {
+//            val fb2 = FictionBook(file)
+//            Log.d("MyLog", fb2.description.titleInfo.bookTitle)
+//
+//        } catch (e: ParserConfigurationException) {
+//            e.stackTraceToString()
+//        } catch (e: IOException) {
+//            e.stackTraceToString()
+//        } catch (e: SAXException) {
+//            e.stackTraceToString()
+//        }
 
     }
 

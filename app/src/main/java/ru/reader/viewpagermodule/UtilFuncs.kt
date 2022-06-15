@@ -1,9 +1,15 @@
 package ru.reader.viewpagermodule
 
 import android.content.Context
+import android.util.Log
+import com.kursx.parser.fb2.FictionBook
+import org.xml.sax.SAXException
+import ru.reader.viewpagermodule.model.BookCardData
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
+import javax.xml.parsers.ParserConfigurationException
 
 fun Context.getFileFromAssets(fileName: String): File {
     val file = File(this.cacheDir.toString() + "/" + fileName)
@@ -12,10 +18,10 @@ fun Context.getFileFromAssets(fileName: String): File {
     if (!file.exists()) try {
         val inputStream: InputStream = this.assets.open(fileName)
         val size = inputStream.available()
-        val buffer: ByteArray = ByteArray(size)
+        val buffer = ByteArray(size)
         inputStream.read(buffer)
         inputStream.close()
-        val fileOutput: FileOutputStream = FileOutputStream(file)
+        val fileOutput = FileOutputStream(file)
         fileOutput.write(buffer)
         fileOutput.close()
         //Log.d("MyLog", "reading file no exist ${file.path}")
@@ -24,4 +30,56 @@ fun Context.getFileFromAssets(fileName: String): File {
     }
     //Log.d("MyLog", "end space ${file.totalSpace}")
     return file
+}
+
+
+fun Context.getListFB2NameFromAsset(): List<String> {
+    Log.d("MyLog", "start get list")
+    val listFilesName = hashSetOf<String>()
+    /** get list files from cache and add to list */
+    this.cacheDir.listFiles()?.let { listFiles ->
+        for (file in listFiles) {
+            Log.d("MyLog", "file name : ${file.name}")
+            val listName = file.name.split(".")
+            if (listName.size == 2 && listName[1] == "fb2") {
+                listFilesName.add(file.name)
+            }
+        }
+    }
+
+    //listFilesName.forEach { Log.d("MyLog", "cacheDir : name - " + it) }
+    /** get list files from assets and add exclusive to list */
+    this.assets.list("")?.let { arrayNames ->
+        for (name in arrayNames) {
+            Log.d("MyLog", "file name : $name")
+            val listName = name.split(".")
+            if (listName.size == 2 && listName[1] == "fb2" && !listFilesName.contains(name)) {
+                listFilesName.add(name)
+            }
+        }
+    }
+
+    //listFilesName.forEach { Log.d("MyLog", "Assets : name - " + it) }
+
+    return listFilesName.toList().sorted()
+}
+
+
+fun Context.getListBookFromAsset(): List<BookCardData> {
+    val list = arrayListOf<BookCardData>()
+//todo
+    val file = this.getFileFromAssets("")
+    try {
+        val fb2 = FictionBook(file)
+        Log.d("MyLog", fb2.description.titleInfo.bookTitle)
+
+    } catch (e: ParserConfigurationException) {
+        e.stackTraceToString()
+    } catch (e: IOException) {
+        e.stackTraceToString()
+    } catch (e: SAXException) {
+        e.stackTraceToString()
+    }
+
+    return list
 }
