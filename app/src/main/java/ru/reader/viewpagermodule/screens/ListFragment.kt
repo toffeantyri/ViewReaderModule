@@ -1,6 +1,7 @@
 package ru.reader.viewpagermodule.screens
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_list.*
 import ru.reader.viewpagermodule.R
+import ru.reader.viewpagermodule.adapters.BookCardData
 import ru.reader.viewpagermodule.adapters.BookListAdapter
+import ru.reader.viewpagermodule.getListBookFromAsset
+import ru.reader.viewpagermodule.getListFB2NameFromAsset
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 class ListFragment : Fragment() {
@@ -25,6 +29,8 @@ class ListFragment : Fragment() {
 
     lateinit var adapter: BookListAdapter
 
+    lateinit var listOfBook: List<BookCardData>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,7 +43,12 @@ class ListFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         initRv()
+        val list = getListFB2NameFromAsset(this.context!!)
+        list.forEach { Log.d("MyLog", "mainActivity, name $it") }
+        val listBook = getListBookFromAsset(this.context!!, list)
+        listBook.forEach { Log.d("MyLog", "MA: BOOK : author : ${it.author} nameBook : ${it.nameBook}") }
 
+        adapter.fillAdapter(getListBookFromAsset(this.context!!, list))
     }
 
     private fun initRv() {
@@ -45,8 +56,6 @@ class ListFragment : Fragment() {
         list_rv.adapter = adapter
         list_rv.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
     }
-
-
 
 
 }

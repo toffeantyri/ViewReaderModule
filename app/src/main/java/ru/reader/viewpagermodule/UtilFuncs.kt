@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.kursx.parser.fb2.FictionBook
 import org.xml.sax.SAXException
-import ru.reader.viewpagermodule.model.BookCardData
+import ru.reader.viewpagermodule.adapters.BookCardData
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -33,11 +33,11 @@ fun Context.getFileFromAssets(fileName: String): File {
 }
 
 
-fun Context.getListFB2NameFromAsset(): List<String> {
+fun getListFB2NameFromAsset(context: Context): List<String> {
     Log.d("MyLog", "start get list")
     val listFilesName = hashSetOf<String>()
     /** get list files from cache and add to list */
-    this.cacheDir.listFiles()?.let { listFiles ->
+    context.cacheDir.listFiles()?.let { listFiles ->
         for (file in listFiles) {
             Log.d("MyLog", "file name : ${file.name}")
             val listName = file.name.split(".")
@@ -49,7 +49,7 @@ fun Context.getListFB2NameFromAsset(): List<String> {
 
     //listFilesName.forEach { Log.d("MyLog", "cacheDir : name - " + it) }
     /** get list files from assets and add exclusive to list */
-    this.assets.list("")?.let { arrayNames ->
+    context.assets.list("")?.let { arrayNames ->
         for (name in arrayNames) {
             Log.d("MyLog", "file name : $name")
             val listName = name.split(".")
@@ -65,21 +65,30 @@ fun Context.getListFB2NameFromAsset(): List<String> {
 }
 
 
-fun Context.getListBookFromAsset(): List<BookCardData> {
+fun getListBookFromAsset(context: Context, namesOfFiles : List<String>): List<BookCardData> {
     val list = arrayListOf<BookCardData>()
-//todo
-    val file = this.getFileFromAssets("")
-    try {
-        val fb2 = FictionBook(file)
-        Log.d("MyLog", fb2.description.titleInfo.bookTitle)
 
-    } catch (e: ParserConfigurationException) {
-        e.stackTraceToString()
-    } catch (e: IOException) {
-        e.stackTraceToString()
-    } catch (e: SAXException) {
-        e.stackTraceToString()
+    for (name in namesOfFiles) {
+        val file = context.getFileFromAssets(name)
+        try {
+            val fb2 = FictionBook(file)
+            list.add(fb2.toBookCardData())
+        } catch (e: ParserConfigurationException) {
+            e.stackTraceToString()
+        } catch (e: IOException) {
+            e.stackTraceToString()
+        } catch (e: SAXException) {
+            e.stackTraceToString()
+        }
     }
 
-    return list
+    return list.toList()
+}
+
+fun FictionBook.toBookCardData(): BookCardData {
+    return BookCardData(
+        author = this.description.titleInfo.authors[0]?.fullName ?: "",
+        nameBook = this.description.titleInfo.bookTitle ?: "",
+        imageValue = this.description.titleInfo.coverPage[0]?.value ?: ""
+        )
 }

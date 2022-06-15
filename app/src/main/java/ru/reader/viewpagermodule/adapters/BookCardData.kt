@@ -1,8 +1,8 @@
-package ru.reader.viewpagermodule.model
+package ru.reader.viewpagermodule.adapters
 
 data class BookCardData(
     val author: String,
     val nameBook: String,
-    val Image: Int,
+    val imageValue: String,
     var isFavorite: Boolean = false
 )
