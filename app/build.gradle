@@ -61,6 +61,7 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
-    implementation 'com.github.HamedTaherpour:ht-epub-reader-android:0.0.5'
+    //implementation 'com.github.HamedTaherpour:ht-epub-reader-android:0.0.5'
 
+    compile files('src/main/libs/fb2parser.jar')
 }

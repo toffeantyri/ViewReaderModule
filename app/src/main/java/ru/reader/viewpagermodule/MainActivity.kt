@@ -10,15 +10,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import io.hamed.htepubreadr.component.EpubReaderComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import com.kursx.parser.fb2.FictionBook
+import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
+import java.io.*
+import javax.xml.parsers.ParserConfigurationException
 
 
 const val REQUEST_CODE_PERMISSION = 1007
@@ -34,21 +30,19 @@ class MainActivity : AppCompatActivity() {
         navHostController = Navigation.findNavController(this@MainActivity, R.id.nav_host_main)
         checkAndTakePermision()
 
+        val file = getFileFromAssets("bg_fb2.fb2")
 
+        try {
+            val fb2 = FictionBook(file)
+            Log.d("MyLog", fb2.description.titleInfo.bookTitle)
 
-            val file =  getFileFromAssets("bhagavad_gita.epub").absoluteFile
-            Log.d("MyLog", " name ${file.name} + dir : ${file.path}")
-
-//            try {
-//                Log.d("MyLog", "try block ${file.exists()}")
-//                val epubReader = EpubReaderComponent(file.absolutePath)
-//                val bookEntity = epubReader.make(this@MainActivity)
-//                Log.d("MyLog", "${bookEntity.author} \n ${bookEntity.name}")
-//            } catch (ex: Exception) {
-//                throw ex
-//            }
-
-
+        } catch (e: ParserConfigurationException) {
+            e.stackTraceToString()
+        } catch (e: IOException) {
+            e.stackTraceToString()
+        } catch (e: SAXException) {
+            e.stackTraceToString()
+        }
 
     }
 
@@ -89,22 +83,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun getFileFromAssets(fileName: String): File {
         val file = File(this.cacheDir.toString() + "/" + fileName)
-        //Log.d("MyLog", ": filePath $file")
+        //Log.d("MyLog", "start space ${file.totalSpace}")
+        //Log.d("MyLog", "file exist ${file.path}")
         if (!file.exists()) try {
             val inputStream: InputStream = this.assets.open(fileName)
             val size = inputStream.available()
-            Log.d("MyLog", ": size $size")
-            val buffer = byteArrayOf()
+            val buffer: ByteArray = ByteArray(size)
             inputStream.read(buffer)
             inputStream.close()
             val fileOutput: FileOutputStream = FileOutputStream(file)
             fileOutput.write(buffer)
             fileOutput.close()
-
+            //Log.d("MyLog", "reading file no exist ${file.path}")
         } catch (e: java.lang.Exception) {
             throw RuntimeException(e)
         }
-        Log.d("MyLog", ": name  ${file.name} \n ${file.path}")
+        //Log.d("MyLog", "end space ${file.totalSpace}")
         return file
     }
 }
