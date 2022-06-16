@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,6 +18,8 @@ import ru.reader.viewpagermodule.getListBookFromAssetByName
 import ru.reader.viewpagermodule.getListFB2NameFromAsset
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
+const val BOOK_NAME = "book_name"
+
 class ListFragment : Fragment() {
 
 
@@ -25,12 +28,10 @@ class ListFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = ListFragment()
+
     }
 
-
     lateinit var adapter: BookListAdapter
-
-    lateinit var listOfBook: List<BookCardData>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,14 +49,22 @@ class ListFragment : Fragment() {
         //list.forEach { Log.d("MyLog", "mainActivity, name $it") }
         //val listBook = getListBookFromAsset(this.context!!, list)
         //listBook.forEach { Log.d("MyLog", "MA: BOOK : author : ${it.author} nameBook : ${it.nameBook}") }
-
         adapter.fillAdapter(getListBookFromAssetByName(this.context!!, list))
     }
 
     private fun initRv() {
         adapter = BookListAdapter()
+        adapter.itemBookClickListener = itemClickListener
         list_rv.adapter = adapter
         list_rv.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+
+    }
+
+    private val itemClickListener = object : BookListAdapter.ItemBookClickListener {
+        override fun clickOpenBook(fileName: String) {
+            Toast.makeText(this@ListFragment.context, fileName, Toast.LENGTH_SHORT).show()
+            //todo open book by name
+        }
     }
 
 
