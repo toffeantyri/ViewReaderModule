@@ -1,7 +1,11 @@
 package ru.reader.viewpagermodule
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
+import com.kursx.parser.fb2.Binary
 import com.kursx.parser.fb2.FictionBook
 import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.adapters.BookCardData
@@ -10,6 +14,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import javax.xml.parsers.ParserConfigurationException
+
 
 fun Context.getFileFromAssets(fileName: String): File {
     val file = File(this.cacheDir.toString() + "/" + fileName)
@@ -31,7 +36,6 @@ fun Context.getFileFromAssets(fileName: String): File {
     //Log.d("MyLog", "end space ${file.totalSpace}")
     return file
 }
-
 
 fun getListFB2NameFromAsset(context: Context): List<String> {
     Log.d("MyLog", "start get list")
@@ -64,8 +68,7 @@ fun getListFB2NameFromAsset(context: Context): List<String> {
     return listFilesName.toList().sorted()
 }
 
-
-fun getListBookFromAssetByName(context: Context, namesOfFiles : List<String>): List<BookCardData> {
+fun getListBookFromAssetByName(context: Context, namesOfFiles: List<String>): List<BookCardData> {
     val list = arrayListOf<BookCardData>()
 
     for (name in namesOfFiles) {
@@ -85,11 +88,37 @@ fun getListBookFromAssetByName(context: Context, namesOfFiles : List<String>): L
     return list.toList()
 }
 
-fun FictionBook.toBookCardData(fileName : String): BookCardData {
+fun FictionBook.toBookCardData(fileName: String): BookCardData {
     return BookCardData(
         author = this.description.titleInfo.authors[0]?.fullName ?: "",
         nameBook = this.description.titleInfo.bookTitle ?: "",
         fileName = fileName,
-        imageValue = this.description.titleInfo.coverPage[0]?.value ?: ""
-        )
+        imageValue = this.getTitleImageBinaryString()
+    )
+
 }
+
+fun FictionBook.getTitleImageBinaryString(): String {
+    val imageName = this.description?.titleInfo?.coverPage?.get(0)?.value?.replace("#", "") ?: ""
+    return binaries[imageName]?.binary ?: ""
+}
+
+
+fun String.convertToBitmap(): Bitmap? {
+    try {
+        val decodeString: ByteArray = Base64.decode(this, Base64.URL_SAFE)
+        val bitmap: Bitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.size)
+        return bitmap
+    } catch (e: Exception) {
+       Log.d("MyLog", e.stackTraceToString())
+        return try {
+            val decodeString: ByteArray = Base64.decode(this, Base64.DEFAULT)
+            val bitmap: Bitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.size)
+            bitmap
+        } catch (e: Exception) {
+            Log.d("MyLog", e.stackTraceToString())
+            null
+        }
+    }
+}
+

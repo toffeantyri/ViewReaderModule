@@ -1,5 +1,6 @@
 package ru.reader.viewpagermodule.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.reader.viewpagermodule.R
+import ru.reader.viewpagermodule.convertToBitmap
 
 class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
@@ -20,11 +22,14 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
         val imageBook: ImageView = view.findViewById(R.id.iv_book)
 
         fun bind(position: Int) {
+
             nameBook.text = bookList[position].nameBook
             author.text = bookList[position].author
-            //todo set image
+            imageBook.setImageBitmap(bookList[position].imageValue.convertToBitmap())
+
             itemView.setOnClickListener {
                 itemBookClickListener.clickOpenBook(bookList[position].fileName)
+                Log.d("MyLog", "--------------------------------- \n" + "${bookList[position].imageValue}")
             }
         }
     }
