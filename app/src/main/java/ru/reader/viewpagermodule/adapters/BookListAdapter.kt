@@ -10,18 +10,22 @@ import ru.reader.viewpagermodule.R
 
 class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
+    lateinit var itemBookClickListener: ItemBookClickListener
     private var bookList = listOf<BookCardData>()
 
 
     inner class BookNameHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameBook: TextView = view.findViewById(R.id.tv_name_book)
-        val author : TextView = view.findViewById(R.id.tv_author_book)
+        val author: TextView = view.findViewById(R.id.tv_author_book)
         val imageBook: ImageView = view.findViewById(R.id.iv_book)
 
         fun bind(position: Int) {
             nameBook.text = bookList[position].nameBook
             author.text = bookList[position].author
             //todo set image
+            itemView.setOnClickListener {
+                itemBookClickListener.clickOpenBook(bookList[position].fileName)
+            }
         }
     }
 
@@ -40,6 +44,11 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
     fun fillAdapter(list: List<BookCardData>) {
         bookList = list
         notifyDataSetChanged()
+    }
+
+    interface ItemBookClickListener {
+
+        fun clickOpenBook(fileName: String)
     }
 
 }

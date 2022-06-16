@@ -72,7 +72,7 @@ fun getListBookFromAssetByName(context: Context, namesOfFiles : List<String>): L
         val file = context.getFileFromAssets(name)
         try {
             val fb2 = FictionBook(file)
-            list.add(fb2.toBookCardData())
+            list.add(fb2.toBookCardData(name))
         } catch (e: ParserConfigurationException) {
             e.stackTraceToString()
         } catch (e: IOException) {
@@ -85,10 +85,11 @@ fun getListBookFromAssetByName(context: Context, namesOfFiles : List<String>): L
     return list.toList()
 }
 
-fun FictionBook.toBookCardData(): BookCardData {
+fun FictionBook.toBookCardData(fileName : String): BookCardData {
     return BookCardData(
         author = this.description.titleInfo.authors[0]?.fullName ?: "",
         nameBook = this.description.titleInfo.bookTitle ?: "",
+        fileName = fileName,
         imageValue = this.description.titleInfo.coverPage[0]?.value ?: ""
         )
 }
