@@ -3,21 +3,15 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".screens.ListFragment">
-
-    <TextView
-            android:text="list fragment"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-              android:layout_height="wrap_content"/>
+             tools:context=".screens.ListFragment"
+             tools:background="@color/colorPrimaryDark">
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_rv_list"
+            tools:itemCount="5"
     />
 
 

@@ -65,7 +65,7 @@ fun getListFB2NameFromAsset(context: Context): List<String> {
 }
 
 
-fun getListBookFromAsset(context: Context, namesOfFiles : List<String>): List<BookCardData> {
+fun getListBookFromAssetByName(context: Context, namesOfFiles : List<String>): List<BookCardData> {
     val list = arrayListOf<BookCardData>()
 
     for (name in namesOfFiles) {
