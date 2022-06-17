@@ -3,4 +3,9 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="bg_green_alpha_50">#8019FF00</color>
+    <color name="bg_green_100">#D1FFCB</color>
+
+    <color name="delim_blue_500">#CD369FFF</color>
 </resources>
