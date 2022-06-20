@@ -51,6 +51,8 @@ fun getFileFromPathDocuments(fileName: String): File? {
     return if (downFile.exists()) downFile else null
 }
 
+
+
 fun getListFB2NameFromCacheAndAsset(context: Context): HashSet<String> {
     Log.d("MyLog", "start get list")
     val listFilesName = hashSetOf<String>()

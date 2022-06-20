@@ -11,7 +11,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_main.*
-import ru.reader.viewpagermodule.MainActivity
 import ru.reader.viewpagermodule.R
 
 

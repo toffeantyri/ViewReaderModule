@@ -42,27 +42,30 @@ class ListFragment : Fragment() {
         super.onStart()
         initRv()
 
-        viewModel.data.observe(viewLifecycleOwner) {
-            adapter.fillAdapter(it)
+//        viewModel.data.observe(viewLifecycleOwner) {
+//            adapter.fillAdapter(it)
+//        }
+//
+//        setLoadingBooks(true)
+//        viewModel.getBooks({
+//            setLoadingBooks(false)
+//        }, {
+//            Toast.makeText(this.context, "Нет файлов или Ошибка загрузки", Toast.LENGTH_SHORT).show()
+//        }
+//        )
+
+        viewModel.data2.observe(viewLifecycleOwner){
+            adapter.fillAdapterSingleItem(it)
         }
 
         setLoadingBooks(true)
-        viewModel.getBooks({
+        viewModel.getBookFlow {
             setLoadingBooks(false)
-        }, {
-            Toast.makeText(this.context, "Нет файлов или Ошибка загрузки", Toast.LENGTH_SHORT).show()
         }
-        )
 
-
-        /** // fill adapter - all item
-        val list = getListFB2NameFromCacheAndAsset(this.context!!)
-        val listAll = getListFileNameFromDownloadAndDocsCheckContainsCache(parentActivity, list)
-        adapter.fillAdapter(getListBookFromAssetByName(this.context!!, listAll.sorted()))
-         */
     }
 
-    fun setLoadingBooks(flag: Boolean) {
+    private fun setLoadingBooks(flag: Boolean) {
         progress_bar_rv.visibility = if (flag) View.VISIBLE else View.GONE
     }
 
