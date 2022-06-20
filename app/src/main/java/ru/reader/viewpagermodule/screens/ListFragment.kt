@@ -27,7 +27,7 @@ class ListFragment : Fragment() {
     }
 
     lateinit var adapter: BookListAdapter
-    lateinit var parentActivity : MainActivity
+    lateinit var parentActivity: MainActivity
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,13 +41,26 @@ class ListFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         initRv()
+
+        viewModel.data.observe(viewLifecycleOwner) {
+            adapter.fillAdapterSingleItem(it)
+        }
+
+        setLoadingBooks(true)
+        viewModel.getBooks() {
+            setLoadingBooks(false)
+        }
+
+
+        /** // fill adapter - all item
         val list = getListFB2NameFromCacheAndAsset(this.context!!)
         val listAll = getListFileNameFromDownloadAndDocsCheckContainsCache(parentActivity, list)
-
-        //list.forEach { Log.d("MyLog", "mainActivity, name $it") }
-        //val listBook = getListBookFromAsset(this.context!!, list)
-        //listBook.forEach { Log.d("MyLog", "MA: BOOK : author : ${it.author} nameBook : ${it.nameBook}") }
         adapter.fillAdapter(getListBookFromAssetByName(this.context!!, listAll.sorted()))
+         */
+    }
+
+    fun setLoadingBooks(flag: Boolean) {
+        progress_bar_rv.visibility = if (flag) View.VISIBLE else View.GONE
     }
 
     private fun initRv() {

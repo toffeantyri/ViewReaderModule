@@ -2,9 +2,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
+             android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
              tools:context=".screens.ListFragment"
-            >
+>
+
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_rv"
@@ -12,6 +13,18 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/item_rv_list"
             tools:itemCount="5"
+    />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar_rv"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/delim_blue_500"
+            style="@style/SpinKitView.ThreeBounce"
+            android:scaleX="2"
+            android:scaleY="2"
+
     />
 
 
