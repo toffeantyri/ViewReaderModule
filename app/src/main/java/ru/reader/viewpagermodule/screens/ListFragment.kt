@@ -18,7 +18,7 @@ const val BOOK_NAME = "book_name"
 class ListFragment : Fragment() {
 
 
-    val viewModel: ViewModelMainActivity by activityViewModels()
+    private val viewModel: ViewModelMainActivity by activityViewModels()
 
     companion object {
         @JvmStatic
@@ -43,13 +43,16 @@ class ListFragment : Fragment() {
         initRv()
 
         viewModel.data.observe(viewLifecycleOwner) {
-            adapter.fillAdapterSingleItem(it)
+            adapter.fillAdapter(it)
         }
 
         setLoadingBooks(true)
-        viewModel.getBooks() {
+        viewModel.getBooks({
             setLoadingBooks(false)
+        }, {
+            Toast.makeText(this.context, "Нет файлов или Ошибка загрузки", Toast.LENGTH_SHORT).show()
         }
+        )
 
 
         /** // fill adapter - all item

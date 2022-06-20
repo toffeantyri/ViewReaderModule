@@ -13,7 +13,7 @@ import java.io.*
 import javax.xml.parsers.ParserConfigurationException
 
 
-fun Context.getFileFromAssets(fileName: String): File? {
+fun Context.getFileFromAssetsAndCache(fileName: String): File? {
     val cacheFile = File(this.cacheDir.toString() + "/" + fileName)
     if (cacheFile.exists()) {
         return cacheFile
@@ -82,10 +82,7 @@ fun getListFB2NameFromCacheAndAsset(context: Context): HashSet<String> {
 }
 
 /** get list file name from paths downloads and documents, check if cache not contain it name add to list*/
-fun getListFileNameFromDownloadAndDocsCheckContainsCache(
-    context: Context,
-    listNamesFiles: HashSet<String>
-): List<String> {
+fun getListFileNameFromDownloadAndDocsCheckContainsCache(listNamesFiles: HashSet<String>): HashSet<String> {
     val listFileNames: HashSet<String> = listNamesFiles.toHashSet()
     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)?.list()?.let { arrayNames ->
         for (name in arrayNames) {
@@ -106,11 +103,11 @@ fun getListFileNameFromDownloadAndDocsCheckContainsCache(
         }
     }
     listFileNames.forEach { Log.d("MyLog", "all files : $it") }
-    return listFileNames.toList()
+    return listFileNames
 }
 
 
-fun getListBookFromAssetByName(context: Context, namesOfFiles: List<String>): List<BookCardData> {
+fun getListBookFromAssetCacheDownDocsByName(context: Context, namesOfFiles: List<String>): List<BookCardData> {
     val list = hashSetOf<BookCardData>()
 
     fun tryFileToFb2(fb2File: File, fileName: String) {
@@ -127,7 +124,7 @@ fun getListBookFromAssetByName(context: Context, namesOfFiles: List<String>): Li
     }
 
     for (name in namesOfFiles) {
-        var file = context.getFileFromAssets(name)
+        var file = context.getFileFromAssetsAndCache(name)
         if (file != null) {
             tryFileToFb2(file, name)
         } else {
@@ -135,7 +132,7 @@ fun getListBookFromAssetByName(context: Context, namesOfFiles: List<String>): Li
             if (file != null) tryFileToFb2(file, name)
             else {
                 file = getFileFromPathDocuments(name)
-                if(file!= null) tryFileToFb2(file, name) else Log.d("MyLog", "file $name is not exist always")
+                if (file != null) tryFileToFb2(file, name) else Log.d("MyLog", "file $name is not exist always")
             }
         }
     }

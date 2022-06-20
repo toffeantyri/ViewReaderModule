@@ -7,23 +7,9 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 
 abstract class BaseRepository<T>() {
 
-    /** горячие потоки? */
-    //как RX BehaviorSubject
-    @ObsoleteCoroutinesApi
-    val emitter: ConflatedBroadcastChannel<T> = ConflatedBroadcastChannel()
-
-    val liveData: LiveData<T> by lazy {
+    val liveData: MutableLiveData<T> by lazy {
         MutableLiveData()
     }
-
-    //как RX PublisheSubject  (emit last single value)
-    // val channel : BroadcastChannel<T> = BroadcastChannel(1)
-
-
-    //RX
-//    //обьект Observer и Observable подписываемся на него в mainRepo enable
-//    val dataEmitter: BehaviorSubject<T> = BehaviorSubject.create()
-//    //если надо разное поведение в зависимости откуда получен ответ тогда много BehaviorSubj сделать
 
 
 }

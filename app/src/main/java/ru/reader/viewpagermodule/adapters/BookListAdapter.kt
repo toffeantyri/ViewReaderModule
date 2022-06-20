@@ -13,7 +13,7 @@ import ru.reader.viewpagermodule.convertToBitmap
 class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
     lateinit var itemBookClickListener: ItemBookClickListener
-    private var bookList = arrayListOf<BookCardData>()
+    private var bookList = listOf<BookCardData>()
 
 
     inner class BookNameHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -47,15 +47,10 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     fun fillAdapter(list: List<BookCardData>) {
-        bookList = list as ArrayList<BookCardData>
+        bookList = list
         notifyDataSetChanged()
     }
 
-    //todo test
-    fun fillAdapterSingleItem(item : BookCardData){
-        bookList.add(item)
-        notifyItemChanged(bookList.lastIndex)
-    }
 
     interface ItemBookClickListener {
         fun clickOpenBook(fileName: String)
