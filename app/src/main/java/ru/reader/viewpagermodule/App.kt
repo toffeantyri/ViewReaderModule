@@ -18,15 +18,25 @@ class App : Application() {
 
     companion object {
 
+        val getDirCache: File by lazy { initCache() }
 
-        val getDirCache: File by lazy { APP_CONTEXT.cacheDir }
+        val getDirDownloads: File by lazy { initDirDownload()}
 
-        val getDirDownloads: File by lazy { Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) }
+        val getDireDocuments: File by lazy { initDirDocument() }
 
-        val getDireDocuments: File by lazy { Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) }
+        val getAssetManager : AssetManager by lazy { initAssetManager() }
 
-        val getAssetManager : AssetManager by lazy { APP_CONTEXT.assets }
+        @Synchronized
+        private fun initCache() = APP_CONTEXT.cacheDir
 
+        @Synchronized
+        private fun initDirDownload() =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+        @Synchronized
+        private fun initDirDocument() =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+
+        @Synchronized
+        private fun initAssetManager() = APP_CONTEXT.assets
     }
 
 
