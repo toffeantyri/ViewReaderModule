@@ -1,6 +1,7 @@
 package ru.reader.viewpagermodule.screens
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,28 +43,21 @@ class ListFragment : Fragment() {
         super.onStart()
         initRv()
 
-//        viewModel.data.observe(viewLifecycleOwner) {
-//            adapter.fillAdapter(it)
-//        }
-//
-//        setLoadingBooks(true)
-//        viewModel.getBooks({
-//            setLoadingBooks(false)
-//        }, {
-//            Toast.makeText(this.context, "Нет файлов или Ошибка загрузки", Toast.LENGTH_SHORT).show()
-//        }
-//        )
-
-        viewModel.data2.observe(viewLifecycleOwner){
-            adapter.fillAdapterSingleItem(it)
+        viewModel.data.observe(viewLifecycleOwner) {
+            it.forEach { Log.d("MyLog", " ListFrag observe"+it.nameBook) }
+            adapter.fillAdapter(it.toList())
         }
 
-        setLoadingBooks(true)
-        viewModel.getBookFlow {
-            setLoadingBooks(false)
+        if (viewModel.data.value.isNullOrEmpty()) {
+            setLoadingBooks(true)
+            viewModel.getBooks {
+                setLoadingBooks(false)
+            }
         }
+
 
     }
+
 
     private fun setLoadingBooks(flag: Boolean) {
         progress_bar_rv.visibility = if (flag) View.VISIBLE else View.GONE

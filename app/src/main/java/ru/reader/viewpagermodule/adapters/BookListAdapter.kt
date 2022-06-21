@@ -17,9 +17,9 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     inner class BookNameHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameBook: TextView = view.findViewById(R.id.tv_name_book)
-        val author: TextView = view.findViewById(R.id.tv_author_book)
-        val imageBook: ImageView = view.findViewById(R.id.iv_book)
+        private val nameBook: TextView = view.findViewById(R.id.tv_name_book)
+        private val author: TextView = view.findViewById(R.id.tv_author_book)
+        private val imageBook: ImageView = view.findViewById(R.id.iv_book)
 
         fun bind(position: Int) {
 
@@ -29,7 +29,6 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
             itemView.setOnClickListener {
                 itemBookClickListener.clickOpenBook(bookList[position].fileName)
-                Log.d("MyLog", "--------------------------------- \n" + "${bookList[position].imageValue}")
             }
         }
     }
@@ -47,7 +46,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     fun fillAdapter(list: List<BookCardData>) {
-        bookList = list as MutableList<BookCardData>
+        bookList = list.toMutableList()
         notifyDataSetChanged()
     }
 

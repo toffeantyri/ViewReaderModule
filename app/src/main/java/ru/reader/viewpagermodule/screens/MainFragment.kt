@@ -32,7 +32,6 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         btn_open_list.setOnClickListener {
-
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
         }
     }
