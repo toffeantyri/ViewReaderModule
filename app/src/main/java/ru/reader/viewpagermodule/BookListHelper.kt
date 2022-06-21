@@ -1,5 +1,6 @@
 package ru.reader.viewpagermodule
 
+import android.os.Environment
 import android.util.Log
 
 class BookListHelper() {
@@ -37,6 +38,39 @@ class BookListHelper() {
         return listFilesName
     }
 
-    //todo get list files names from download and document
+    /** get list files names from download and add to list */
+    fun getListFB2NameFromDownload(): HashSet<String> {
+        var listFileNames: HashSet<String> = hashSetOf()
+
+        listFileNames = listFileNames.getEnvironmentPathListNames(Environment.DIRECTORY_DOWNLOADS)
+
+        listFileNames.forEach { Log.d("MyLog", "all files DOWNLOADS : $it") }
+        return listFileNames
+    }
+
+    /** get list files names from document and add to list */
+    fun getListFB2NameFromDocument(): HashSet<String> {
+        var listFileNames: HashSet<String> = hashSetOf()
+
+        listFileNames = listFileNames.getEnvironmentPathListNames(Environment.DIRECTORY_DOCUMENTS)
+
+        listFileNames.forEach { Log.d("MyLog", "all files DOCUMENTS : $it") }
+        return listFileNames
+    }
+
+    private fun HashSet<String>.getEnvironmentPathListNames(path: String): HashSet<String> {
+        val hashSet = this
+        Environment.getExternalStoragePublicDirectory(path)?.list()?.let { arrayNames ->
+            for (name in arrayNames) {
+                Log.d("MyLog", "$path file name : $name")
+                val listName = name.split(".")
+                if (listName.size >= 2 && listName.last() == "fb2") {
+                    hashSet.add(name)
+                }
+            }
+        }
+        return hashSet
+    }
+
 
 }
