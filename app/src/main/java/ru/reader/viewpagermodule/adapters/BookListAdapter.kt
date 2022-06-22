@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -44,10 +45,22 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
     override fun getItemCount(): Int = bookList.size
 
+    override fun onViewAttachedToWindow(holder: BookNameHolder) {
+        holder.itemView.setAnimationInsert()
+    }
 
-    fun fillAdapter(list: List<BookCardData>) {
-        bookList = list.toMutableList()
-        notifyDataSetChanged()
+
+    fun fillAdapter(list: HashSet<BookCardData>) {
+        val startCount = bookList.size
+        Log.d("MyLog", "fillAdapter here : ${bookList.map { it.nameBook }}")
+        Log.d("MyLog", "fillAdapter in : ${list.map { it.nameBook }}")
+        val bookList2 = bookList.toMutableSet()
+        bookList2.addAll(list.toMutableSet())
+        bookList = bookList2.toMutableList()
+        Log.d("MyLog", "fillAdapter result : ${bookList.map { it.nameBook }}")
+        val endCount = bookList.size
+
+        notifyItemRangeInserted(startCount, endCount - startCount)
     }
 
     fun fillAdapterSingleItem(item: BookCardData) {
@@ -58,6 +71,12 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
     interface ItemBookClickListener {
         fun clickOpenBook(fileName: String)
+    }
+
+
+    private fun View.setAnimationInsert() {
+        this.startAnimation(AlphaAnimation(0.0f, 1.0f).apply { duration = 1000 })
+        this.alpha = 1f
     }
 
 }

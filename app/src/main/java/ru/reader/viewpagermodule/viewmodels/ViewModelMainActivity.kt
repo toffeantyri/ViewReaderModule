@@ -37,9 +37,9 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         repo2.dataEmitter.subscribe {
-            Log.d("MyLog", "VM : " + it.fileName)
+            //Log.d("MyLog", "VM : " + it.fileName)
             if (data.value?.contains(it) == false) {
-                Log.d("MyLog", "VM add : " + it.fileName)
+                //Log.d("MyLog", "VM add : " + it.fileName)
                 data.value?.add(it)
             }
         }
