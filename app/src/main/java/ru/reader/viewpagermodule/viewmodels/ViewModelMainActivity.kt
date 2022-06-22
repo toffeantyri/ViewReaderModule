@@ -35,7 +35,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     }
 
 
-    fun getBooks(onSuccess: () -> Unit) {
+    fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         repo2.dataEmitter.subscribe {
             Log.d("MyLog", "VM : " + it.fileName)
             if (data.value?.contains(it) == false) {
@@ -43,9 +43,11 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
                 data.value?.add(it)
             }
         }
-        repo2.loadListBooks() {
-            onSuccess()
-        }
+        repo2.loadListBooks(
+            { onSuccess() }, {
+                onSuccessStep()
+            }
+        )
     }
 
 

@@ -7,7 +7,7 @@ import ru.reader.viewpagermodule.busines.storage.BookListHelper
 class ListBookRepository() : BaseRepository<BookCardData>() {
 
 
-    fun loadListBooks(onSuccess: () -> Unit) {
+    fun loadListBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         val bh = BookListHelper()
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -24,6 +24,9 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                         dataEmitter.onNext(bookItem)
                     }
                 }
+                withContext(Dispatchers.Main) {
+                    onSuccessStep()
+                }
 
                 val valueNames2 = async {
                     bh.getListFB2NameFromDownload()
@@ -34,6 +37,9 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                         val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileName = name)
                         dataEmitter.onNext(bookItem)
                     }
+                }
+                withContext(Dispatchers.Main) {
+                    onSuccessStep()
                 }
 
 
@@ -48,6 +54,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                     }
                 }
                 withContext(Dispatchers.Main) {
+                    onSuccessStep()
                     onSuccess()
                 }
 

@@ -44,15 +44,21 @@ class ListFragment : Fragment() {
         initRv()
 
         viewModel.data.observe(viewLifecycleOwner) {
-            it.forEach { Log.d("MyLog", " ListFrag observe"+it.nameBook) }
+            it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
             adapter.fillAdapter(it.toList())
         }
 
+
         if (viewModel.data.value.isNullOrEmpty()) {
             setLoadingBooks(true)
-            viewModel.getBooks {
+            viewModel.getBooks({
                 setLoadingBooks(false)
-            }
+            }, {
+                viewModel.data.observe(viewLifecycleOwner) {
+                    it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
+                    adapter.fillAdapter(it.toList())
+                }
+            })
         }
 
 
