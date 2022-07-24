@@ -8,6 +8,9 @@ import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.convertToBitmap
 
@@ -26,8 +29,9 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
             nameBook.text = bookList[position].nameBook
             author.text = bookList[position].author
-            imageBook.setImageBitmap(bookList[position].imageValue.convertToBitmap())
-
+            CoroutineScope(Dispatchers.Main).launch {
+                imageBook.setImageBitmap(convertToBitmap(bookList[position].imageValue))
+            }
             itemView.setOnClickListener {
                 itemBookClickListener.clickOpenBook(bookList[position].fileName)
             }
