@@ -10,13 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.*
 import ru.reader.viewpagermodule.adapters.BookListAdapter
+import ru.reader.viewpagermodule.helpers.DialogHelper
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 const val BOOK_NAME = "book_name"
 
-class ListFragment : Fragment() {
+class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
 
     private val viewModel: ViewModelMainActivity by activityViewModels()
@@ -71,16 +75,21 @@ class ListFragment : Fragment() {
 
     private fun initRv() {
         adapter = BookListAdapter()
-        adapter.itemBookClickListener = itemClickListener
+        adapter.itemBookClickListener = this
         list_rv.adapter = adapter
-        list_rv.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+        list_rv.layoutManager =
+            LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
     }
 
-    private val itemClickListener = object : BookListAdapter.ItemBookClickListener {
-        override fun clickOpenBook(fileName: String) {
-            Toast.makeText(this@ListFragment.context, fileName, Toast.LENGTH_SHORT).show()
-            //todo open book by name
+
+    override fun clickOpenBook(fileName: String) {
+        val dialogHelper = DialogHelper()
+        CoroutineScope(Dispatchers.Main).launch {
+            dialogHelper.createLoadDialog(requireActivity()){
+                Toast.makeText(this@ListFragment.context, fileName, Toast.LENGTH_SHORT).show()
+                //todo get workManager -> load book and callback
+            }
         }
     }
 

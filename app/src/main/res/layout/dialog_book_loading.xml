@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_corner_r8">
+        android:background="@drawable/shape_corner_r10">
 
     <com.github.ybq.android.spinkit.SpinKitView
             android:layout_width="match_parent"
@@ -11,11 +11,20 @@
             android:id="@+id/progress_bar_load_book"
             app:SpinKit_Color="@color/delim_blue_500"
             style="@style/SpinKitView.ThreeBounce"
-            android:scaleX="2"
-            android:scaleY="2"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+            android:id="@+id/btn_dism_dial_book_load"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_close"
+            android:background="@android:color/transparent"/>
 
     <TextView
             android:id="@+id/tv_message_what_the_action"
