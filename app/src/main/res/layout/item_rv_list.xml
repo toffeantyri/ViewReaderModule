@@ -1,93 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="5dp"
-        android:paddingHorizontal="10dp"
-        android:layout_margin="5dp"
-        app:cardBackgroundColor="@color/bg_green_100">
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    android:paddingHorizontal="10dp"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/bg_green_100">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-    >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
 
         <LinearLayout
-                android:paddingHorizontal="10dp"
-                android:paddingBottom="5dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:id="@+id/text_container"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toStartOf="@+id/iv_book"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintBottom_toBottomOf="parent">
+            android:paddingHorizontal="10dp"
+            android:paddingBottom="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/text_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/iv_book"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintBottom_toBottomOf="parent">
 
 
             <TextView
-                    android:paddingTop="5dp"
-                    android:text="Автор"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="italic"
-                    android:textSize="10dp"
-            />
+                android:paddingTop="5dp"
+                android:text="Автор"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                android:textSize="10dp" />
 
 
             <TextView
-                    android:id="@+id/tv_author_book"
-                    tools:text="text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="14dp"
-                    android:paddingBottom="5dp"
-            />
+                android:id="@+id/tv_author_book"
+                tools:text="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:paddingBottom="5dp" />
 
             <TextView
-                    android:text="Наименование книги"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="italic"
-                    android:textSize="10dp"/>
+                android:text="Наименование книги"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                android:textSize="10dp" />
+
             <TextView
-                    android:id="@+id/tv_name_book"
-                    tools:text="text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="normal"
-                    android:textColor="@android:color/black"
-                    android:textSize="16dp"
-                    android:paddingBottom="5dp"/>
+                android:id="@+id/tv_name_book"
+                tools:text="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textColor="@android:color/black"
+                android:textSize="16dp"
+                android:paddingBottom="5dp" />
         </LinearLayout>
 
 
         <ImageView
-                android:id="@+id/iv_book"
-                android:src="@drawable/ic_launcher_background"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+            android:id="@+id/iv_book"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
+
+        <ProgressBar
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:id="@+id/item_progress_bar_iv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintStart_toStartOf="@id/iv_book"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@android:color/transparent"
+            android:indeterminateTint="@color/delim_blue_500"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-            android:background="@color/delim_blue_500"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_gravity="bottom"
+        android:background="@color/delim_blue_500"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="bottom"
 
-    />
+        />
 
 </androidx.cardview.widget.CardView>

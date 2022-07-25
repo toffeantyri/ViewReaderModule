@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.ybq.android.spinkit.SpinKitView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,18 +21,22 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
     lateinit var itemBookClickListener: ItemBookClickListener
     private var bookList = mutableListOf<BookCardData>()
 
-
     inner class BookNameHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameBook: TextView = view.findViewById(R.id.tv_name_book)
         private val author: TextView = view.findViewById(R.id.tv_author_book)
         private val imageBook: ImageView = view.findViewById(R.id.iv_book)
+        private val progressBarImage: ProgressBar = view.findViewById(R.id.item_progress_bar_iv)
 
         fun bind(position: Int) {
-
             nameBook.text = bookList[position].nameBook
             author.text = bookList[position].author
-            CoroutineScope(Dispatchers.Main).launch {
-                imageBook.setImageBitmap(convertToBitmap(bookList[position].imageValue))
+            if (bookList[position].imageValue.isNotEmpty()) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    progressBarImage.visibility = View.VISIBLE
+                    val image = convertToBitmap(bookList[position].imageValue)
+                    imageBook.setImageBitmap(image)
+                    progressBarImage.visibility = View.GONE
+                }
             }
             itemView.setOnClickListener {
                 itemBookClickListener.clickOpenBook(bookList[position].fileName)
@@ -56,14 +62,10 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
     fun fillAdapter(list: HashSet<BookCardData>) {
         val startCount = bookList.size
-        Log.d("MyLog", "fillAdapter here : ${bookList.map { it.nameBook }}")
-        Log.d("MyLog", "fillAdapter in : ${list.map { it.nameBook }}")
         val bookList2 = bookList.toMutableSet()
         bookList2.addAll(list.toMutableSet())
         bookList = bookList2.toMutableList()
-        Log.d("MyLog", "fillAdapter result : ${bookList.map { it.nameBook }}")
         val endCount = bookList.size
-
         notifyItemRangeInserted(startCount, endCount - startCount)
     }
 

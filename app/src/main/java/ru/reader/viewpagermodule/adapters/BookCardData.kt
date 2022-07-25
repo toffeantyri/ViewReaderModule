@@ -5,5 +5,6 @@ data class BookCardData(
     val nameBook: String,
     val imageValue: String,
     val fileName : String,
+    val byWay : MemoryLocation,
     var isFavorite: Boolean = false
 )

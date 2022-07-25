@@ -7,11 +7,14 @@ import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.adapters.BookCardData
+import ru.reader.viewpagermodule.adapters.MemoryLocation
 import java.io.*
+import java.lang.NullPointerException
+import java.util.concurrent.TimeoutException
 import javax.xml.parsers.ParserConfigurationException
 
 
-/** class for access to file-memory*/
+/** class for access to file-memory and search and get file book fb2*/
 class BookListHelper() {
 
     private val context by lazy { APP_CONTEXT }
@@ -121,7 +124,8 @@ class BookListHelper() {
             author = this.description.titleInfo.authors[0]?.fullName ?: "",
             nameBook = this.description.titleInfo.bookTitle ?: "",
             fileName = fileName,
-            imageValue = this.getTitleImageBinaryString()
+            imageValue = this.getTitleImageBinaryString(),
+            byWay = MemoryLocation.IN_DEVICE_MEMORY
         )
 
     }
@@ -153,6 +157,7 @@ class BookListHelper() {
 
     fun tryFileToFb2ToBookItem(fb2File: File, fileName: String): BookCardData? {
         try {
+            Log.d("MyLog", "$------------------------------------------- $fb2File")
             val fb2 = FictionBook(fb2File)
             return fb2.toBookCardData(fileName)
         } catch (e: ParserConfigurationException) {
@@ -160,6 +165,10 @@ class BookListHelper() {
         } catch (e: IOException) {
             Log.d("MyLog", e.stackTraceToString())
         } catch (e: SAXException) {
+            Log.d("MyLog", e.stackTraceToString())
+        } catch (e : NullPointerException){
+            Log.d("MyLog", e.stackTraceToString())
+        } catch (e : TimeoutException){
             Log.d("MyLog", e.stackTraceToString())
         }
         return null
