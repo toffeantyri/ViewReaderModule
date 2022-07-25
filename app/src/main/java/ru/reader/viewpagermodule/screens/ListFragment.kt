@@ -14,7 +14,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.*
+import ru.reader.viewpagermodule.adapters.BookCardData
 import ru.reader.viewpagermodule.adapters.BookListAdapter
+import ru.reader.viewpagermodule.adapters.MemoryLocation
 import ru.reader.viewpagermodule.helpers.DialogHelper
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
@@ -79,20 +81,23 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         list_rv.adapter = adapter
         list_rv.layoutManager =
             LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-
     }
 
 
-    override fun clickOpenBook(fileName: String) {
-        val dialogHelper = DialogHelper()
-        CoroutineScope(Dispatchers.Main).launch {
-            dialogHelper.createLoadDialog(requireActivity()){
-                Toast.makeText(this@ListFragment.context, fileName, Toast.LENGTH_SHORT).show()
-                //todo get workManager -> load book and callback
+    override fun clickOpenBook(filePath: String) {
+        if (filePath.isEmpty()) {
+            val dialogHelper = DialogHelper()
+            CoroutineScope(Dispatchers.Main).launch {
+                dialogHelper.createLoadDialog(requireActivity()) {
+                    Toast.makeText(this@ListFragment.context, filePath, Toast.LENGTH_SHORT).show()
+
+                    //todo get workManager -> load book and callback
+                }
             }
+        } else {
+            Toast.makeText(this@ListFragment.context, filePath, Toast.LENGTH_SHORT).show()
+            //todo open book
         }
     }
-
-
 }
 

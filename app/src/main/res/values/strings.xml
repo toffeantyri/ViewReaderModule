@@ -7,9 +7,8 @@
     <string name="load_bg_link" tools:ignore="TypographyDashes">
         https://bookshake.net/get-file/451a910d-5fe2-42f6-ab9d-2cf840f56825?format=fb2
     </string>
-
     <string name="need_load_book">Книга не найдена, загрузить?</string>
-
     <string name="load_action">Загрузить</string>
+    <string name="BhagavadGitaTitle">Бхагавад-Гита</string>
 
 </resources>

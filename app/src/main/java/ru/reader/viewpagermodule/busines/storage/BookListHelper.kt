@@ -6,6 +6,7 @@ import com.kursx.parser.fb2.FictionBook
 import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
+import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.adapters.BookCardData
 import ru.reader.viewpagermodule.adapters.MemoryLocation
 import java.io.*
@@ -174,5 +175,19 @@ class BookListHelper() {
         return null
     }
 
+    fun getBookListForDownloading() : HashSet<BookCardData>{
+        val listBook = hashSetOf<BookCardData>()
+        listBook.add(
+            BookCardData(
+                "-",
+                context.getString(R.string.BhagavadGitaTitle),
+                "",
+                "",
+                MemoryLocation.NOT_DOWNLOADED,
+                false
+            )
+        )
+        return listBook
+    }
 
 }

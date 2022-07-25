@@ -81,7 +81,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     private fun View.setAnimationInsert() {
-        this.startAnimation(AlphaAnimation(0.0f, 1.0f).apply { duration = 1000 })
+        this.startAnimation(AlphaAnimation(0.0f, 1.0f).apply { duration = 900 })
         this.alpha = 1f
     }
 

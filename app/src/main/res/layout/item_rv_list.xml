@@ -90,6 +90,21 @@
             android:indeterminateTint="@color/delim_blue_500"
             />
 
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:id="@+id/item_progress_bar_loading"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintStart_toStartOf="@id/iv_book"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@android:color/transparent"
+            style="@style/SpinKitView.Wave"
+            app:SpinKit_Color="@color/delim_blue_500"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

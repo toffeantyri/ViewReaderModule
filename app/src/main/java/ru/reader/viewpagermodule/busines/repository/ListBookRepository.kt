@@ -12,6 +12,13 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
         CoroutineScope(Dispatchers.IO).launch {
 
             launch {
+                val list = bh.getBookListForDownloading()
+                list.forEach {book ->
+                    dataEmitter.onNext(book)
+                }
+            }
+
+            launch {
                 val valueNames = async {
                     val list = bh.getListFB2NameFromCache()
                     list.addAll(bh.getListFB2NameFromAsset())
