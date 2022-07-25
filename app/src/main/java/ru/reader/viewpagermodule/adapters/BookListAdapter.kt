@@ -76,7 +76,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     interface ItemBookClickListener {
-        fun clickOpenBook(fileName: String)
+        fun clickOpenBook(filePath: String)
     }
 
 
