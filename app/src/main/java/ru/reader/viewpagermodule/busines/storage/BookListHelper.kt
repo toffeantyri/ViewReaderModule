@@ -180,12 +180,13 @@ class BookListHelper() {
         val listBook = hashSetOf<BookCardData>()
         listBook.add(
             BookCardData(
-                "-",
-                context.getString(R.string.BhagavadGitaTitle),
-                "",
-                "",
-                MemoryLocation.NOT_DOWNLOADED,
-                false
+                author = "-",
+                nameBook = context.getString(R.string.BhagavadGitaTitle),
+                imageValue = "",
+                fileFullPath = "",
+                byWay = MemoryLocation.NOT_DOWNLOADED,
+                urlForLoad = APP_CONTEXT.resources.getStringArray(R.array.array_url_bhagavad_gita).toList(),
+                isFavorite = false
             )
         )
         return listBook

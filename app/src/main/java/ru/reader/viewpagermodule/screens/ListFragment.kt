@@ -14,9 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.*
-import ru.reader.viewpagermodule.adapters.BookCardData
 import ru.reader.viewpagermodule.adapters.BookListAdapter
-import ru.reader.viewpagermodule.adapters.MemoryLocation
 import ru.reader.viewpagermodule.helpers.DialogHelper
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
@@ -49,18 +47,18 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         super.onStart()
         initRv()
 
-        viewModel.data.observe(viewLifecycleOwner) {
+        viewModel.dataListBook.observe(viewLifecycleOwner) {
             //it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
             adapter.fillAdapter(it)
         }
 
 
-        if (viewModel.data.value.isNullOrEmpty()) {
+        if (viewModel.dataListBook.value.isNullOrEmpty()) {
             setLoadingBooks(true)
             viewModel.getBooks({
                 setLoadingBooks(false)
             }, {
-                viewModel.data.observe(viewLifecycleOwner) {
+                viewModel.dataListBook.observe(viewLifecycleOwner) {
                     //it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
                     adapter.fillAdapter(it)
                 }
@@ -84,13 +82,15 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
     }
 
 
-    override fun clickOpenBook(filePath: String) {
+    override fun clickOpenBook(filePath: String, urlBook: List<String>) {
         if (filePath.isEmpty()) {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {
                 dialogHelper.createLoadDialog(requireActivity()) {
-                    Toast.makeText(this@ListFragment.context, filePath, Toast.LENGTH_SHORT).show()
-                    //todo get workManager -> load book and callback
+                    viewModel.loadBookByUrl(
+                        urlBook,
+                        { Log.d("MyLog", "view: onSuccess $urlBook") },
+                        { Log.d("MyLog", "view: onFail $urlBook") })
                 }
             }
         } else {

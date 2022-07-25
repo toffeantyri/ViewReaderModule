@@ -39,7 +39,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
                 }
             }
             itemView.setOnClickListener {
-                itemBookClickListener.clickOpenBook(bookList[position].fileFullPath)
+                itemBookClickListener.clickOpenBook(bookList[position].fileFullPath, bookList[position].urlForLoad)
             }
         }
     }
@@ -76,7 +76,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     interface ItemBookClickListener {
-        fun clickOpenBook(filePath: String)
+        fun clickOpenBook(filePath: String, urlBook : List<String>)
     }
 
 

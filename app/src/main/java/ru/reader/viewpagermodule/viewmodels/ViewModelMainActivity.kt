@@ -5,36 +5,42 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import ru.reader.viewpagermodule.adapters.BookCardData
 import ru.reader.viewpagermodule.busines.repository.ListBookRepository
+import ru.reader.viewpagermodule.busines.repository.LoadBookRepository
 
 
 class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     //for get list items
-    private val repo2 by lazy { ListBookRepository() }
+    private val repo by lazy { ListBookRepository() }
+    private val loadRepo by lazy { LoadBookRepository() }
 
 
-    val data: MutableLiveData<HashSet<BookCardData>> by lazy {
+    val dataListBook: MutableLiveData<HashSet<BookCardData>> by lazy {
         MutableLiveData()
     }
 
     init {
-        data.value = hashSetOf()
+        dataListBook.value = hashSetOf()
     }
 
 
     fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
-        repo2.dataEmitter.subscribe {
+        repo.dataEmitter.subscribe {
             //Log.d("MyLog", "VM : " + it.fileName)
-            if (data.value?.contains(it) == false) {
+            if (dataListBook.value?.contains(it) == false) {
                 //Log.d("MyLog", "VM add : " + it.fileName)
-                data.value?.add(it)
+                dataListBook.value?.add(it)
             }
         }
-        repo2.loadListBooks(
+        repo.loadListBooks(
             { onSuccess() }, {
                 onSuccessStep()
             }
         )
+    }
+
+    fun loadBookByUrl(listUrl : List<String>, onSuccess: () -> Unit, onFail : ()-> Unit){
+        loadRepo.loadBook(listUrl, onSuccess, onFail)
     }
 
 

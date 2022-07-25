@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_url_bhagavad_gita">
+        <item>https://royallib.com/get/fb2/bhaktivedanta_svami/bhagavat_gita_kak_ona_est.zip</item>
+        <item>https://www.rulit.me/download-books-334854.html?t=fb2</item>
+        <item>https://litportal.ru/trial/txt/29803248.fb2.zip</item>
+    </string-array>
+
+    <string-array name="array_url_any_book">
+        <item></item>
+    </string-array>
+
+</resources>
