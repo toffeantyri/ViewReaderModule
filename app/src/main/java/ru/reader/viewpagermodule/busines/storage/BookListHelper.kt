@@ -120,11 +120,11 @@ class BookListHelper() {
         return hashSet
     }
 
-    private fun FictionBook.toBookCardData(fileName: String): BookCardData {
+    private fun FictionBook.toBookCardData(fileFullPath: String): BookCardData {
         return BookCardData(
             author = this.description.titleInfo.authors[0]?.fullName ?: "",
             nameBook = this.description.titleInfo.bookTitle ?: "",
-            fileName = fileName,
+            fileFullPath = fileFullPath,
             imageValue = this.getTitleImageBinaryString(),
             byWay = MemoryLocation.IN_DEVICE_MEMORY
         )
@@ -156,11 +156,11 @@ class BookListHelper() {
         return list.toList()
     }
 
-    fun tryFileToFb2ToBookItem(fb2File: File, fileName: String): BookCardData? {
+    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String): BookCardData? {
         try {
             Log.d("MyLog", "$------------------------------------------- $fb2File")
             val fb2 = FictionBook(fb2File)
-            return fb2.toBookCardData(fileName)
+            return fb2.toBookCardData(fileFullPath)
         } catch (e: ParserConfigurationException) {
             Log.d("MyLog", e.stackTraceToString())
         } catch (e: IOException) {
@@ -176,6 +176,7 @@ class BookListHelper() {
     }
 
     fun getBookListForDownloading() : HashSet<BookCardData>{
+        //todo check if book is here - return book else return empty book
         val listBook = hashSetOf<BookCardData>()
         listBook.add(
             BookCardData(

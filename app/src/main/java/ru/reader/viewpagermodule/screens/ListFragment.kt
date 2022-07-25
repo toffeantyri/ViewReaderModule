@@ -90,7 +90,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 dialogHelper.createLoadDialog(requireActivity()) {
                     Toast.makeText(this@ListFragment.context, filePath, Toast.LENGTH_SHORT).show()
-
                     //todo get workManager -> load book and callback
                 }
             }

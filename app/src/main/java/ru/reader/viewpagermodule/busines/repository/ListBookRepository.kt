@@ -1,6 +1,8 @@
 package ru.reader.viewpagermodule.busines.repository
 
+import android.os.Environment
 import kotlinx.coroutines.*
+import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.adapters.BookCardData
 import ru.reader.viewpagermodule.busines.storage.BookListHelper
 
@@ -13,7 +15,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
 
             launch {
                 val list = bh.getBookListForDownloading()
-                list.forEach {book ->
+                list.forEach { book ->
                     dataEmitter.onNext(book)
                 }
             }
@@ -27,7 +29,8 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
 
                 valueNames.forEach { name ->
                     bh.getFileFromAssetsAndCache(name)?.let {
-                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileName = name)
+                        val path = App.getDirCache.toString() + "/" + name
+                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path)
                         dataEmitter.onNext(bookItem)
                     }
                 }
@@ -41,7 +44,11 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
 
                 valueNames2.forEach { name ->
                     bh.getFileFromPathDownloads(name)?.let {
-                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileName = name)
+                        val path =
+                            Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_DOWNLOADS
+                            ).path + "/" + name
+                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path)
                         dataEmitter.onNext(bookItem)
                     }
                 }
@@ -56,7 +63,11 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
 
                 valueNames3.forEach { name ->
                     bh.getFileFromPathDocuments(name)?.let {
-                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileName = name)
+                        val path =
+                            Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_DOCUMENTS
+                            ).path + "/" + name
+                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path)
                         dataEmitter.onNext(bookItem)
                     }
                 }
