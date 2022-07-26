@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.screens.listfragment
+package ru.reader.viewpagermodule.view.screens.listfragment
 
 import android.os.Bundle
 import android.util.Log
@@ -16,9 +16,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.adapters.BookListAdapter
+import ru.reader.viewpagermodule.view.adapters.BookListAdapter
 import ru.reader.viewpagermodule.helpers.DialogHelper
-import ru.reader.viewpagermodule.screens.MainActivity
+import ru.reader.viewpagermodule.view.screens.MainActivity
+import ru.reader.viewpagermodule.view.util.MyViewAnimator
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
@@ -30,6 +31,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
     private lateinit var adapter: BookListAdapter
     private lateinit var parentActivity: MainActivity
+    private val animator = MyViewAnimator()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,8 +85,8 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         list_rv.layoutManager =
             LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         list_rv.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-            if (scrollY > oldScrollY) btnChangeMemory.setVisibilityWithAnimation(false)
-            else btnChangeMemory.setVisibilityWithAnimation(true)
+            if (scrollY > oldScrollY) animator.run { btnChangeMemory.setVisibilityWithAnimation(false) }
+            else animator.run { btnChangeMemory.setVisibilityWithAnimation(true) }
         }
     }
 
@@ -115,27 +117,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         }
     }
 
-    private fun ExtendedFloatingActionButton.setVisibilityWithAnimation(isVisible: Boolean) {
-        val durationAnim: Long = 180
-        val tranSizeStart = if (isVisible) 100f else 0f
-        val tranSizeEnd = if (isVisible) 0f else 100f
 
-        fun localAnimate() {
-            with(this.animate()) {
-                duration = 0
-                translationY(tranSizeStart)
-            }.withEndAction {
-                with(this.animate()) {
-                    duration = durationAnim
-                    translationY(tranSizeEnd)
-                }
-            }
-        }
-        if (isVisible && this.translationY > 0f) {
-            localAnimate()
-        } else if (!isVisible && this.translationY == 0f) {
-            localAnimate()
-        }
-    }
 }
 

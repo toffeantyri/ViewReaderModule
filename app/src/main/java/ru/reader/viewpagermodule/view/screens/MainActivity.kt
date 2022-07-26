@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.screens
+package ru.reader.viewpagermodule.view.screens
 
 import android.os.Bundle
 import androidx.activity.viewModels

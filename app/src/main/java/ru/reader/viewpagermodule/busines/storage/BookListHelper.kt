@@ -7,8 +7,8 @@ import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.adapters.BookCardData
-import ru.reader.viewpagermodule.adapters.MemoryLocation
+import ru.reader.viewpagermodule.view.adapters.BookCardData
+import ru.reader.viewpagermodule.view.adapters.MemoryLocation
 import java.io.*
 import java.lang.NullPointerException
 import java.util.concurrent.TimeoutException

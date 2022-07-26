@@ -3,10 +3,10 @@ package ru.reader.viewpagermodule.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import ru.reader.viewpagermodule.adapters.BookCardData
+import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.busines.repository.ListBookRepository
 import ru.reader.viewpagermodule.busines.repository.LoadBookRepository
-import ru.reader.viewpagermodule.screens.listfragment.ByMemoryState
+import ru.reader.viewpagermodule.view.screens.listfragment.ByMemoryState
 
 
 class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {

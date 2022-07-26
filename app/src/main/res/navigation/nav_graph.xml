@@ -3,20 +3,20 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/nav_graph" app:startDestination="@id/mainFragment">
 
-    <fragment android:id="@+id/listFragment" android:name="ru.reader.viewpagermodule.screens.listfragment.ListFragment"
+    <fragment android:id="@+id/listFragment" android:name="ru.reader.viewpagermodule.view.screens.listfragment.ListFragment"
               android:label="ListFragment">
         <action android:id="@+id/action_listFragment_to_viewPagerFragment" app:destination="@id/viewPagerFragment"/>
         <action android:id="@+id/action_listFragment_to_mainFragment" app:destination="@id/mainFragment"
                 app:launchSingleTop="true" app:enterAnim="@anim/nav_default_enter_anim"
                 app:exitAnim="@anim/nav_default_exit_anim"/>
     </fragment>
-    <fragment android:id="@+id/viewPagerFragment" android:name="ru.reader.viewpagermodule.screens.ViewPagerFragment"
+    <fragment android:id="@+id/viewPagerFragment" android:name="ru.reader.viewpagermodule.view.screens.ViewPagerFragment"
               android:label="ViewPagerFragment">
         <action android:id="@+id/action_viewPagerFragment_to_listFragment" app:destination="@id/listFragment"
                 app:launchSingleTop="true" app:popUpTo="@+id/nav_graph" app:enterAnim="@anim/nav_default_enter_anim"
                 app:exitAnim="@anim/nav_default_exit_anim"/>
     </fragment>
-    <fragment android:id="@+id/mainFragment" android:name="ru.reader.viewpagermodule.screens.MainFragment"
+    <fragment android:id="@+id/mainFragment" android:name="ru.reader.viewpagermodule.view.screens.MainFragment"
               android:label="MainFragment">
         <action android:id="@+id/action_mainFragment_to_listFragment" app:destination="@id/listFragment"/>
     </fragment>

@@ -3,7 +3,7 @@ package ru.reader.viewpagermodule.busines.repository
 import android.os.Environment
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
-import ru.reader.viewpagermodule.adapters.BookCardData
+import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.busines.storage.BookListHelper
 
 class ListBookRepository() : BaseRepository<BookCardData>() {
