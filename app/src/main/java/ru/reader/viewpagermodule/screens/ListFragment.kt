@@ -55,11 +55,16 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
         if (viewModel.dataListBook.value.isNullOrEmpty()) {
             setLoadingBooks(true)
+            viewModel.getPreloadBooks {
+                viewModel.dataPreLoadBooks.observe(viewLifecycleOwner) { list ->
+                    list.forEach { adapter.fillAdapterSingleItem(it) }
+                }
+            }
+
             viewModel.getBooks({
                 setLoadingBooks(false)
             }, {
                 viewModel.dataListBook.observe(viewLifecycleOwner) {
-                    //it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
                     adapter.fillAdapter(it)
                 }
             })

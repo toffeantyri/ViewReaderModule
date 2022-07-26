@@ -19,10 +19,24 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         MutableLiveData()
     }
 
-    init {
-        dataListBook.value = hashSetOf()
+    val dataPreLoadBooks: MutableLiveData<ArrayList<BookCardData>> by lazy {
+        MutableLiveData()
     }
 
+
+    init {
+        dataListBook.value = hashSetOf()
+        dataPreLoadBooks.value = arrayListOf()
+    }
+
+
+    fun getPreloadBooks(onSuccessStep: () -> Unit) {
+        dataPreLoadBooks.value?.clear()
+        repo.dataEmitter.subscribe {
+            dataListBook.value?.add(it)
+        }
+        repo.loadDownloadedBooksOrListWithEmptyBooksForDownload() { onSuccessStep() }
+    }
 
     fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         repo.dataEmitter.subscribe {
@@ -32,8 +46,6 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
                 dataListBook.value?.add(it)
             }
         }
-        repo.loadDownloadedBooksOrListWithEmptyBooksForDownload() { onSuccessStep() }
-
         repo.loadListBooks(
             { onSuccess() }, {
                 onSuccessStep()
