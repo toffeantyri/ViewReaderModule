@@ -10,4 +10,8 @@
     <string name="load_action">Загрузить</string>
     <string name="BhagavadGitaTitle">Бхагавад-Гита</string>
 
+
+    <string name="choose_memory_storage">Из памяти устройства</string>
+    <string name="choose_memory_download">Доступные для загрузки</string>
+
 </resources>

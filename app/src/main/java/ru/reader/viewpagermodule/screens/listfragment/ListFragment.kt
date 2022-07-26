@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.screens
+package ru.reader.viewpagermodule.screens.listfragment
 
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.*
 import ru.reader.viewpagermodule.adapters.BookListAdapter
 import ru.reader.viewpagermodule.helpers.DialogHelper
+import ru.reader.viewpagermodule.screens.MainActivity
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 const val BOOK_NAME = "book_name"
@@ -46,6 +47,17 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
     override fun onStart() {
         super.onStart()
         initRv()
+
+        viewModel.fromMemoryState.observe(viewLifecycleOwner) {
+            btn_choose_memory.text = when (it) {
+                ByMemoryState.FROM_DOWNLOAD -> getString(R.string.choose_memory_storage)
+                ByMemoryState.FROM_DEVICE -> getString(R.string.choose_memory_download)
+            }
+            btnChooseSetClickListener(it)
+
+
+        }
+
 
         viewModel.dataListBook.observe(viewLifecycleOwner) {
             //it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
@@ -101,6 +113,16 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         } else {
             Toast.makeText(this@ListFragment.context, filePath, Toast.LENGTH_SHORT).show()
             //todo open book
+        }
+    }
+
+    private fun btnChooseSetClickListener(state: ByMemoryState) {
+        btn_choose_memory.setOnClickListener {
+            val newState = when (state) {
+                ByMemoryState.FROM_DEVICE -> ByMemoryState.FROM_DOWNLOAD
+                ByMemoryState.FROM_DOWNLOAD -> ByMemoryState.FROM_DEVICE
+            }
+            viewModel.setMemoryState(newState)
         }
     }
 }
