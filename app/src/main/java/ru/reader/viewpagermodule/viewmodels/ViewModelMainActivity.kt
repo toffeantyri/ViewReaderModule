@@ -32,6 +32,8 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
                 dataListBook.value?.add(it)
             }
         }
+        repo.loadDownloadedBooksOrListWithEmptyBooksForDownload() { onSuccessStep() }
+
         repo.loadListBooks(
             { onSuccess() }, {
                 onSuccessStep()
@@ -39,7 +41,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         )
     }
 
-    fun loadBookByUrl(listUrl : List<String>, onSuccess: () -> Unit, onFail : ()-> Unit){
+    fun loadBookByUrl(listUrl: List<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
         loadRepo.loadBook(listUrl, onSuccess, onFail)
     }
 

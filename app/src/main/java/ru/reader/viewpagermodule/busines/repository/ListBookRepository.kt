@@ -8,17 +8,10 @@ import ru.reader.viewpagermodule.busines.storage.BookListHelper
 
 class ListBookRepository() : BaseRepository<BookCardData>() {
 
+    val bh = BookListHelper()
 
     fun loadListBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
-        val bh = BookListHelper()
         CoroutineScope(Dispatchers.IO).launch {
-
-            launch {
-                val list = bh.getBookListForDownloading()
-                list.forEach { book ->
-                    dataEmitter.onNext(book)
-                }
-            }
 
             launch {
                 val valueNames = async {
@@ -80,5 +73,17 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
         }
     }
 
-
+    fun loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccessStep: () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            launch {
+                val list = bh.getBookListForDownloading()
+                list.forEach { book ->
+                    dataEmitter.onNext(book)
+                    withContext(Dispatchers.Main) {
+                        onSuccessStep()
+                    }
+                }
+            }
+        }
+    }
 }
