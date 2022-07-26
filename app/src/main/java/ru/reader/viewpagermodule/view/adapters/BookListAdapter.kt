@@ -22,7 +22,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
     inner class BookNameHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val nameBook: TextView = view.findViewById(R.id.tv_name_book)
         private val author: TextView = view.findViewById(R.id.tv_author_book)
-        private val imageBook: ImageView = view.findViewById(R.id.iv_book)
+        val imageBook: ImageView = view.findViewById(R.id.iv_book)
         private val progressBarImage: ProgressBar = view.findViewById(R.id.item_progress_bar_iv)
 
         fun bind(position: Int) {
@@ -55,6 +55,11 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
     override fun onViewAttachedToWindow(holder: BookNameHolder) {
         holder.itemView.setAnimationInsert()
+    }
+
+    override fun onViewRecycled(holder: BookNameHolder) {
+        super.onViewRecycled(holder)
+        holder.imageBook.setImageDrawable(null)
     }
 
 

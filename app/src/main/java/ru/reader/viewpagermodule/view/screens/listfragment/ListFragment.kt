@@ -98,8 +98,8 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         list_rv.layoutManager =
             LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         list_rv.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-            if (scrollY > oldScrollY) animator.run { btnChangeMemory.setVisibilityWithAnimation(false) }
-            else animator.run { btnChangeMemory.setVisibilityWithAnimation(true) }
+            if (scrollY > oldScrollY) animator.run { btnChangeMemory.translationDownByY(false) }
+            else animator.run { btnChangeMemory.translationDownByY(true) }
         }
     }
 
