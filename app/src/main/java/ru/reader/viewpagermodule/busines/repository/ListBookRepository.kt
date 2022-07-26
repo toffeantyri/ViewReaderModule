@@ -73,7 +73,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
         }
     }
 
-    fun loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccessStep: () -> Unit) {
+    fun loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             launch {
                 val list = bh.getBookListForDownloading()

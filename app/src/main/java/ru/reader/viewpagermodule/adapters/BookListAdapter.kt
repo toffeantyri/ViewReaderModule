@@ -60,7 +60,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
     }
 
 
-    fun fillAdapter(list: HashSet<BookCardData>) {
+    fun fillAdapter(list: ArrayList<BookCardData>) {
         val startCount = bookList.size
         val bookList2 = bookList.toMutableSet()
         bookList2.addAll(list.toMutableSet())

@@ -14,11 +14,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     private val repo by lazy { ListBookRepository() }
     private val loadRepo by lazy { LoadBookRepository() }
 
-    val dataListBook: MutableLiveData<HashSet<BookCardData>> by lazy {
-        MutableLiveData()
-    }
-
-    val dataPreLoadBooks: MutableLiveData<ArrayList<BookCardData>> by lazy {
+    val dataListBook: MutableLiveData<ArrayList<BookCardData>> by lazy {
         MutableLiveData()
     }
 
@@ -26,8 +22,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
 
     init {
-        dataListBook.value = hashSetOf()
-        dataPreLoadBooks.value = arrayListOf()
+        dataListBook.value = arrayListOf()
         fromMemoryState.value = ByMemoryState.FROM_DOWNLOAD
     }
 
@@ -36,12 +31,12 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     }
 
 
-    fun getPreloadBooks(onSuccessStep: () -> Unit) {
-        dataPreLoadBooks.value?.clear()
+    fun getPreloadBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
+        dataListBook.value?.clear()
         repo.dataEmitter.subscribe {
             dataListBook.value?.add(it)
         }
-        repo.loadDownloadedBooksOrListWithEmptyBooksForDownload() { onSuccessStep() }
+        repo.loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccess,onSuccessStep)
     }
 
     fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
@@ -52,12 +47,9 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
                 dataListBook.value?.add(it)
             }
         }
-        repo.loadListBooks(
-            { onSuccess() }, {
-                onSuccessStep()
-            }
-        )
+        repo.loadListBooks(onSuccess,onSuccessStep)
     }
+
 
     fun loadBookByUrl(listUrl: List<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
         loadRepo.loadBook(listUrl, onSuccess, onFail)
