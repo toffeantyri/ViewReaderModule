@@ -6,6 +6,7 @@ data class BookCardData(
     val imageValue: String,
     val fileFullPath : String,
     val byWay : MemoryLocation,
+    val bookNameDefault : String = "",
     val urlForLoad : List<String> = emptyList(),
     var isFavorite: Boolean = false
 )

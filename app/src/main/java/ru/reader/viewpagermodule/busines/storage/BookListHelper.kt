@@ -167,15 +167,15 @@ class BookListHelper() {
             Log.d("MyLog", e.stackTraceToString())
         } catch (e: SAXException) {
             Log.d("MyLog", e.stackTraceToString())
-        } catch (e : NullPointerException){
+        } catch (e: NullPointerException) {
             Log.d("MyLog", e.stackTraceToString())
-        } catch (e : TimeoutException){
+        } catch (e: TimeoutException) {
             Log.d("MyLog", e.stackTraceToString())
         }
         return null
     }
 
-    fun getBookListForDownloading() : HashSet<BookCardData>{
+    fun getBookListForDownloading(): HashSet<BookCardData> {
         //todo check if book is here - return book else return empty book
         val listBook = hashSetOf<BookCardData>()
         listBook.add(
@@ -186,7 +186,8 @@ class BookListHelper() {
                 fileFullPath = "",
                 byWay = MemoryLocation.NOT_DOWNLOADED,
                 urlForLoad = APP_CONTEXT.resources.getStringArray(R.array.array_url_bhagavad_gita).toList(),
-                isFavorite = false
+                isFavorite = false,
+                bookNameDefault = context.getString(R.string.BhagavadGitaTitle)
             )
         )
         return listBook
