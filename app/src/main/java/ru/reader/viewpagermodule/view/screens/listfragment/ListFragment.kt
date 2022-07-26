@@ -53,23 +53,36 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         }
 
         viewModel.fromMemoryState.observe(viewLifecycleOwner) { state ->
+            Log.d("MyLog", "New state : $state")
             @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
             btnChangeMemory.text = when (state) {
                 ByMemoryState.FROM_DOWNLOAD -> getString(R.string.choose_memory_storage)
                 ByMemoryState.FROM_DEVICE -> getString(R.string.choose_memory_download)
             }
             btnChooseSetClickListener(state)
-
-            if (viewModel.dataListBook.value.isNullOrEmpty()) {
-                setLoadingBooks(true)
-                viewModel.getBooks({
-                    setLoadingBooks(false)
-                }, {
-                    viewModel.dataListBook.observe(viewLifecycleOwner) {
-                        adapter.fillAdapter(it)
+            adapter.clearAdapterData()
+            viewModel.clearBookList()
+            if (state == ByMemoryState.FROM_DOWNLOAD) {
+                if (viewModel.dataListBook.value.isNullOrEmpty()) {
+                    setLoadingBooks(true)
+                    viewModel.getPreloadBooks({ setLoadingBooks(false) }) {
+                        viewModel.dataListBook.observe(viewLifecycleOwner) {
+                            adapter.fillAdapter(it)
+                        }
                     }
-                })
+                }
+            } else if (state == ByMemoryState.FROM_DEVICE) {
+                if (viewModel.dataListBook.value.isNullOrEmpty()) {
+                    setLoadingBooks(true)
+                    viewModel.getBooks({ setLoadingBooks(false) }) {
+                        viewModel.dataListBook.observe(viewLifecycleOwner) {
+                            adapter.fillAdapter(it)
+                        }
+                    }
+                }
             }
+
+
         }
     }
 

@@ -2,7 +2,7 @@ package ru.reader.viewpagermodule.busines.repository
 
 class LoadBookRepository : BaseRepository<LoadingBookState>() {
 
-    fun loadBook(listUrl: List<String>, onSuccess: () -> Unit, onFail: () -> Unit){
+    suspend fun loadBook(listUrl: List<String>, onSuccess: () -> Unit, onFail: () -> Unit){
 
         onSuccess()
 

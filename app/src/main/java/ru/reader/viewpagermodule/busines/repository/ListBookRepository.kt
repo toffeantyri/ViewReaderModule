@@ -3,17 +3,16 @@ package ru.reader.viewpagermodule.busines.repository
 import android.os.Environment
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
-import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.busines.storage.BookListHelper
+import ru.reader.viewpagermodule.view.adapters.BookCardData
 
 class ListBookRepository() : BaseRepository<BookCardData>() {
 
     val bh = BookListHelper()
 
-    fun loadListBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
+    suspend fun loadListBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
-
-            launch {
+            withContext(Dispatchers.IO) {
                 val valueNames = async {
                     val list = bh.getListFB2NameFromCache()
                     list.addAll(bh.getListFB2NameFromAsset())
@@ -67,15 +66,15 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                 withContext(Dispatchers.Main) {
                     onSuccessStep()
                     onSuccess()
+                    dataEmitter.onNext(bh.getDummyBook())
                 }
-
             }
         }
     }
 
-    fun loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
+    suspend fun loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
-            launch {
+            withContext(Dispatchers.IO) {
                 val list = bh.getBookListForDownloading()
                 list.forEach { book ->
                     dataEmitter.onNext(book)
@@ -83,7 +82,12 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                         onSuccessStep()
                     }
                 }
+                withContext(Dispatchers.Main) {
+                    onSuccess()
+                    dataEmitter.onNext(bh.getDummyBook())
+                }
             }
         }
     }
+
 }

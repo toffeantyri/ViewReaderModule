@@ -83,4 +83,9 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
         this.alpha = 1f
     }
 
+    fun clearAdapterData(){
+        bookList.clear()
+        notifyDataSetChanged()
+    }
+
 }

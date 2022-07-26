@@ -18,6 +18,10 @@ import javax.xml.parsers.ParserConfigurationException
 /** class for access to file-memory and search and get file book fb2*/
 class BookListHelper() {
 
+    companion object{
+        const val DUMMY_BOOK = "DUMMY_BOOK"
+    }
+
     private val context by lazy { APP_CONTEXT }
 
     fun getFileFromAssetsAndCache(fileName: String): File? {
@@ -191,6 +195,19 @@ class BookListHelper() {
             )
         )
         return listBook
+    }
+
+    fun getDummyBook(): BookCardData {
+        return BookCardData(
+            author = DUMMY_BOOK,
+            nameBook = "",
+            imageValue = "",
+            fileFullPath = "",
+            byWay = MemoryLocation.NOT_DOWNLOADED,
+            urlForLoad = listOf(),
+            isFavorite = false,
+            bookNameDefault = ""
+        )
     }
 
 }

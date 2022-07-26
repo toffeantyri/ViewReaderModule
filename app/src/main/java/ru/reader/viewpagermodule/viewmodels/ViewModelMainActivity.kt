@@ -3,9 +3,12 @@ package ru.reader.viewpagermodule.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.busines.repository.ListBookRepository
 import ru.reader.viewpagermodule.busines.repository.LoadBookRepository
+import ru.reader.viewpagermodule.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.view.screens.listfragment.ByMemoryState
 
 
@@ -13,6 +16,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     private val repo by lazy { ListBookRepository() }
     private val loadRepo by lazy { LoadBookRepository() }
+    private var job: Job? = null
 
     val dataListBook: MutableLiveData<ArrayList<BookCardData>> by lazy {
         MutableLiveData()
@@ -23,7 +27,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     init {
         dataListBook.value = arrayListOf()
-        fromMemoryState.value = ByMemoryState.FROM_DOWNLOAD
+        fromMemoryState.value = ByMemoryState.FROM_DEVICE //todo Изменить по умолчанию на память для загрузки
     }
 
     fun setMemoryState(memoryState: ByMemoryState) {
@@ -32,27 +36,43 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
 
     fun getPreloadBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
-        dataListBook.value?.clear()
-        repo.dataEmitter.subscribe {
-            dataListBook.value?.add(it)
+        job?.cancel()
+        job = viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                dataListBook.value?.clear()
+                repo.dataEmitter.subscribe {
+                    if (it.author != BookListHelper.DUMMY_BOOK) {
+                        dataListBook.value?.add(it)
+                    }
+                }
+                repo.loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccess, onSuccessStep)
+            }
         }
-        repo.loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccess,onSuccessStep)
     }
 
     fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
-        repo.dataEmitter.subscribe {
-            //Log.d("MyLog", "VM : " + it.fileName)
-            if (dataListBook.value?.contains(it) == false) {
-                //Log.d("MyLog", "VM add : " + it.fileName)
-                dataListBook.value?.add(it)
+        job?.cancel()
+        job = viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                repo.dataEmitter.subscribe {
+                    if (dataListBook.value?.contains(it) == false && it.author != BookListHelper.DUMMY_BOOK) {
+                        dataListBook.value?.add(it)
+                    }
+                }
+                repo.loadListBooks(onSuccess, onSuccessStep)
             }
         }
-        repo.loadListBooks(onSuccess,onSuccessStep)
+    }
+
+    fun clearBookList() {
+        dataListBook.value = arrayListOf()
     }
 
 
     fun loadBookByUrl(listUrl: List<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
-        loadRepo.loadBook(listUrl, onSuccess, onFail)
+        viewModelScope.launch {
+            loadRepo.loadBook(listUrl, onSuccess, onFail)
+        }
     }
 
 
