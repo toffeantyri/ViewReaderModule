@@ -17,7 +17,7 @@ import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 const val CHANNEL_ID = "CHANNEL_DOWNLOAD_SERVICE"
 const val NOTIFICATION_ID = 123
 
-class DownloadFileService() : Service() {
+class DownloadFileService : Service() {
 
     private val api = ApiProvider()
     private val iBinder: LocalBinder = LocalBinder()

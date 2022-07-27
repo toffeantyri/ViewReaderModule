@@ -10,6 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_rv_list"
+            tools:itemCount="5"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clipToPadding="true"
+            />
+
         <com.github.ybq.android.spinkit.SpinKitView
             tools:visibility="visible"
             android:visibility="gone"
@@ -24,22 +38,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_rv_list"
-            tools:itemCount="5"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:clipToPadding="true"
-
             />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

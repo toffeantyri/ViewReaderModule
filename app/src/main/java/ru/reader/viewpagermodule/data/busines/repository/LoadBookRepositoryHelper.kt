@@ -1,6 +1,5 @@
 package ru.reader.viewpagermodule.data.busines.repository
 
-import android.app.Service
 import android.content.*
 import android.os.IBinder
 import android.util.Log
@@ -15,25 +14,21 @@ import ru.reader.viewpagermodule.services.DownloadFileServiceBroadcastReceiver
 const val BROADCAST_SERVICE_LOAD_STATE = "BROADCAST_SERVICE_LOAD_STATE"
 const val TAG_NEW_DOWNLOAD_SERVICE_STATE = "TAG_NEW_DOWNLOAD_SERVICE_STATE "
 
-class LoadBookRepository() : BaseRepository<LoadingBookState>() {
+class LoadBookRepositoryHelper : BaseRepository<LoadingBookState>() {
 
     private val context = APP_CONTEXT
     private var loadService: DownloadFileService? = null
     private var serviceBound = false
     private var serviceState: LoadingBookState = LoadingBookState.IDLE_LOAD
-        set(value) {
-            field = value
-            Log.d("MyLog", value.toString())
-        }
 
-    suspend fun loadBook(listUrl: ArrayList<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
+
+    suspend fun loadBook(listUrl: ArrayList<String>) {
         CoroutineScope(Dispatchers.IO).launch {
             registerBroadcastLoadService()
             val loadIntent = Intent(context, DownloadFileService::class.java)
             loadIntent.putStringArrayListExtra(BookListHelper.LIST_OF_URL_FOR_DOWNLOAD, listUrl)
             context.startForegroundService(loadIntent)
             context.bindService(loadIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-            onSuccess()
         }
     }
 
@@ -43,13 +38,11 @@ class LoadBookRepository() : BaseRepository<LoadingBookState>() {
             loadService = binder.getService()
             serviceBound = true
             loadService!!.tellMeCurrentState()
-            Log.d("MyLog", "ServiceBound")
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             serviceBound = false
             loadService = null
-            Log.d("MyLog", "ServiceUnbound")
         }
     }
 
@@ -65,12 +58,16 @@ class LoadBookRepository() : BaseRepository<LoadingBookState>() {
                 LoadingBookState.SUCCESS_LOAD -> {
                     loadService?.stopForeground(true)
                     loadService?.stopSelf()
+                    dataEmitter.onNext(LoadingBookState.SUCCESS_LOAD)
                 }
                 LoadingBookState.LOAD_FAIL -> {
+                    dataEmitter.onNext(LoadingBookState.LOAD_FAIL)
                 }
                 LoadingBookState.IDLE_LOAD -> {
+                    dataEmitter.onNext(LoadingBookState.IDLE_LOAD)
                 }
                 LoadingBookState.LOADING -> {
+                    dataEmitter.onNext(LoadingBookState.LOADING)
                 }
             }
         }

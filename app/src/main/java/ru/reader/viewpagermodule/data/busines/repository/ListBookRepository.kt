@@ -9,7 +9,8 @@ import ru.reader.viewpagermodule.view.adapters.BookCardData
 
 class ListBookRepository() : BaseRepository<BookCardData>() {
 
-    val bh = BookListHelper()
+    private val bh = BookListHelper()
+    private val repoLoader by lazy { LoadBookRepositoryHelper() }
 
     suspend fun loadListBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -73,14 +74,13 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
         }
     }
 
-    suspend fun loadDownloadedBooksOrListWithEmptyBooksForDownload(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
+    suspend fun getDownloadedBooksOrListWithEmptyBooks(onSuccess: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
                 val list = bh.getBookListForDownloading()
                 list.forEach { book ->
                     dataEmitter.onNext(book)
                     withContext(Dispatchers.Main) {
-                        onSuccessStep()
                     }
                 }
                 withContext(Dispatchers.Main) {
@@ -88,6 +88,22 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                     dataEmitter.onNext(bh.getDummyBook())
                 }
             }
+        }
+    }
+
+    fun loadBook(listUrl: ArrayList<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            repoLoader.dataEmitter.subscribe {
+                if (it == LoadingBookState.SUCCESS_LOAD) {
+                    onSuccess()
+                }
+                if (it == LoadingBookState.LOAD_FAIL) {
+                    onFail()
+                }
+            }
+            repoLoader.loadBook(listUrl)
+
+
         }
     }
 }

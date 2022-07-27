@@ -65,8 +65,8 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             if (state == ByMemoryState.FROM_DOWNLOAD) {
                 if (viewModel.dataListBook.value.isNullOrEmpty()) {
                     setLoadingAndHideBtnChoose(true)
-
-                    viewModel.getPreloadBooks({ setLoadingAndHideBtnChoose(false) }) {
+                    viewModel.getPreloadBooks {
+                        setLoadingAndHideBtnChoose(false)
                         viewModel.dataListBook.observe(viewLifecycleOwner) {
                             adapter.fillAdapter(it)
                         }
@@ -113,11 +113,19 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         if (filePath.isEmpty()) {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {
+                setLoadingAndHideBtnChoose(true)
                 dialogHelper.createLoadDialog(requireActivity()) {
                     viewModel.loadBookByUrl(
                         urlBook,
-                        { Log.d("MyLog", "view: onSuccess $urlBook") },
-                        { Log.d("MyLog", "view: onFail $urlBook") })
+                        {
+                            Log.d("MyLog", "view: onSuccess $urlBook")
+                            setLoadingAndHideBtnChoose(false)
+                        },
+                        {
+                            Toast.makeText(requireContext(), getString(R.string.toast_error_load), Toast.LENGTH_SHORT)
+                                .show()
+                            setLoadingAndHideBtnChoose(false)
+                        })
                 }
             }
         } else {
