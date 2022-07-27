@@ -18,7 +18,7 @@ const val TAG_NEW_DOWNLOAD_SERVICE_STATE = "TAG_NEW_DOWNLOAD_SERVICE_STATE "
 class LoadBookRepository() : BaseRepository<LoadingBookState>() {
 
     private val context = APP_CONTEXT
-    private var loadService: Service? = null
+    private var loadService: DownloadFileService? = null
     private var serviceBound = false
     private var serviceState: LoadingBookState = LoadingBookState.IDLE_LOAD
         set(value) {
@@ -42,6 +42,7 @@ class LoadBookRepository() : BaseRepository<LoadingBookState>() {
             val binder = service as DownloadFileService.LocalBinder
             loadService = binder.getService()
             serviceBound = true
+            loadService!!.tellMeCurrentState()
             Log.d("MyLog", "ServiceBound")
         }
 

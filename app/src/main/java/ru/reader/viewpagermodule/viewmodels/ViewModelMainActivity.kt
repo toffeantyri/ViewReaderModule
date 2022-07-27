@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.data.api.ApiProvider
 import ru.reader.viewpagermodule.view.adapters.BookCardData

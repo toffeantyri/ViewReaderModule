@@ -64,8 +64,9 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             viewModel.clearBookList()
             if (state == ByMemoryState.FROM_DOWNLOAD) {
                 if (viewModel.dataListBook.value.isNullOrEmpty()) {
-                    setLoadingBooks(true)
-                    viewModel.getPreloadBooks({ setLoadingBooks(false) }) {
+                    setLoadingAndHideBtnChoose(true)
+
+                    viewModel.getPreloadBooks({ setLoadingAndHideBtnChoose(false) }) {
                         viewModel.dataListBook.observe(viewLifecycleOwner) {
                             adapter.fillAdapter(it)
                         }
@@ -73,8 +74,8 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                 }
             } else if (state == ByMemoryState.FROM_DEVICE) {
                 if (viewModel.dataListBook.value.isNullOrEmpty()) {
-                    setLoadingBooks(true)
-                    viewModel.getBooks({ setLoadingBooks(false) }) {
+                    setLoadingAndHideBtnChoose(true)
+                    viewModel.getBooks({ setLoadingAndHideBtnChoose(false) }) {
                         viewModel.dataListBook.observe(viewLifecycleOwner) {
                             adapter.fillAdapter(it)
                         }
@@ -87,8 +88,13 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
     }
 
 
-    private fun setLoadingBooks(flag: Boolean) {
+    private fun setLoadingAndHideBtnChoose(flag: Boolean) {
         progress_bar_rv.visibility = if (flag) View.VISIBLE else View.GONE
+        if (flag) {
+            btnChangeMemory.hide()
+        } else {
+            btnChangeMemory.show()
+        }
     }
 
     private fun initRv() {

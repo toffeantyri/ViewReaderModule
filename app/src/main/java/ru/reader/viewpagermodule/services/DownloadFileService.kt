@@ -24,8 +24,12 @@ class DownloadFileService() : Service() {
     private var serviceState = LoadingBookState.IDLE_LOAD
         set(value) {
             field = value
-            sendBroadcast(Intent(BROADCAST_SERVICE_LOAD_STATE).putExtra(TAG_NEW_DOWNLOAD_SERVICE_STATE, value))
+            tellMeCurrentState()
         }
+
+    fun tellMeCurrentState() {
+        sendBroadcast(Intent(BROADCAST_SERVICE_LOAD_STATE).putExtra(TAG_NEW_DOWNLOAD_SERVICE_STATE, serviceState))
+    }
 
 
     inner class LocalBinder : Binder() {
