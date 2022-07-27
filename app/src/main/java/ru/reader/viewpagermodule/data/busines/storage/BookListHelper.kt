@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.busines.storage
+package ru.reader.viewpagermodule.data.busines.storage
 
 import android.os.Environment
 import android.util.Log

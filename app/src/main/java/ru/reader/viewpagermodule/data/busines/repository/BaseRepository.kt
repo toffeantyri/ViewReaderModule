@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.busines.repository
+package ru.reader.viewpagermodule.data.busines.repository
 
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 

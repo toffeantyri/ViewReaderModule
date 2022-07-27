@@ -1,9 +1,9 @@
-package ru.reader.viewpagermodule.busines.repository
+package ru.reader.viewpagermodule.data.busines.repository
 
 import android.os.Environment
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
-import ru.reader.viewpagermodule.busines.storage.BookListHelper
+import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.view.adapters.BookCardData
 
 class ListBookRepository() : BaseRepository<BookCardData>() {

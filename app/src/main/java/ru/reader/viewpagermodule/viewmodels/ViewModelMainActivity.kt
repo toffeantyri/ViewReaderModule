@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.view.adapters.BookCardData
-import ru.reader.viewpagermodule.busines.repository.ListBookRepository
-import ru.reader.viewpagermodule.busines.repository.LoadBookRepository
-import ru.reader.viewpagermodule.busines.storage.BookListHelper
+import ru.reader.viewpagermodule.data.busines.repository.ListBookRepository
+import ru.reader.viewpagermodule.data.busines.repository.LoadBookRepository
+import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.view.screens.listfragment.ByMemoryState
 
 
@@ -39,7 +39,6 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         job?.cancel()
         job = viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                dataListBook.value?.clear()
                 repo.dataEmitter.subscribe {
                     if (it.author != BookListHelper.DUMMY_BOOK) {
                         dataListBook.value?.add(it)
