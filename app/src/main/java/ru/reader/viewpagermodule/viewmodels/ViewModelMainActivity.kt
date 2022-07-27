@@ -16,7 +16,7 @@ import ru.reader.viewpagermodule.view.screens.listfragment.ByMemoryState
 class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     private val repo by lazy { ListBookRepository() }
-    private val loadRepo by lazy { LoadBookRepository(ApiProvider()) }
+    private val loadRepo by lazy { LoadBookRepository() }
     private var job: Job? = null
 
     val dataListBook: MutableLiveData<ArrayList<BookCardData>> by lazy {
@@ -28,7 +28,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     init {
         dataListBook.value = arrayListOf()
-        fromMemoryState.value = ByMemoryState.FROM_DEVICE //todo Изменить по умолчанию на память для загрузки
+        fromMemoryState.value = ByMemoryState.FROM_DOWNLOAD //todo Изменить по умолчанию на память для загрузки
     }
 
     fun setMemoryState(memoryState: ByMemoryState) {
