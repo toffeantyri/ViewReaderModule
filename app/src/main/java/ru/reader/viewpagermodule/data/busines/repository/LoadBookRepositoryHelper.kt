@@ -22,7 +22,7 @@ class LoadBookRepositoryHelper : BaseRepository<LoadingBookState>() {
     private var serviceState: LoadingBookState = LoadingBookState.IDLE_LOAD
 
 
-    suspend fun loadBook(listUrl: ArrayList<String>) {
+    fun loadBook(listUrl: ArrayList<String>) {
         CoroutineScope(Dispatchers.IO).launch {
             registerBroadcastLoadService()
             val loadIntent = Intent(context, DownloadFileService::class.java)
@@ -47,21 +47,27 @@ class LoadBookRepositoryHelper : BaseRepository<LoadingBookState>() {
     }
 
     private fun registerBroadcastLoadService() {
-        context.registerReceiver(broadcastReceiverNewServiceState, IntentFilter(BROADCAST_SERVICE_LOAD_STATE))
+        context.registerReceiver(
+            broadcastReceiverNewServiceState,
+            IntentFilter(BROADCAST_SERVICE_LOAD_STATE)
+        )
     }
 
     private val broadcastReceiverNewServiceState = object : DownloadFileServiceBroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d("MyLog", "onReceive")
-            serviceState = intent?.getSerializableExtra(TAG_NEW_DOWNLOAD_SERVICE_STATE) as LoadingBookState
+            serviceState =
+                intent?.getSerializableExtra(TAG_NEW_DOWNLOAD_SERVICE_STATE) as LoadingBookState
             when (serviceState) {
                 LoadingBookState.SUCCESS_LOAD -> {
                     loadService?.stopForeground(true)
                     loadService?.stopSelf()
                     dataEmitter.onNext(LoadingBookState.SUCCESS_LOAD)
+                    dataEmitter.onNext(LoadingBookState.IDLE_LOAD)
                 }
                 LoadingBookState.LOAD_FAIL -> {
                     dataEmitter.onNext(LoadingBookState.LOAD_FAIL)
+                    dataEmitter.onNext(LoadingBookState.IDLE_LOAD)
                 }
                 LoadingBookState.IDLE_LOAD -> {
                     dataEmitter.onNext(LoadingBookState.IDLE_LOAD)
