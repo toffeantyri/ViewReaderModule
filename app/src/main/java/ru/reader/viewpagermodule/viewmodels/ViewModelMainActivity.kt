@@ -25,7 +25,8 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     init {
         dataListBook.value = arrayListOf()
-        fromMemoryState.value = ByMemoryState.FROM_DOWNLOAD //todo Изменить по умолчанию на память для загрузки
+        fromMemoryState.value =
+            ByMemoryState.FROM_DOWNLOAD //todo Изменить по умолчанию на память для загрузки
     }
 
     fun setMemoryState(memoryState: ByMemoryState) {
@@ -37,12 +38,15 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         job?.cancel()
         job = viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                repo.dataEmitter.subscribe {
+                val subscriber = repo.dataEmitter.subscribe {
                     if (it.author != BookListHelper.DUMMY_BOOK) {
                         dataListBook.value?.add(it)
                     }
                 }
-                repo.getDownloadedBooksOrListWithEmptyBooks(onSuccess)
+                repo.getDownloadedBooksOrListWithEmptyBooks(onSuccess = {
+                    onSuccess()
+                    subscriber.dispose()
+                })
             }
         }
     }
@@ -51,12 +55,15 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         job?.cancel()
         job = viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                repo.dataEmitter.subscribe {
+                val subscriber = repo.dataEmitter.subscribe {
                     if (dataListBook.value?.contains(it) == false && it.author != BookListHelper.DUMMY_BOOK) {
                         dataListBook.value?.add(it)
                     }
                 }
-                repo.loadListBooks(onSuccess, onSuccessStep)
+                repo.loadListBooks(onSuccess = {
+                    onSuccess()
+                    subscriber.dispose()
+                }, onSuccessStep = onSuccessStep)
             }
         }
     }
@@ -71,9 +78,9 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
             repo.loadBook(listUrl, {
                 getPreloadBooks(onSuccess)
             }, {
-                    getPreloadBooks(onSuccess)
-                    onFail()
-                })
+                getPreloadBooks(onSuccess)
+                onFail()
+            })
         }
     }
 
