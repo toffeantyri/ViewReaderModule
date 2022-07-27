@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import ru.reader.viewpagermodule.data.api.ApiProvider
 import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.data.busines.repository.ListBookRepository
 import ru.reader.viewpagermodule.data.busines.repository.LoadBookRepository
@@ -15,7 +16,7 @@ import ru.reader.viewpagermodule.view.screens.listfragment.ByMemoryState
 class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     private val repo by lazy { ListBookRepository() }
-    private val loadRepo by lazy { LoadBookRepository() }
+    private val loadRepo by lazy { LoadBookRepository(ApiProvider()) }
     private var job: Job? = null
 
     val dataListBook: MutableLiveData<ArrayList<BookCardData>> by lazy {
@@ -68,7 +69,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     }
 
 
-    fun loadBookByUrl(listUrl: List<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
+    fun loadBookByUrl(listUrl: ArrayList<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
         viewModelScope.launch {
             loadRepo.loadBook(listUrl, onSuccess, onFail)
         }

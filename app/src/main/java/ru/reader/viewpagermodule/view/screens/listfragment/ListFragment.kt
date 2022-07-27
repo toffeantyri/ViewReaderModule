@@ -103,7 +103,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         }
     }
 
-    override fun clickOpenBook(filePath: String, urlBook: List<String>) {
+    override fun clickOpenBook(filePath: String, urlBook: ArrayList<String>) {
         if (filePath.isEmpty()) {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {

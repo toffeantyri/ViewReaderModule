@@ -37,7 +37,9 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
                 }
             }
             itemView.setOnClickListener {
-                itemBookClickListener.clickOpenBook(bookList[position].fileFullPath, bookList[position].urlForLoad)
+                val bookListUrl: ArrayList<String> = arrayListOf()
+                bookListUrl.addAll(bookList[position].urlForLoad)
+                itemBookClickListener.clickOpenBook(bookList[position].fileFullPath, bookListUrl)
             }
         }
     }
@@ -79,7 +81,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     interface ItemBookClickListener {
-        fun clickOpenBook(filePath: String, urlBook : List<String>)
+        fun clickOpenBook(filePath: String, urlBook: ArrayList<String>)
     }
 
 
@@ -88,7 +90,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
         this.alpha = 1f
     }
 
-    fun clearAdapterData(){
+    fun clearAdapterData() {
         bookList.clear()
         notifyDataSetChanged()
     }
