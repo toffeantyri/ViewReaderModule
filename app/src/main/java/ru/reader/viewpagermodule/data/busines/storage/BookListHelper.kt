@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException
 /** class for access to file-memory and search and get file book fb2*/
 class BookListHelper() {
 
-    companion object{
+    companion object {
         const val DUMMY_BOOK = "DUMMY_BOOK"
         const val LIST_OF_URL_FOR_DOWNLOAD = "LIST_FOR_DOWNLOAD_BOOK"
     }
@@ -54,8 +54,6 @@ class BookListHelper() {
     fun getFileFromPathDownloads(fileName: String): File? {
         val downFile =
             File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + "/" + fileName)
-//    Log.d("MyLog", "FILE NAME ${downFile.name}")
-//    Log.d("MyLog", "FILE exist ${downFile.exists()}")
         return if (downFile.exists()) downFile else null
     }
 
@@ -127,7 +125,7 @@ class BookListHelper() {
 
     private fun FictionBook.toBookCardData(fileFullPath: String): BookCardData {
         return BookCardData(
-            author = this.description.titleInfo.authors[0]?.fullName ?: "",
+            author = this.description.titleInfo.authors?.let { if (it.size != 0) it[0]?.fullName ?: "" else "" } ?: "",
             nameBook = this.description.titleInfo.bookTitle ?: "",
             fileFullPath = fileFullPath,
             imageValue = this.getTitleImageBinaryString(),
@@ -137,8 +135,11 @@ class BookListHelper() {
     }
 
     private fun FictionBook.getTitleImageBinaryString(): String {
-        val imageName = this.description?.titleInfo?.coverPage?.get(0)?.value?.replace("#", "") ?: ""
-        return binaries[imageName]?.binary ?: ""
+        val imageName = this.description?.titleInfo?.coverPage?.let {
+            if (it.size != 0) it[0]?.value?.replace("#", "")
+            else ""
+        } ?: ""
+        return binaries?.get(imageName)?.binary ?: ""
     }
 
     fun getListBookItemsFromAssetCacheDownDocsByName(namesOfFiles: HashSet<String>): List<BookCardData> {
