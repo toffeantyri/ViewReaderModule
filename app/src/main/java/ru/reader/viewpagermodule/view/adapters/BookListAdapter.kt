@@ -25,21 +25,23 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
         val imageBook: ImageView = view.findViewById(R.id.iv_book)
         private val progressBarImage: ProgressBar = view.findViewById(R.id.item_progress_bar_iv)
 
-        fun bind(position: Int) {
-            nameBook.text = bookList[position].nameBook
-            author.text = bookList[position].author
-            if (bookList[position].imageValue.isNotEmpty()) {
+        fun bind(pos: Int) {
+            nameBook.text = bookList[pos].nameBook
+            author.text = bookList[pos].author
+            if (bookList[pos].imageValue.isNotEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
                     progressBarImage.visibility = View.VISIBLE
-                    val image = convertToBitmap(bookList[position].imageValue)
+                    val image = convertToBitmap(bookList[pos].imageValue)
                     imageBook.setImageBitmap(image)
                     progressBarImage.visibility = View.GONE
                 }
             }
             itemView.setOnClickListener {
                 val bookListUrl: ArrayList<String> = arrayListOf()
-                bookListUrl.addAll(bookList[position].urlForLoad)
-                itemBookClickListener.clickOpenBook(bookList[position].fileFullPath, bookListUrl)
+                bookListUrl.addAll(bookList[pos].urlForLoad)
+                itemBookClickListener.clickOpenBook(bookList[pos].fileFullPath, LoadBookData(
+                    bookList[pos].nameBook, bookList[pos].fileFullPath, bookListUrl
+                ))
             }
         }
     }
@@ -81,7 +83,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     interface ItemBookClickListener {
-        fun clickOpenBook(filePath: String, urlBook: ArrayList<String>)
+        fun clickOpenBook(filePath: String, loadBookData: LoadBookData)
     }
 
 

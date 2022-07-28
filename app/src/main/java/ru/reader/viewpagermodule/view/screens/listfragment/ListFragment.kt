@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.helpers.DialogHelper
 import ru.reader.viewpagermodule.view.adapters.BookListAdapter
+import ru.reader.viewpagermodule.view.adapters.LoadBookData
 import ru.reader.viewpagermodule.view.screens.MainActivity
 import ru.reader.viewpagermodule.view.util.MyViewAnimator
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
@@ -110,16 +111,16 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         }
     }
 
-    override fun clickOpenBook(filePath: String, urlBook: ArrayList<String>) {
+    override fun clickOpenBook(filePath: String, loadBookData: LoadBookData) {
         if (filePath.isEmpty()) {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {
                 dialogHelper.createLoadDialog(requireActivity()) {
                     setLoadingAndHideBtnChoose(true)
                     viewModel.loadBookByUrl(
-                        listUrl = urlBook,
+                        loadBookData = loadBookData,
                         onSuccess = {
-                            Log.d("MyLog", "view: onSuccess $urlBook")
+                            Log.d("MyLog", "view: callback onSuccess ${loadBookData.nameBook}")
                             setLoadingAndHideBtnChoose(false)
                         },
                         onFail = {

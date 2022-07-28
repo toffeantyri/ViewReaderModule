@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.data.busines.repository.ListBookRepository
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
+import ru.reader.viewpagermodule.view.adapters.LoadBookData
 import ru.reader.viewpagermodule.view.screens.listfragment.ByMemoryState
 
 
@@ -73,9 +74,9 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     }
 
 
-    fun loadBookByUrl(listUrl: ArrayList<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
+    fun loadBookByUrl(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
         viewModelScope.launch {
-            repo.loadBook(listUrl, {
+            repo.loadBook(loadBookData, {
                 getPreloadBooks(onSuccess)
             }, {
                 getPreloadBooks(onSuccess)

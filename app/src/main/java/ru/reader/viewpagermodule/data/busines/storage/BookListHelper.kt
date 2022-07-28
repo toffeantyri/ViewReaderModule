@@ -20,7 +20,7 @@ class BookListHelper() {
 
     companion object {
         const val DUMMY_BOOK = "DUMMY_BOOK"
-        const val LIST_OF_URL_FOR_DOWNLOAD = "LIST_FOR_DOWNLOAD_BOOK"
+        const val BOOK_LIST_DATA_FOR_LOAD = "BOOK_LIST_DATA_FOR_LOAD"
     }
 
     private val context by lazy { APP_CONTEXT }

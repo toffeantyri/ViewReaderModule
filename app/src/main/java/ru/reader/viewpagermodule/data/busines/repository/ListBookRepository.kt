@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.view.adapters.BookCardData
+import ru.reader.viewpagermodule.view.adapters.LoadBookData
 
 class ListBookRepository() : BaseRepository<BookCardData>() {
 
@@ -93,7 +94,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
         }
     }
 
-    fun loadBook(listUrl: ArrayList<String>, onSuccess: () -> Unit, onFail: () -> Unit) {
+    fun loadBook(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             repoLoader.dataEmitter.subscribe {
                 if (it == LoadingBookState.SUCCESS_LOAD) {
@@ -103,7 +104,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                     onFail()
                 }
             }
-            repoLoader.loadBook(listUrl)
+            repoLoader.loadBook(loadBookData)
         }
     }
 }

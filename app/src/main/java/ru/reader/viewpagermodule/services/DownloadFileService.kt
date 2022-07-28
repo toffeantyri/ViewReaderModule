@@ -13,6 +13,7 @@ import ru.reader.viewpagermodule.data.busines.repository.BROADCAST_SERVICE_LOAD_
 import ru.reader.viewpagermodule.data.busines.repository.LoadingBookState
 import ru.reader.viewpagermodule.data.busines.repository.TAG_NEW_DOWNLOAD_SERVICE_STATE
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
+import ru.reader.viewpagermodule.view.adapters.LoadBookData
 
 const val CHANNEL_ID = "CHANNEL_DOWNLOAD_SERVICE"
 const val NOTIFICATION_ID = 123
@@ -90,8 +91,9 @@ class DownloadFileService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val urlList = intent?.getStringArrayListExtra(BookListHelper.LIST_OF_URL_FOR_DOWNLOAD)
-        urlList?.forEach { Log.d("MyLog", "LOADSERVICE onStartCommand $it") }
+        val loadBookData = intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData
+
+        loadBookData.listOfUrls.forEach { Log.d("MyLog", "LOADSERVICE onStartCommand $it") }
 
         //todo get file from api
 

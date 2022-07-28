@@ -10,6 +10,7 @@ import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.services.DownloadFileService
 import ru.reader.viewpagermodule.services.DownloadFileServiceBroadcastReceiver
+import ru.reader.viewpagermodule.view.adapters.LoadBookData
 
 const val BROADCAST_SERVICE_LOAD_STATE = "BROADCAST_SERVICE_LOAD_STATE"
 const val TAG_NEW_DOWNLOAD_SERVICE_STATE = "TAG_NEW_DOWNLOAD_SERVICE_STATE "
@@ -22,11 +23,13 @@ class LoadBookRepositoryHelper : BaseRepository<LoadingBookState>() {
     private var serviceState: LoadingBookState = LoadingBookState.IDLE_LOAD
 
 
-    fun loadBook(listUrl: ArrayList<String>) {
+    fun loadBook(loadBookData: LoadBookData) {
         CoroutineScope(Dispatchers.IO).launch {
             registerBroadcastLoadService()
             val loadIntent = Intent(context, DownloadFileService::class.java)
-            loadIntent.putStringArrayListExtra(BookListHelper.LIST_OF_URL_FOR_DOWNLOAD, listUrl)
+
+            loadIntent.putExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD, loadBookData)
+
             context.startForegroundService(loadIntent)
             context.bindService(loadIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
