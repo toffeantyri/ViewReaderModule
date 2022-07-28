@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.android.synthetic.main.fragment_list.*
 import kotlinx.android.synthetic.main.fragment_list.view.*
@@ -28,6 +29,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
     private val viewModel: ViewModelMainActivity by activityViewModels()
 
     private lateinit var btnChangeMemory: ExtendedFloatingActionButton
+    private lateinit var progressBarLoading: SpinKitView
 
     private lateinit var adapter: BookListAdapter
     private lateinit var parentActivity: MainActivity
@@ -40,6 +42,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         val view0 = inflater.inflate(R.layout.fragment_list, container, false)
         parentActivity = activity as MainActivity
         btnChangeMemory = view0.btn_choose_memory
+        progressBarLoading = view0.progress_bar_rv
         return view0
     }
 
@@ -89,7 +92,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
 
     private fun setLoadingAndHideBtnChoose(flag: Boolean) {
-        progress_bar_rv.visibility = if (flag) View.VISIBLE else View.GONE
+        progressBarLoading.visibility = if (flag) View.VISIBLE else View.GONE
         if (flag) {
             btnChangeMemory.hide()
         } else {
