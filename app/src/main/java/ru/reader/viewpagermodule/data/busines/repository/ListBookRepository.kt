@@ -97,10 +97,10 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
     fun loadBook(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             repoLoader.dataEmitter.subscribe {
-                if (it == LoadingBookState.SUCCESS_LOAD) {
+                if (it.state == LoadingBookState.SUCCESS_LOAD && it.name == loadBookData.nameBook) {
                     onSuccess()
                 }
-                if (it == LoadingBookState.LOAD_FAIL) {
+                if (it.state == LoadingBookState.LOAD_FAIL && it.name == loadBookData.nameBook) {
                     onFail()
                 }
             }
