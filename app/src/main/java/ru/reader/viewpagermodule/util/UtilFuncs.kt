@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule
+package ru.reader.viewpagermodule.util
 
 
 import android.graphics.Bitmap

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
-import ru.reader.viewpagermodule.unzipFile
+import ru.reader.viewpagermodule.util.UtilZip
 
 
 const val REQUEST_CODE_PERMISSION = 1007
@@ -25,7 +25,7 @@ const val REQUEST_CODE_PERMISSION = 1007
 class MainFragment : Fragment() {
 
 
-    lateinit var parentActivity: MainActivity
+    private lateinit var parentActivity: MainActivity
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,20 +51,15 @@ class MainFragment : Fragment() {
 
         file?.exists().let {
             if (file != null) {
-                unzipFile(file, App.getDirDownloads.path)
+                UtilZip.unzipFile(file, App.getDirDownloads.path)
             }
         }
 
     }
 
-    companion object {
-
-        @JvmStatic
-        fun newInstance() =
-            MainFragment()
-    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        @Suppress("DEPRECATION")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_CODE_PERMISSION -> {

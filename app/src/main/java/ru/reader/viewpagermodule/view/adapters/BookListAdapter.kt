@@ -1,6 +1,5 @@
 package ru.reader.viewpagermodule.view.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.convertToBitmap
+import ru.reader.viewpagermodule.util.convertToBitmap
 
 class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
