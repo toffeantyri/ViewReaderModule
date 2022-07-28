@@ -12,5 +12,6 @@ enum class LoadingBookState {
     LOADING,
     SUCCESS_LOAD,
     LOAD_FAIL,
-    IDLE_LOAD
+    IDLE_LOAD,
+    STATE_COMPLETE
 }

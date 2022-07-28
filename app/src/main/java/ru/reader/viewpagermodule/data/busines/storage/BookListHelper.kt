@@ -196,6 +196,18 @@ class BookListHelper() {
                 bookNameDefault = context.getString(R.string.BhagavadGitaTitle)
             )
         )
+        listBook.add(
+            BookCardData(
+                author = "-",
+                nameBook = "Еще одна книга",
+                imageValue = "",
+                fileFullPath = "",
+                byWay = MemoryLocation.NOT_DOWNLOADED,
+                urlForLoad = APP_CONTEXT.resources.getStringArray(R.array.array_url_bhagavad_gita).toList(),
+                isFavorite = false,
+                bookNameDefault = context.getString(R.string.BhagavadGitaTitle)
+            )
+        )
         return listBook
     }
 

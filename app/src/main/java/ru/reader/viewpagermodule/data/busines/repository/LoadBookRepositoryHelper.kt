@@ -38,7 +38,7 @@ class LoadBookRepositoryHelper : BaseRepository<LoadingBookStateByName>() {
             val intentState = intent?.getSerializableExtra(
                 TAG_NEW_DOWNLOAD_SERVICE_STATE
             ) as LoadingBookStateByName
-            Log.d("MyLog", "onReceive ${intentState.state}")
+            //Log.d("MyLog", "onReceive ${intentState.state}")
 
             when (intentState.state) {
                 LoadingBookState.SUCCESS_LOAD -> {
