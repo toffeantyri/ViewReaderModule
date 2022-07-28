@@ -53,13 +53,13 @@ class BookListHelper() {
 
     fun getFileFromPathDownloads(fileName: String): File? {
         val downFile =
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + "/" + fileName)
+            File(App.getDirDownloads.path + "/" + fileName)
         return if (downFile.exists()) downFile else null
     }
 
     fun getFileFromPathDocuments(fileName: String): File? {
         val downFile =
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).path + "/" + fileName)
+            File(App.getDireDocuments.path + "/" + fileName)
         return if (downFile.exists()) downFile else null
     }
 

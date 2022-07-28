@@ -17,8 +17,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.view.adapters.BookListAdapter
 import ru.reader.viewpagermodule.helpers.DialogHelper
+import ru.reader.viewpagermodule.view.adapters.BookListAdapter
 import ru.reader.viewpagermodule.view.screens.MainActivity
 import ru.reader.viewpagermodule.view.util.MyViewAnimator
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
@@ -85,8 +85,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                     }
                 }
             }
-
-
         }
     }
 

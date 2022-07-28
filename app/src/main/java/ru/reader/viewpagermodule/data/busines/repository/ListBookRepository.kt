@@ -27,7 +27,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                     bh.getFileFromAssetsAndCache(name)?.let {
                         val path = App.getDirCache.toString() + "/" + name
                         val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path)
-                        dataEmitter.onNext(bookItem)
+                        bookItem?.let { dataEmitter.onNext(bookItem) }
                     }
                 }
                 withContext(Dispatchers.Main) {
