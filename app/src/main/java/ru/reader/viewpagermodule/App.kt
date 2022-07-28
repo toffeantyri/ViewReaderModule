@@ -13,7 +13,6 @@ class App : Application() {
 
     init {
         APP_CONTEXT = this
-        Log.d("MyLog", "init app")
     }
 
     companion object {
@@ -42,7 +41,6 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("MyLog", "onCreate App call")
 
     }
 

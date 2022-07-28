@@ -1,6 +1,8 @@
 package ru.reader.viewpagermodule.data.busines.repository
 
 import android.os.Environment
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
@@ -9,7 +11,7 @@ import ru.reader.viewpagermodule.view.adapters.BookCardData
 
 class ListBookRepository() : BaseRepository<BookCardData>() {
 
-    private val bh = BookListHelper()
+    private val bh by lazy { BookListHelper() }
     private val repoLoader by lazy { LoadBookRepositoryHelper() }
 
     suspend fun loadListBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
@@ -102,8 +104,6 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                 }
             }
             repoLoader.loadBook(listUrl)
-
-
         }
     }
 }

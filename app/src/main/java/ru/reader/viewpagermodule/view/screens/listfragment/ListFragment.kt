@@ -113,16 +113,20 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         if (filePath.isEmpty()) {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {
-                setLoadingAndHideBtnChoose(true)
                 dialogHelper.createLoadDialog(requireActivity()) {
+                    setLoadingAndHideBtnChoose(true)
                     viewModel.loadBookByUrl(
-                        urlBook,
-                        {
+                        listUrl = urlBook,
+                        onSuccess = {
                             Log.d("MyLog", "view: onSuccess $urlBook")
                             setLoadingAndHideBtnChoose(false)
                         },
-                        {
-                            Toast.makeText(requireContext(), getString(R.string.toast_error_load), Toast.LENGTH_SHORT)
+                        onFail = {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.toast_error_load),
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                             setLoadingAndHideBtnChoose(false)
                         })
