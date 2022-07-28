@@ -1,5 +1,6 @@
 package ru.reader.viewpagermodule.view.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,7 +87,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
 
     private fun View.setAnimationInsert() {
-        this.startAnimation(AlphaAnimation(0.0f, 1.0f).apply { duration = 900 })
+        this.startAnimation(AlphaAnimation(0.0f, 1.0f).apply { duration = 700 })
         this.alpha = 1f
     }
 

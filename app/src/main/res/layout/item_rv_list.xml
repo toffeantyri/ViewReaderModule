@@ -16,55 +16,70 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical">
 
-        <LinearLayout
-            android:paddingHorizontal="10dp"
-            android:paddingBottom="5dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/text_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toStartOf="@+id/iv_book"
+
+        <TextView
+            app:layout_constrainedWidth="true"
+            android:id="@+id/tv_t1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingTop="5dp"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:text="Автор"
+            android:textSize="10dp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toStartOf="@id/iv_book"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                android:paddingTop="5dp"
-                android:text="Автор"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="italic"
-                android:textSize="10dp" />
+        <TextView
+            app:layout_constrainedWidth="true"
+            android:id="@+id/tv_author_book"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/iv_book"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_t1"
+            tools:text="text" />
 
+        <TextView
+            app:layout_constrainedWidth="true"
+            android:id="@+id/tv_t2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingTop="5dp"
+            android:text="Наименование книги"
+            android:textSize="10dp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toStartOf="@id/iv_book"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_author_book" />
 
-            <TextView
-                android:id="@+id/tv_author_book"
-                tools:text="text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="14dp"
-                android:paddingBottom="5dp" />
-
-            <TextView
-                android:text="Наименование книги"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="italic"
-                android:textSize="10dp" />
-
-            <TextView
-                android:id="@+id/tv_name_book"
-                tools:text="text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="normal"
-                android:textColor="@android:color/black"
-                android:textSize="16dp"
-                android:paddingBottom="5dp" />
-        </LinearLayout>
+        <TextView
+            app:layout_constrainedWidth="true"
+            android:id="@+id/tv_name_book"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@android:color/black"
+            android:textSize="16dp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toStartOf="@id/iv_book"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_t2"
+            tools:text="text" />
 
 
         <ImageView
@@ -87,8 +102,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="@android:color/transparent"
-            android:indeterminateTint="@color/delim_blue_500"
-            />
+            android:indeterminateTint="@color/delim_blue_500" />
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:visibility="gone"
@@ -102,8 +116,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="@android:color/transparent"
             style="@style/SpinKitView.Wave"
-            app:SpinKit_Color="@color/delim_blue_500"
-            />
+            app:SpinKit_Color="@color/delim_blue_500" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
