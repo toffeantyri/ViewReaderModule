@@ -29,6 +29,16 @@ import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
 
+    companion object {
+        const val CHANGE_CONFIG_KEY = "CHANGE_CONFIG_KEY"
+    }
+
+    private var configChanged = false
+        set(value) {
+            field = value
+            Log.d("MyLog", "ConfigChange : $value")
+        }
+
     private val viewModel: ViewModelMainActivity by activityViewModels()
 
     private lateinit var btnChangeMemory: ExtendedFloatingActionButton
@@ -53,14 +63,19 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         return view0
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        savedInstanceState?.let { configChanged = savedInstanceState.getBoolean(CHANGE_CONFIG_KEY) }
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(CHANGE_CONFIG_KEY, true)
+        super.onSaveInstanceState(outState)
+
+    }
+
     override fun onStart() {
         super.onStart()
-
-        viewModel.dataListBook.observe(viewLifecycleOwner) {
-            //it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
-            adapter.fillAdapter(it)
-        }
-
         viewModel.fromMemoryState.observe(viewLifecycleOwner) { state ->
             Log.d("MyLog", "New Choosing-memory state : $state")
             @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
@@ -70,9 +85,11 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             }
             btnChooseSetClickListener(state)
             adapter.clearAdapterData()
-            viewModel.clearBookList()
-            if (state == ByMemoryState.FROM_DOWNLOAD) {
-                if (viewModel.dataListBook.value.isNullOrEmpty()) {
+            if (!configChanged) {
+                viewModel.clearBookList()
+            }
+            if (viewModel.dataListBook.value.isNullOrEmpty()) {
+                if (state == ByMemoryState.FROM_DOWNLOAD) {
                     setLoadingAndHideBtnChoose(true)
                     viewModel.getPreloadBooks {
                         setLoadingAndHideBtnChoose(false)
@@ -82,9 +99,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                             }
                         }
                     }
-                }
-            } else if (state == ByMemoryState.FROM_DEVICE) {
-                if (viewModel.dataListBook.value.isNullOrEmpty()) {
+                } else if (state == ByMemoryState.FROM_DEVICE) {
                     setLoadingAndHideBtnChoose(true)
                     viewModel.getBooks({ setLoadingAndHideBtnChoose(false) }) {
                         view?.let {
@@ -94,12 +109,18 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                         }
                     }
                 }
+            } else {
+                viewModel.dataListBook.observe(viewLifecycleOwner) {
+                    adapter.fillAdapter(it)
+                }
             }
+            configChanged = false
         }
     }
 
 
     private fun setLoadingAndHideBtnChoose(flag: Boolean) {
+        //todo lock auto-rotate screen
         progressBarLoading.visibility = if (flag) View.VISIBLE else View.GONE
         if (flag) {
             btnChangeMemory.hide()

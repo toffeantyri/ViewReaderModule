@@ -40,7 +40,7 @@ class MainFragment : Fragment() {
         btn_open_list.setOnClickListener {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
             CoroutineScope(Dispatchers.IO).launch {
-                getFileAndUnzip()
+                //getFileAndUnzip()
             }
         }
     }
