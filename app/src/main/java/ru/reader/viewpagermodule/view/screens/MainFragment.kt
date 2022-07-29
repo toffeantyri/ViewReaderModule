@@ -41,6 +41,7 @@ class MainFragment : Fragment() {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
             CoroutineScope(Dispatchers.IO).launch {
                 //getFileAndUnzip()
+                Log.d("MyLog", " MY PATH" + App.getMyPublicPath )
             }
         }
     }
