@@ -39,9 +39,13 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
             itemView.setOnClickListener {
                 val bookListUrl: ArrayList<String> = arrayListOf()
                 bookListUrl.addAll(bookList[pos].urlForLoad)
-                itemBookClickListener.clickOpenBook(bookList[pos].fileFullPath, LoadBookData(
-                    bookList[pos].nameBook, bookList[pos].fileFullPath, bookListUrl
-                ))
+                itemBookClickListener.clickOpenBook(
+                    LoadBookData(
+                        nameBook = bookList[pos].nameBook,
+                        absolutePath = bookList[pos].fileFullPath, bookListUrl
+                    ),
+                    adapterPos = adapterPosition
+                )
             }
         }
     }
@@ -66,7 +70,6 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
         holder.imageBook.setImageDrawable(null)
     }
 
-
     fun fillAdapter(list: ArrayList<BookCardData>) {
         val startCount = bookList.size
         val bookList2 = bookList.toMutableSet()
@@ -76,14 +79,17 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
         notifyItemRangeInserted(startCount, endCount - startCount)
     }
 
-    fun fillAdapterSingleItem(item: BookCardData) {
-        bookList.add(item)
-        notifyItemChanged(bookList.lastIndex)
+    fun updateItemByPos(item: BookCardData, pos: Int) {
+        if (bookList.size < pos + 1) return
+        if (item.bookNameDefault == bookList[pos].bookNameDefault) {
+            bookList[pos] = item
+            notifyItemChanged(pos)
+        }
     }
 
 
     interface ItemBookClickListener {
-        fun clickOpenBook(filePath: String, loadBookData: LoadBookData)
+        fun clickOpenBook(loadBookData: LoadBookData, adapterPos: Int)
     }
 
 

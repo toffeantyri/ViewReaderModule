@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -18,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.helpers.DialogHelper
+import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.view.adapters.BookListAdapter
 import ru.reader.viewpagermodule.view.adapters.LoadBookData
 import ru.reader.viewpagermodule.view.screens.MainActivity
@@ -31,6 +33,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
     private lateinit var btnChangeMemory: ExtendedFloatingActionButton
     private lateinit var progressBarLoading: SpinKitView
+    private lateinit var recycler: RecyclerView
 
     private lateinit var adapter: BookListAdapter
     private lateinit var parentActivity: MainActivity
@@ -44,12 +47,14 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         parentActivity = activity as MainActivity
         btnChangeMemory = view0.btn_choose_memory
         progressBarLoading = view0.progress_bar_rv
+        recycler = view0.list_rv
+        initRv()
+
         return view0
     }
 
     override fun onStart() {
         super.onStart()
-        initRv()
 
         viewModel.dataListBook.observe(viewLifecycleOwner) {
             //it.forEach { Log.d("MyLog", " ListFrag observe" + it.nameBook) }
@@ -57,7 +62,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         }
 
         viewModel.fromMemoryState.observe(viewLifecycleOwner) { state ->
-            Log.d("MyLog", "New state : $state")
+            Log.d("MyLog", "New Choosing-memory state : $state")
             @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
             btnChangeMemory.text = when (state) {
                 ByMemoryState.FROM_DOWNLOAD -> getString(R.string.choose_memory_storage)
@@ -71,8 +76,10 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                     setLoadingAndHideBtnChoose(true)
                     viewModel.getPreloadBooks {
                         setLoadingAndHideBtnChoose(false)
-                        viewModel.dataListBook.observe(viewLifecycleOwner) {
-                            adapter.fillAdapter(it)
+                        view?.let {
+                            viewModel.dataListBook.observe(viewLifecycleOwner) {
+                                adapter.fillAdapter(it)
+                            }
                         }
                     }
                 }
@@ -80,8 +87,10 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                 if (viewModel.dataListBook.value.isNullOrEmpty()) {
                     setLoadingAndHideBtnChoose(true)
                     viewModel.getBooks({ setLoadingAndHideBtnChoose(false) }) {
-                        viewModel.dataListBook.observe(viewLifecycleOwner) {
-                            adapter.fillAdapter(it)
+                        view?.let {
+                            viewModel.dataListBook.observe(viewLifecycleOwner) {
+                                adapter.fillAdapter(it)
+                            }
                         }
                     }
                 }
@@ -101,18 +110,18 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
     private fun initRv() {
         adapter = BookListAdapter()
-        adapter.itemBookClickListener = this
-        list_rv.adapter = adapter
-        list_rv.layoutManager =
+        adapter.itemBookClickListener = this@ListFragment
+        recycler.adapter = adapter
+        recycler.layoutManager =
             LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-        list_rv.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+        recycler.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
             if (scrollY > oldScrollY) animator.run { btnChangeMemory.translationDownByY(false) }
             else animator.run { btnChangeMemory.translationDownByY(true) }
         }
     }
 
-    override fun clickOpenBook(filePath: String, loadBookData: LoadBookData) {
-        if (filePath.isEmpty()) {
+    override fun clickOpenBook(loadBookData: LoadBookData, adapterPos: Int) {
+        if (loadBookData.absolutePath.isEmpty()) {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {
                 dialogHelper.createLoadDialog(requireActivity()) {
@@ -120,22 +129,21 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                     viewModel.loadBookByUrl(
                         loadBookData = loadBookData,
                         onSuccess = {
-                            Log.d("MyLog", "view: callback onSuccess ${loadBookData.nameBook}")
+                            Log.d("MyLog", "view: callback onSuccess ${loadBookData.nameBook} pos : $adapterPos")
                             setLoadingAndHideBtnChoose(false)
+                            val newItem = getBookFromViewModelByPosOrNull(adapterPos)
+                            newItem?.let { adapter.updateItemByPos(it, adapterPos) }
                         },
                         onFail = {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.toast_error_load),
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            showToast(getString(R.string.toast_error_load))
                             setLoadingAndHideBtnChoose(false)
+                            val newItem = getBookFromViewModelByPosOrNull(adapterPos)
+                            newItem?.let { adapter.updateItemByPos(it, adapterPos) }
                         })
                 }
             }
         } else {
-            Toast.makeText(this@ListFragment.context, filePath, Toast.LENGTH_SHORT).show()
+            showToast(loadBookData.absolutePath)
             //todo open book
         }
     }
@@ -150,6 +158,15 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         }
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun getBookFromViewModelByPosOrNull(pos: Int): BookCardData? {
+        return if (viewModel.dataListBook.value?.size!! > pos) {
+            viewModel.dataListBook.value?.get(pos)
+        } else null
+    }
 
 }
 

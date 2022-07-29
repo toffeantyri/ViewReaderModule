@@ -1,9 +1,11 @@
 package ru.reader.viewpagermodule.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.data.busines.repository.ListBookRepository
@@ -39,17 +41,30 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         job?.cancel()
         job = viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                val subscriber = repo.dataEmitter.subscribe {
-                    if (it.author != BookListHelper.DUMMY_BOOK) {
-                        dataListBook.value?.add(it)
-                    }
+                var subscriber: Disposable? = null
+                subscriber = repo.dataEmitter.subscribe { bookItem ->
+                    if (bookItem.author != BookListHelper.DUMMY_BOOK) replaceOrAddItem(bookItem)
                 }
+
                 repo.getDownloadedBooksOrListWithEmptyBooks(onSuccess = {
                     onSuccess()
                     subscriber.dispose()
                 })
             }
         }
+    }
+
+    private fun replaceOrAddItem(item: BookCardData) {
+        var ind = -1
+        dataListBook.value?.filterIndexed { index, bookCardData ->
+            if (bookCardData.bookNameDefault == item.bookNameDefault) ind = index
+            false
+        }
+        if (ind >= 0) {
+            dataListBook.value?.set(ind, item)
+        } else dataListBook.value?.add(item)
+
+
     }
 
     fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
@@ -72,7 +87,6 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     fun clearBookList() {
         dataListBook.value = arrayListOf()
     }
-
 
     fun loadBookByUrl(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
         viewModelScope.launch {

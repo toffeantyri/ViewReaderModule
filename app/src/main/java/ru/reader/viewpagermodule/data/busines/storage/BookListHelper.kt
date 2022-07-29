@@ -205,7 +205,7 @@ class BookListHelper() {
                 byWay = MemoryLocation.NOT_DOWNLOADED,
                 urlForLoad = APP_CONTEXT.resources.getStringArray(R.array.array_url_bhagavad_gita).toList(),
                 isFavorite = false,
-                bookNameDefault = context.getString(R.string.BhagavadGitaTitle)
+                bookNameDefault = context.getString(R.string.BhagavadGitaTitle) + " 0"
             )
         )
         return listBook

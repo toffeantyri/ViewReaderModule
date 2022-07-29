@@ -98,6 +98,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
             subscriber = repoLoader.getStateEmitter().subscribe {
                 //Log.d("MyLog", "to REPO state $it")
                 if (it.state == LoadingBookState.SUCCESS_LOAD && it.name == loadBookData.nameBook) {
+                    //todo сначала получает книгу из памяти затем
                     onSuccess()
                 }
                 if (it.state == LoadingBookState.LOAD_FAIL && it.name == loadBookData.nameBook) {
