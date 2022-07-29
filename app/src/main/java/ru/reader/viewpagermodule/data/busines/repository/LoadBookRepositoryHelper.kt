@@ -3,6 +3,8 @@ package ru.reader.viewpagermodule.data.busines.repository
 import android.content.*
 import android.os.IBinder
 import android.util.Log
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +21,14 @@ class LoadBookRepositoryHelper : BaseRepository<LoadingBookStateByName>() {
 
     private val context = APP_CONTEXT
     private var loadService: DownloadFileService? = null
-    private var serviceBound = false
+
+    private var loadingIsComplete = true
+
+    fun getStateEmitter(): Subject<LoadingBookStateByName> =
+        if (loadingIsComplete) {
+            stateEmitter = BehaviorSubject.create()
+            stateEmitter
+        } else stateEmitter
 
 
     fun loadBook(loadBookData: LoadBookData) {
@@ -27,6 +36,7 @@ class LoadBookRepositoryHelper : BaseRepository<LoadingBookStateByName>() {
             registerBroadcastLoadService()
             val loadIntent = Intent(context, DownloadFileService::class.java)
             loadIntent.putExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD, loadBookData)
+            loadingIsComplete = false
             context.startForegroundService(loadIntent)
             context.bindService(loadIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
@@ -38,40 +48,43 @@ class LoadBookRepositoryHelper : BaseRepository<LoadingBookStateByName>() {
             val intentState = intent?.getSerializableExtra(
                 TAG_NEW_DOWNLOAD_SERVICE_STATE
             ) as LoadingBookStateByName
-            //Log.d("MyLog", "onReceive ${intentState.state}")
+            Log.d("MyLog", "onReceive ${intentState.state}")
 
             when (intentState.state) {
                 LoadingBookState.SUCCESS_LOAD -> {
-                    dataEmitter.onNext(intentState)
-                    dataEmitter.onNext(getIdle())
+                    stateEmitter.onNext(intentState)
+                    stateEmitter.onNext(getUnnamedIdle())
                 }
                 LoadingBookState.LOAD_FAIL -> {
-                    dataEmitter.onNext(intentState)
-                    dataEmitter.onNext(getIdle())
+                    stateEmitter.onNext(intentState)
+                    stateEmitter.onNext(getUnnamedIdle())
                 }
                 LoadingBookState.IDLE_LOAD -> {
-                    dataEmitter.onNext(getIdle())
-                    loadService?.stopForeground(true)
-                    loadService?.stopSelf()
+                    stateEmitter.onNext(intentState)
                 }
                 LoadingBookState.LOADING -> {
-                    dataEmitter.onNext(intentState)
+                    stateEmitter.onNext(intentState)
+                }
+                LoadingBookState.STATE_COMPLETE -> {
+                    loadingIsComplete = true
+                    stateEmitter.onNext(intentState)
+                    stateEmitter.onComplete()
+                    loadService?.stopForeground(true)
+                    loadService?.stopSelf()
                 }
             }
         }
 
-        fun getIdle(): LoadingBookStateByName = LoadingBookStateByName("", LoadingBookState.IDLE_LOAD)
+        fun getUnnamedIdle(): LoadingBookStateByName = LoadingBookStateByName("", LoadingBookState.IDLE_LOAD)
     }
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as DownloadFileService.LocalBinder
             loadService = binder.getService()
-            serviceBound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            serviceBound = false
             loadService = null
         }
     }

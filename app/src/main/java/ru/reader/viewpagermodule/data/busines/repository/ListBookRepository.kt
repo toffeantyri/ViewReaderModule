@@ -1,10 +1,7 @@
 package ru.reader.viewpagermodule.data.busines.repository
 
 import android.os.Environment
-import android.util.Log
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.functions.Consumer
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
@@ -94,17 +91,12 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
             }
         }
     }
-    //todo flag if emitter to be
 
     fun loadBook(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
-
-        //todo if emitter not to be - create emitter
-
         var subscriber: Disposable? = null
-
         CoroutineScope(Dispatchers.IO).launch {
-            subscriber = repoLoader.dataEmitter.subscribe {
-                Log.d("MyLog", "REPO $it")
+            subscriber = repoLoader.getStateEmitter().subscribe {
+                //Log.d("MyLog", "to REPO state $it")
                 if (it.state == LoadingBookState.SUCCESS_LOAD && it.name == loadBookData.nameBook) {
                     onSuccess()
                 }
@@ -114,10 +106,6 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                 if (it.state == LoadingBookState.IDLE_LOAD && it.name == loadBookData.nameBook) {
                     subscriber?.dispose()
                 }
-                if (it.state == LoadingBookState.STATE_COMPLETE) {
-                    //todo flag to bee emitter false and emitter onComplite
-                }
-                Log.d("MyLog", "REPO subscriber disposed ${subscriber?.isDisposed}")
             }
             repoLoader.loadBook(loadBookData)
         }

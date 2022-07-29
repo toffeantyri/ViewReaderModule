@@ -13,5 +13,5 @@ enum class LoadingBookState {
     SUCCESS_LOAD,
     LOAD_FAIL,
     IDLE_LOAD,
-    STATE_COMPLETE
+    STATE_COMPLETE //send, when all downloads is complete!!!
 }

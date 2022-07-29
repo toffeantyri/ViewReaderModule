@@ -29,11 +29,9 @@ class DownloadFileService : Service() {
             tellMeCurrentState()
         }
 
-    fun tellMeCurrentState() {
-
+    private fun tellMeCurrentState() {
         sendBroadcast(Intent(BROADCAST_SERVICE_LOAD_STATE).putExtra(TAG_NEW_DOWNLOAD_SERVICE_STATE, serviceStateByName))
     }
-
 
     inner class LocalBinder : Binder() {
         fun getService(): DownloadFileService {
@@ -64,8 +62,6 @@ class DownloadFileService : Service() {
             }
         }
 
-        val cancelDrawable = android.R.drawable.ic_menu_close_clear_cancel
-
         val notificationBuilder: NotificationCompat.Builder =
             NotificationCompat.Builder(this, CHANNEL_ID)
                 .setShowWhen(false)
@@ -78,7 +74,6 @@ class DownloadFileService : Service() {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(notificationAction)
-                //.addAction(cancelDrawable, "Cancel", playbackAction)
                 .setOngoing(notRemoveOnSwipe)
 
         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
@@ -96,22 +91,28 @@ class DownloadFileService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val loadBookData
-                = intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData
-
-        loadBookData.listOfUrls.forEach { Log.d("MyLog", "LOADSERVICE onStartCommand $it") }
-
-        //todo get file from api
-
+        val loadBookData = intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData
+        Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData.nameBook}")
         startForeground(NOTIFICATION_ID, buildNotification(serviceStateByName.state).build())
+
+        //todo add to queue loads
+
+        //todo call fun loading
 
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
-                delay(6000)
-                Log.d("MyLog", "test loading complete")
+                delay(3000)
+                Log.d("MyLog", "LOADSERVICE onStartCommand success")
             }
             serviceStateByName = LoadingBookStateByName(loadBookData.nameBook, LoadingBookState.SUCCESS_LOAD)
-            serviceStateByName = LoadingBookStateByName("", LoadingBookState.IDLE_LOAD)
+            serviceStateByName = LoadingBookStateByName(loadBookData.nameBook, LoadingBookState.IDLE_LOAD)
+            withContext(Dispatchers.IO) {
+                delay(6000)
+                Log.d("MyLog", "LOADSERVICE onStartCommand complite")
+            }
+            serviceStateByName = LoadingBookStateByName("", LoadingBookState.STATE_COMPLETE)
+            //todo Выхов только когда все загрузки окончены
+
         }
 
         return super.onStartCommand(intent, flags, startId)

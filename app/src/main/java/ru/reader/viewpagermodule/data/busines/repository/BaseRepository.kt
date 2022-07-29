@@ -6,4 +6,6 @@ abstract class BaseRepository<T>() {
 
     val dataEmitter: BehaviorSubject<T> by lazy { BehaviorSubject.create() }
 
+    var stateEmitter: BehaviorSubject<T> = BehaviorSubject.create()
+
 }
