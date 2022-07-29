@@ -93,6 +93,11 @@ class DownloadFileService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val loadBookData = intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData
         Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData.nameBook}")
+
+        loadBookData.listOfUrls.forEach {
+            Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  $it")
+        }
+
         startForeground(NOTIFICATION_ID, buildNotification(serviceStateByName.state).build())
 
         //todo add to queue loads

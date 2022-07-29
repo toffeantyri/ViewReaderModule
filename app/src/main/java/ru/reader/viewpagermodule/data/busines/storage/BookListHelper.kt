@@ -181,34 +181,11 @@ class BookListHelper() {
         return null
     }
 
-    fun getBookListForDownloading(): HashSet<BookCardData> {
+    fun getBookListForDownloading(): ArrayList<BookCardData> {
+        val listBooks = BookAvailableForDownloadHelper().getListAvailableBooksForDownloads()
         //todo check if book is here - return book else return empty book
-        val listBook = hashSetOf<BookCardData>()
-        listBook.add(
-            BookCardData(
-                author = "-",
-                nameBook = context.getString(R.string.BhagavadGitaTitle),
-                imageValue = "",
-                fileFullPath = "",
-                byWay = MemoryLocation.NOT_DOWNLOADED,
-                urlForLoad = APP_CONTEXT.resources.getStringArray(R.array.array_url_bhagavad_gita).toList(),
-                isFavorite = false,
-                bookNameDefault = context.getString(R.string.BhagavadGitaTitle)
-            )
-        )
-        listBook.add(
-            BookCardData(
-                author = "-",
-                nameBook = "Еще одна книга",
-                imageValue = "",
-                fileFullPath = "",
-                byWay = MemoryLocation.NOT_DOWNLOADED,
-                urlForLoad = APP_CONTEXT.resources.getStringArray(R.array.array_url_bhagavad_gita).toList(),
-                isFavorite = false,
-                bookNameDefault = context.getString(R.string.BhagavadGitaTitle) + " 0"
-            )
-        )
-        return listBook
+
+        return listBooks
     }
 
     fun getDummyBook(): BookCardData {
