@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import kotlinx.android.synthetic.main.fragment_list.*
 import kotlinx.android.synthetic.main.fragment_list.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +53,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view0 = inflater.inflate(R.layout.fragment_list, container, false)
+        savedInstanceState?.let { configChanged = savedInstanceState.getBoolean(CHANGE_CONFIG_KEY) }
         parentActivity = activity as MainActivity
         btnChangeMemory = view0.btn_choose_memory
         progressBarLoading = view0.progress_bar_rv
@@ -61,11 +61,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         initRv()
 
         return view0
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        savedInstanceState?.let { configChanged = savedInstanceState.getBoolean(CHANGE_CONFIG_KEY) }
-        super.onViewStateRestored(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -78,12 +73,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         super.onStart()
         viewModel.fromMemoryState.observe(viewLifecycleOwner) { state ->
             Log.d("MyLog", "New Choosing-memory state : $state")
-            @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
-            btnChangeMemory.text = when (state) {
-                ByMemoryState.FROM_DOWNLOAD -> getString(R.string.choose_memory_storage)
-                ByMemoryState.FROM_DEVICE -> getString(R.string.choose_memory_download)
-            }
-            btnChooseSetClickListener(state)
+            btnChooseMemorySetState(state)
             adapter.clearAdapterData()
             if (!configChanged) {
                 viewModel.clearBookList()
@@ -91,23 +81,22 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             if (viewModel.dataListBook.value.isNullOrEmpty()) {
                 if (state == ByMemoryState.FROM_DOWNLOAD) {
                     setLoadingAndHideBtnChoose(true)
-                    viewModel.getPreloadBooks {
+                    viewModel.getPreloadBooks(onSuccess = {
                         setLoadingAndHideBtnChoose(false)
                         view?.let {
-                            viewModel.dataListBook.observe(viewLifecycleOwner) {
-                                adapter.fillAdapter(it)
-                            }
+                            viewModel.dataListBook.value?.let { list -> adapter.fillAdapter(list) }
                         }
-                    }
+                    })
                 } else if (state == ByMemoryState.FROM_DEVICE) {
                     setLoadingAndHideBtnChoose(true)
-                    viewModel.getBooks({ setLoadingAndHideBtnChoose(false) }) {
-                        view?.let {
-                            viewModel.dataListBook.observe(viewLifecycleOwner) {
-                                adapter.fillAdapter(it)
+                    viewModel.getBooks(
+                        onSuccess = { setLoadingAndHideBtnChoose(false) },
+                        onSuccessStep = {
+                            view?.let {
+                                viewModel.dataListBook.value?.let { list -> adapter.fillAdapter(list) }
                             }
                         }
-                    }
+                    )
                 }
             } else {
                 viewModel.dataListBook.observe(viewLifecycleOwner) {
@@ -150,7 +139,10 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                     viewModel.loadBookByUrl(
                         loadBookData = loadBookData,
                         onSuccess = {
-                            Log.d("MyLog", "view: callback onSuccess ${loadBookData.nameBook} pos : $adapterPos")
+                            Log.d(
+                                "MyLog",
+                                "view: callback onSuccess ${loadBookData.nameBook} pos : $adapterPos"
+                            )
                             setLoadingAndHideBtnChoose(false)
                             val newItem = getBookFromViewModelByPosOrNull(adapterPos)
                             newItem?.let { adapter.updateItemByPos(it, adapterPos) }
@@ -169,13 +161,19 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         }
     }
 
-    private fun btnChooseSetClickListener(state: ByMemoryState) {
-        btnChangeMemory.setOnClickListener {
-            val newState = when (state) {
-                ByMemoryState.FROM_DEVICE -> ByMemoryState.FROM_DOWNLOAD
-                ByMemoryState.FROM_DOWNLOAD -> ByMemoryState.FROM_DEVICE
+    private fun btnChooseMemorySetState(state: ByMemoryState) {
+        btnChangeMemory.apply {
+            text = when (state) {
+                ByMemoryState.FROM_DOWNLOAD -> getString(R.string.choose_memory_storage)
+                ByMemoryState.FROM_DEVICE -> getString(R.string.choose_memory_download)
             }
-            viewModel.setMemoryState(newState)
+            setOnClickListener {
+                val newState = when (state) {
+                    ByMemoryState.FROM_DEVICE -> ByMemoryState.FROM_DOWNLOAD
+                    ByMemoryState.FROM_DOWNLOAD -> ByMemoryState.FROM_DEVICE
+                }
+                viewModel.setMemoryState(newState)
+            }
         }
     }
 
