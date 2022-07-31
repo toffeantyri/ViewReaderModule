@@ -71,6 +71,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
     }
 
     fun fillAdapter(list: ArrayList<BookCardData>) {
+        //todo add item from new list, if list is already contain items
         val startCount = bookList.size
         val bookList2 = bookList.toMutableSet()
         bookList2.addAll(list.toMutableSet())
