@@ -19,6 +19,8 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     private val repo by lazy { ListBookRepository() }
     private var job: Job? = null
 
+
+    private val listBookData: ArrayList<BookCardData> = arrayListOf()
     val dataListBook: MutableLiveData<ArrayList<BookCardData>> by lazy {
         MutableLiveData()
     }
@@ -27,7 +29,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
 
     init {
-        dataListBook.value = arrayListOf()
+        dataListBook.value = listBookData
         fromMemoryState.value =
             ByMemoryState.FROM_DOWNLOAD //todo Изменить по умолчанию на память для загрузки
     }
@@ -86,6 +88,11 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     fun clearBookList() {
         dataListBook.value = arrayListOf()
+    }
+
+    private fun ArrayList<BookCardData>.addToListLiveData(item: BookCardData) {
+        listBookData.add(item)
+        dataListBook.value = listBookData
     }
 
     fun loadBookByUrl(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
