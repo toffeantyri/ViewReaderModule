@@ -106,13 +106,13 @@ class DownloadFileService : Service() {
 
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
-                delay(3000)
+                delay(6000)
                 Log.d("MyLog", "LOADSERVICE onStartCommand success")
             }
             serviceStateByName = LoadingBookStateByName(loadBookData.defaultNameBook, LoadingBookState.SUCCESS_LOAD)
             serviceStateByName = LoadingBookStateByName(loadBookData.defaultNameBook, LoadingBookState.IDLE_LOAD)
             withContext(Dispatchers.IO) {
-                delay(6000)
+                delay(8000)
                 Log.d("MyLog", "LOADSERVICE onStartCommand complite")
             }
             serviceStateByName = LoadingBookStateByName("", LoadingBookState.STATE_COMPLETE)

@@ -1,10 +1,13 @@
 package ru.reader.viewpagermodule.view.screens.listfragment
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -33,10 +36,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
     }
 
     private var configChanged = false
-        set(value) {
-            field = value
-            Log.d("MyLog", "ConfigChange : $value")
-        }
 
     private val viewModel: ViewModelMainActivity by activityViewModels()
 
@@ -72,7 +71,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
     override fun onStart() {
         super.onStart()
         viewModel.fromMemoryState.observe(viewLifecycleOwner) { state ->
-            Log.d("MyLog", "New Choosing-memory state : $state")
             btnChooseMemorySetState(state)
             adapter.clearAdapterData()
             if (!configChanged) {
@@ -109,7 +107,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
 
 
     private fun setLoadingAndHideBtnChoose(flag: Boolean) {
-        //todo lock auto-rotate screen
         progressBarLoading.visibility = if (flag) View.VISIBLE else View.GONE
         if (flag) {
             btnChangeMemory.hide()
@@ -135,6 +132,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {
                 dialogHelper.createLoadDialogWithAction(requireActivity()) {
+                    lockRotation(true)
                     adapter.setLoadingByPos(adapterPos, true)
                     viewModel.loadBookByUrl(
                         loadBookData = loadBookData,
@@ -144,13 +142,14 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                                 "view: callback onSuccess ${loadBookData.defaultNameBook} pos : $adapterPos"
                             )
                             val newItem = getBookFromViewModelByPosOrNull(adapterPos)
-                            Log.d("MyLog", "newItem: isLoading ${newItem?.isLoading}")
                             newItem?.let { adapter.updateItemByPos(it, adapterPos) }
+                            lockRotation(false)
                         },
                         onFail = {
                             showToast(getString(R.string.toast_error_load))
                             val newItem = getBookFromViewModelByPosOrNull(adapterPos)
                             newItem?.let { adapter.updateItemByPos(it, adapterPos) }
+                            lockRotation(false)
                         })
                 }
             }
@@ -184,6 +183,18 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         return if (viewModel.dataListBook.value?.size!! > pos) {
             viewModel.dataListBook.value?.get(pos)
         } else null
+    }
+
+    private fun lockRotation(value: Boolean) {
+        if (value) {
+            val currentOrientation = resources.configuration.orientation
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            } else activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        }
     }
 
 }
