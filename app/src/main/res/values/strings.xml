@@ -15,5 +15,6 @@
     <string name="choose_memory_download">Доступные для загрузки</string>
 
     <string name="toast_error_load">Ошибка загрузки</string>
+    <string name="toast_loading">Загружается</string>
 
 </resources>

@@ -129,7 +129,8 @@ class BookListHelper() {
             nameBook = this.description.titleInfo.bookTitle ?: "",
             fileFullPath = fileFullPath,
             imageValue = this.getTitleImageBinaryString(),
-            byWay = MemoryLocation.IN_DEVICE_MEMORY
+            byWay = MemoryLocation.IN_DEVICE_MEMORY,
+            isLoading = false
         )
 
     }
@@ -197,7 +198,8 @@ class BookListHelper() {
             byWay = MemoryLocation.NOT_DOWNLOADED,
             urlForLoad = listOf(),
             isFavorite = false,
-            bookNameDefault = ""
+            bookNameDefault = "",
+            isLoading = false
         )
     }
 

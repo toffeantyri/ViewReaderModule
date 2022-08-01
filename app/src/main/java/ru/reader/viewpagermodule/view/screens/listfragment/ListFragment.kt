@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
@@ -125,8 +126,8 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         recycler.layoutManager =
             LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         recycler.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-            if (scrollY > oldScrollY) animator.run { btnChangeMemory.translationDownByY(false) }
-            else animator.run { btnChangeMemory.translationDownByY(true) }
+            if (scrollY > oldScrollY) this.animator.run { btnChangeMemory.translationDownByY(false) }
+            else this.animator.run { btnChangeMemory.translationDownByY(true) }
         }
     }
 
@@ -134,8 +135,8 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         if (loadBookData.absolutePath.isEmpty()) {
             val dialogHelper = DialogHelper()
             CoroutineScope(Dispatchers.Main).launch {
-                dialogHelper.createLoadDialog(requireActivity()) {
-                    setLoadingAndHideBtnChoose(true)
+                dialogHelper.createLoadDialogWithAction(requireActivity()) {
+                    adapter.setLoadingByPos(adapterPos, true)
                     viewModel.loadBookByUrl(
                         loadBookData = loadBookData,
                         onSuccess = {
@@ -143,13 +144,12 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                                 "MyLog",
                                 "view: callback onSuccess ${loadBookData.nameBook} pos : $adapterPos"
                             )
-                            setLoadingAndHideBtnChoose(false)
                             val newItem = getBookFromViewModelByPosOrNull(adapterPos)
+                            Log.d("MyLog", "newItem: isLoading ${newItem?.isLoading}")
                             newItem?.let { adapter.updateItemByPos(it, adapterPos) }
                         },
                         onFail = {
                             showToast(getString(R.string.toast_error_load))
-                            setLoadingAndHideBtnChoose(false)
                             val newItem = getBookFromViewModelByPosOrNull(adapterPos)
                             newItem?.let { adapter.updateItemByPos(it, adapterPos) }
                         })

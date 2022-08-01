@@ -57,7 +57,6 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     }
 
     private fun replaceOrAddItem(item: BookCardData) {
-
         var ind = -1
         listBookData.filterIndexed { index, bookCardData ->
             if (bookCardData.bookNameDefault == item.bookNameDefault) ind = index
@@ -66,8 +65,6 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         if (ind >= 0) {
             listBookData.setToListLiveData(ind, item)
         } else listBookData.addToListLiveData(item)
-
-
     }
 
     fun getBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {

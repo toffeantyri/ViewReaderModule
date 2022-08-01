@@ -28,7 +28,8 @@ class BookAvailableForDownloadHelper {
         byWay = MemoryLocation.NOT_DOWNLOADED,
         urlForLoad = listUrl,
         isFavorite = false,
-        bookNameDefault = name
+        bookNameDefault = name,
+        isLoading = false
     )
 
     private fun createListEmptyBooks(): ArrayList<BookCardData> {

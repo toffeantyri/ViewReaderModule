@@ -12,7 +12,7 @@ import ru.reader.viewpagermodule.R
 
 class DialogHelper {
 
-    suspend fun createLoadDialog(activity: Activity, onButtonClick: () -> Unit) =
+    suspend fun createLoadDialogWithAction(activity: Activity, onButtonClick: () -> Unit) =
         withContext(Dispatchers.Main) {
             val builder = AlertDialog.Builder(activity)
             val root = activity.layoutInflater.inflate(R.layout.dialog_book_loading, null)
