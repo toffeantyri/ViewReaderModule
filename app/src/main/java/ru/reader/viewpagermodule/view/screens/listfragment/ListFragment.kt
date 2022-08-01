@@ -189,7 +189,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         if (value) {
             val currentOrientation = resources.configuration.orientation
             if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
             } else activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         } else {
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
