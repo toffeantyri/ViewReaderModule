@@ -59,12 +59,14 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
 
     private fun replaceOrAddItem(item: BookCardData) {
         var ind = -1
-        listBookData.filterIndexed { index, bookCardData ->
-            if (bookCardData.bookNameDefault == item.bookNameDefault) ind = index
-            false
+        for (index in listBookData.indices) {
+            if (listBookData[index].bookNameDefault == item.bookNameDefault) {
+                ind = index
+                break
+            }
         }
         if (ind >= 0) {
-            listBookData.setToListLiveData(ind, item)
+            listBookData.setToListLiveData(ind, item) {}
         } else listBookData.addToListLiveData(item)
     }
 
@@ -97,15 +99,27 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun ArrayList<BookCardData>.setToListLiveData(index: Int, item: BookCardData) {
-        if (this.size > index) return
+    private fun ArrayList<BookCardData>.setToListLiveData(index: Int, item: BookCardData, onLoading: () -> Unit) {
+        if (this.size < index) return
         CoroutineScope(Dispatchers.Main).launch {
-            this@setToListLiveData[index] = item
-            dataListBook.value = listBookData
+            withContext(Dispatchers.Main) {
+                this@setToListLiveData[index] = item
+                dataListBook.value = listBookData
+            }
+            onLoading()
         }
     }
 
-    fun loadBookByUrl(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
+    fun loadBookByUrl(
+        loadBookData: LoadBookData,
+        itemPosition: Int,
+        onSuccess: () -> Unit,
+        onFail: () -> Unit,
+        onLoading: () -> Unit
+    ) {
+        val updatedItem = listBookData[itemPosition].copy().apply { isLoading = true }
+        listBookData.setToListLiveData(itemPosition, updatedItem, onLoading)
+
         viewModelScope.launch {
             repo.loadBook(loadBookData,
                 onSuccess = {

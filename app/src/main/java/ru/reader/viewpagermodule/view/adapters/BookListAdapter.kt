@@ -52,7 +52,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
     }
 
     fun updateItemByPos(item: BookCardData, pos: Int) {
-        if (bookList.size < pos + 1) return
+        if (bookList.size < (pos + 1)) return
         if (item.bookNameDefault == bookList[pos].bookNameDefault) {
             bookList[pos] = item
             notifyItemChanged(pos)
@@ -69,8 +69,8 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
         notifyDataSetChanged()
     }
 
-    fun setLoadingByPos(pos: Int, isLoading: Boolean) {
-        val updatedItem = bookList[pos].copy(isLoading = isLoading)
+    fun setLoadingByPos(pos: Int, isLoadingNext: Boolean) {
+        val updatedItem = bookList[pos].copy().apply { isLoading = isLoadingNext }
         bookList[pos] = updatedItem
         notifyItemChanged(pos)
     }

@@ -56,11 +56,15 @@ class MainFragment : Fragment() {
             val loadBook = LoadBookData("БхагавадГита1", "", arrayList.drop(1))
             viewModel.loadBookByUrl(
                 loadBookData = loadBook,
+                itemPosition = 0,
                 onSuccess = {
                     Log.d("MyLog", "(View) test onSuccess")
                 },
                 onFail = {
                     Log.d("MyLog", "(View) test onFail")
+                },
+                onLoading = {
+                    Log.d("MyLog", "(View) test onLoading")
                 }
             )
         }

@@ -6,8 +6,9 @@ data class BookCardData(
     val imageValue: String,
     val fileFullPath : String,
     val byWay : MemoryLocation,
-    val isLoading : Boolean = false,
     val bookNameDefault : String = "",
     val urlForLoad : List<String> = emptyList(),
     var isFavorite: Boolean = false
-)
+){
+    var isLoading : Boolean = false
+}

@@ -130,8 +130,7 @@ class BookListHelper() {
             fileFullPath = fileFullPath,
             imageValue = this.getTitleImageBinaryString(),
             byWay = MemoryLocation.IN_DEVICE_MEMORY,
-            isLoading = false
-        )
+        ).apply { isLoading = false }
 
     }
 
@@ -199,8 +198,7 @@ class BookListHelper() {
             urlForLoad = listOf(),
             isFavorite = false,
             bookNameDefault = "",
-            isLoading = false
-        )
+        ).apply { isLoading = false }
     }
 
 }

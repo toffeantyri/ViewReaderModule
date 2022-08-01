@@ -29,8 +29,7 @@ class BookAvailableForDownloadHelper {
         urlForLoad = listUrl,
         isFavorite = false,
         bookNameDefault = name,
-        isLoading = false
-    )
+    ).apply { isLoading = false }
 
     private fun createListEmptyBooks(): ArrayList<BookCardData> {
         return arrayListOf<BookCardData>().apply {

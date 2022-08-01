@@ -97,8 +97,9 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                     )
                 }
             } else {
-                viewModel.dataListBook.observe(viewLifecycleOwner) {
-                    adapter.fillAdapter(it)
+                viewModel.dataListBook.observe(viewLifecycleOwner) { list ->
+                    Log.d("MyLog", "view : list observers $list")
+                    adapter.fillAdapter(list)
                 }
             }
             configChanged = false
@@ -133,9 +134,9 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 dialogHelper.createLoadDialogWithAction(requireActivity()) {
                     lockRotation(true)
-                    adapter.setLoadingByPos(adapterPos, true)
                     viewModel.loadBookByUrl(
                         loadBookData = loadBookData,
+                        itemPosition = adapterPos,
                         onSuccess = {
                             Log.d(
                                 "MyLog",
@@ -150,7 +151,14 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                             val newItem = getBookFromViewModelByPosOrNull(adapterPos)
                             newItem?.let { adapter.updateItemByPos(it, adapterPos) }
                             lockRotation(false)
-                        })
+                        },
+                        onLoading = {
+                            Log.d("MyLog", "View call back onLoading ${loadBookData.defaultNameBook}")
+                            val newItem = getBookFromViewModelByPosOrNull(adapterPos)
+                            Log.d("MyLog", "View callback isLoading $newItem")
+                            newItem?.let { adapter.updateItemByPos(newItem, adapterPos) }
+                        }
+                    )
                 }
             }
         } else {
