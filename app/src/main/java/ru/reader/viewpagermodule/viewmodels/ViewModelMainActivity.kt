@@ -42,7 +42,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     fun getPreloadBooks(onSuccess: () -> Unit) {
         job?.cancel()
         job = viewModelScope.launch {
-            withContext(Dispatchers.Default) {
+            withContext(Dispatchers.IO) {
                 var subscriber: Disposable? = null
                 subscriber = repo.dataEmitter.subscribe { bookItem ->
                     if (bookItem.author != BookListHelper.DUMMY_BOOK) replaceOrAddItem(bookItem)
@@ -57,14 +57,15 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     }
 
     private fun replaceOrAddItem(item: BookCardData) {
+
         var ind = -1
-        dataListBook.value?.filterIndexed { index, bookCardData ->
+        listBookData.filterIndexed { index, bookCardData ->
             if (bookCardData.bookNameDefault == item.bookNameDefault) ind = index
             false
         }
         if (ind >= 0) {
-            dataListBook.value?.set(ind, item)
-        } else dataListBook.value?.add(item)
+            listBookData.setToListLiveData(ind, item)
+        } else listBookData.addToListLiveData(item)
 
 
     }
@@ -74,8 +75,8 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         job = viewModelScope.launch {
             withContext(Dispatchers.Default) {
                 val subscriber = repo.dataEmitter.subscribe {
-                    if (dataListBook.value?.contains(it) == false && it.author != BookListHelper.DUMMY_BOOK) {
-                        dataListBook.value?.add(it)
+                    if (!listBookData.contains(it) && it.author != BookListHelper.DUMMY_BOOK) {
+                        listBookData.addToListLiveData(it)
                     }
                 }
                 repo.loadListBooks(onSuccess = {
@@ -87,22 +88,34 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     }
 
     fun clearBookList() {
-        dataListBook.value = arrayListOf()
+        listBookData.clear()
+        dataListBook.value?.clear()
     }
 
     private fun ArrayList<BookCardData>.addToListLiveData(item: BookCardData) {
-        listBookData.add(item)
-        dataListBook.value = listBookData
+        CoroutineScope(Dispatchers.Main).launch {
+            this@addToListLiveData.add(item)
+            dataListBook.value = listBookData
+        }
+    }
+
+    private fun ArrayList<BookCardData>.setToListLiveData(index: Int, item: BookCardData) {
+        if (this.size > index) return
+        CoroutineScope(Dispatchers.Main).launch {
+            this@setToListLiveData[index] = item
+            dataListBook.value = listBookData
+        }
     }
 
     fun loadBookByUrl(loadBookData: LoadBookData, onSuccess: () -> Unit, onFail: () -> Unit) {
         viewModelScope.launch {
-            repo.loadBook(loadBookData, {
-                getPreloadBooks(onSuccess)
-            }, {
-                getPreloadBooks(onSuccess)
-                onFail()
-            })
+            repo.loadBook(loadBookData,
+                onSuccess = {
+                    getPreloadBooks(onSuccess)
+                }, onFail = {
+                    getPreloadBooks(onSuccess)
+                    onFail()
+                })
         }
     }
 
