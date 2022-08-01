@@ -114,7 +114,6 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
                 imageBook.setImageDrawable(null)
                 progressBarLoading.visibility = View.VISIBLE
                 itemView.setOnClickListener {
-                    Log.d("MyLog", "ЗАГРУЖАЕТСЯ already")
                     val context = itemView.context
                     Toast.makeText(context, context.getString(R.string.toast_loading), Toast.LENGTH_SHORT).show()
                 }

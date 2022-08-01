@@ -1,6 +1,7 @@
 package ru.reader.viewpagermodule.data.busines.repository
 
 import android.os.Environment
+import android.util.Log
 import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
@@ -11,7 +12,7 @@ import ru.reader.viewpagermodule.view.adapters.LoadBookData
 class ListBookRepository() : BaseRepository<BookCardData>() {
 
     private val bh by lazy { BookListHelper() }
-    private val repoLoader by lazy { LoadBookRepositoryHelper() }
+    private val repoLoader by lazy { StateLoadingRepositoryHelper() }
 
     suspend fun loadListBooks(onSuccess: () -> Unit, onSuccessStep: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -96,7 +97,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
         var subscriber: Disposable? = null
         CoroutineScope(Dispatchers.IO).launch {
             subscriber = repoLoader.getStateEmitter().subscribe {
-                //Log.d("MyLog", "to REPO state $it")
+                Log.d("MyLog", "to REPO state $it")
                 if (it.state == LoadingBookState.SUCCESS_LOAD && it.name == loadBookData.defaultNameBook) {
                     //todo сначала получает книгу из памяти затем
                     onSuccess()

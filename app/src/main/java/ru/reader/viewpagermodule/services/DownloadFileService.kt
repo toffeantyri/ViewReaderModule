@@ -95,7 +95,7 @@ class DownloadFileService : Service() {
         Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData.defaultNameBook}")
 
         loadBookData.listOfUrls.forEach {
-            Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  $it")
+            Log.d("MyLog", "LOADSERVICE onStartCommand urls:  $it")
         }
 
         startForeground(NOTIFICATION_ID, buildNotification(serviceStateByName.state).build())

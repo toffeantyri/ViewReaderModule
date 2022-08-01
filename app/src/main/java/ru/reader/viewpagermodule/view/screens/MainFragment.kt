@@ -10,20 +10,25 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.util.UtilZip
+import ru.reader.viewpagermodule.view.adapters.LoadBookData
+import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 
 const val REQUEST_CODE_PERMISSION = 1007
 
 class MainFragment : Fragment() {
 
+    private val viewModel: ViewModelMainActivity by activityViewModels()
 
     private lateinit var parentActivity: MainActivity
     override fun onCreateView(
@@ -31,7 +36,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         parentActivity = activity as MainActivity
-        checkAndTakePermision()
+        checkAndTakePermission()
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -41,8 +46,23 @@ class MainFragment : Fragment() {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
             CoroutineScope(Dispatchers.IO).launch {
                 //getFileAndUnzip()
-                Log.d("MyLog", " MY PATH" + App.getMyPublicPath )
+                Log.d("MyLog", " MY PATH" + App.getMyPublicPath)
             }
+        }
+
+        button_test_load.setOnClickListener {
+            Log.d("MyLog", "(View) test click btn load")
+            val arrayList: List<String> = resources.getStringArray(R.array.array_url_bhagavad_gita).toList()
+            val loadBook = LoadBookData("БхагавадГита1", "", arrayList.drop(1))
+            viewModel.loadBookByUrl(
+                loadBookData = loadBook,
+                onSuccess = {
+                    Log.d("MyLog", "(View) test onSuccess")
+                },
+                onFail = {
+                    Log.d("MyLog", "(View) test onFail")
+                }
+            )
         }
     }
 
@@ -58,7 +78,6 @@ class MainFragment : Fragment() {
 
     }
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         @Suppress("DEPRECATION")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -71,7 +90,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun checkAndTakePermision() {
+    private fun checkAndTakePermission() {
         val permStatRead = ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.READ_EXTERNAL_STORAGE)
         val permStatWrite =
             ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)

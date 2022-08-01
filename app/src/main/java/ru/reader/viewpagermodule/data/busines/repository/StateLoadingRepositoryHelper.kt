@@ -17,7 +17,7 @@ import ru.reader.viewpagermodule.view.adapters.LoadBookData
 const val BROADCAST_SERVICE_LOAD_STATE = "BROADCAST_SERVICE_LOAD_STATE"
 const val TAG_NEW_DOWNLOAD_SERVICE_STATE = "TAG_NEW_DOWNLOAD_SERVICE_STATE "
 
-class LoadBookRepositoryHelper : BaseRepository<LoadingBookStateByName>() {
+class StateLoadingRepositoryHelper : BaseRepository<LoadingBookStateByName>() {
 
     private val context = APP_CONTEXT
     private var loadService: DownloadFileService? = null

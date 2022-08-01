@@ -5,5 +5,5 @@ import java.io.Serializable
 data class LoadBookData(
     val defaultNameBook: String,
     val absolutePath: String,
-    val listOfUrls: ArrayList<String>
+    val listOfUrls: List<String>
 ) : Serializable

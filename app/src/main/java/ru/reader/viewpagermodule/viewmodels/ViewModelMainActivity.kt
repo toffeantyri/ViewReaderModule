@@ -45,6 +45,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) {
                 var subscriber: Disposable? = null
                 subscriber = repo.dataEmitter.subscribe { bookItem ->
+                    Log.d("MyLog", "(VM) test getPreloadBooks book: ${bookItem.bookNameDefault}")
                     if (bookItem.author != BookListHelper.DUMMY_BOOK) replaceOrAddItem(bookItem)
                 }
 
@@ -108,8 +109,10 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             repo.loadBook(loadBookData,
                 onSuccess = {
+                    Log.d("MyLog", "(VM) : onSuccess ${loadBookData.defaultNameBook}")
                     getPreloadBooks(onSuccess)
                 }, onFail = {
+                    Log.d("MyLog", "(VM) : onFail ${loadBookData.defaultNameBook}")
                     getPreloadBooks(onSuccess)
                     onFail()
                 })
