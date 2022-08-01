@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
@@ -142,7 +141,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                         onSuccess = {
                             Log.d(
                                 "MyLog",
-                                "view: callback onSuccess ${loadBookData.nameBook} pos : $adapterPos"
+                                "view: callback onSuccess ${loadBookData.defaultNameBook} pos : $adapterPos"
                             )
                             val newItem = getBookFromViewModelByPosOrNull(adapterPos)
                             Log.d("MyLog", "newItem: isLoading ${newItem?.isLoading}")

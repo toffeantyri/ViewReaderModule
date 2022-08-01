@@ -97,14 +97,14 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
         CoroutineScope(Dispatchers.IO).launch {
             subscriber = repoLoader.getStateEmitter().subscribe {
                 //Log.d("MyLog", "to REPO state $it")
-                if (it.state == LoadingBookState.SUCCESS_LOAD && it.name == loadBookData.nameBook) {
+                if (it.state == LoadingBookState.SUCCESS_LOAD && it.name == loadBookData.defaultNameBook) {
                     //todo сначала получает книгу из памяти затем
                     onSuccess()
                 }
-                if (it.state == LoadingBookState.LOAD_FAIL && it.name == loadBookData.nameBook) {
+                if (it.state == LoadingBookState.LOAD_FAIL && it.name == loadBookData.defaultNameBook) {
                     onFail()
                 }
-                if (it.state == LoadingBookState.IDLE_LOAD && it.name == loadBookData.nameBook) {
+                if (it.state == LoadingBookState.IDLE_LOAD && it.name == loadBookData.defaultNameBook) {
                     subscriber?.dispose()
                 }
             }

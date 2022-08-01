@@ -104,7 +104,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
                     bookListUrl.addAll(bookList[pos].urlForLoad)
                     itemBookClickListener.clickOpenBook(
                         LoadBookData(
-                            nameBook = bookList[pos].nameBook,
+                            defaultNameBook = bookList[pos].bookNameDefault,
                             absolutePath = bookList[pos].fileFullPath, bookListUrl
                         ),
                         adapterPos = adapterPosition

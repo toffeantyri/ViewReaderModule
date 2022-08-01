@@ -92,7 +92,7 @@ class DownloadFileService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val loadBookData = intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData
-        Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData.nameBook}")
+        Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData.defaultNameBook}")
 
         loadBookData.listOfUrls.forEach {
             Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  $it")
@@ -109,8 +109,8 @@ class DownloadFileService : Service() {
                 delay(3000)
                 Log.d("MyLog", "LOADSERVICE onStartCommand success")
             }
-            serviceStateByName = LoadingBookStateByName(loadBookData.nameBook, LoadingBookState.SUCCESS_LOAD)
-            serviceStateByName = LoadingBookStateByName(loadBookData.nameBook, LoadingBookState.IDLE_LOAD)
+            serviceStateByName = LoadingBookStateByName(loadBookData.defaultNameBook, LoadingBookState.SUCCESS_LOAD)
+            serviceStateByName = LoadingBookStateByName(loadBookData.defaultNameBook, LoadingBookState.IDLE_LOAD)
             withContext(Dispatchers.IO) {
                 delay(6000)
                 Log.d("MyLog", "LOADSERVICE onStartCommand complite")
