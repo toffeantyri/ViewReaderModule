@@ -11,11 +11,11 @@ import java.util.zip.ZipFile
 
 class StorageHelper {
 
-    fun saveFileToPublicLocalPath(responseBody: ResponseBody, toWillFileName: String): StateSave {
+    fun saveFileToPublicLocalPath(responseBody: ResponseBody, toWillFileNameWithFormat: String): StateSave {
         var inputStream: InputStream? = null
         try {
             inputStream = responseBody.byteStream()
-            val outputFile = FileOutputStream("${localPathFile.path}/$toWillFileName")
+            val outputFile = FileOutputStream("${localPathFile.path}/$toWillFileNameWithFormat")
             outputFile.use { output ->
                 val buffer = ByteArray(BUFFER_SIZE_FOR_SAVE)
                 var read: Int

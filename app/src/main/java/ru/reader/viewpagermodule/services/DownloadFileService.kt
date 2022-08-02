@@ -52,7 +52,6 @@ class DownloadFileService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.d("MyLog", "LOAD SERVICE onCreate")
-        startForeground(NOTIFICATION_ID, buildNotification(serviceStateByTag.state).build())
     }
 
     private fun buildNotification(serviceStateIn: LoadingBookState): NotificationCompat.Builder {
@@ -103,29 +102,25 @@ class DownloadFileService : Service() {
     }
 
     private suspend fun loadBookByUrl(bookData: LoadBookData) {
-
+        addToQueueLoadings(bookData)
         for (urlIndex in bookData.listOfUrls.indices) {
             Log.d("MyLog", bookData.listOfUrls[urlIndex])
         }
 
-//        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-//            Log.d("MyLog", "SERVICE CoroutineExceptionHandler : " + exception.message.toString())
-//            serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
-//            throw exception
-//        }
-
-        val loading = CoroutineScope(Dispatchers.IO).async(/*exceptionHandler*/) {
-            var response : Response<ResponseBody>? = null
+        val loading = CoroutineScope(Dispatchers.IO).async {
+            var response: Response<ResponseBody>? = null
             try {
                 response = withContext(Dispatchers.IO) {
                     Log.d("MyLog", "loadBookByUrl inResponse")
                     api.provideLoaderFileByUrl(bookData.listOfUrls[0]).getBookByUrl(bookData.listOfUrls[0])
                 }
-            } catch (e : Exception){
+            } catch (e: Exception) {
                 Log.d("MyLog", "loadBookByUrl catch inResponse ${e.message}")
+                removeFromQueueLoadings(bookData)
                 serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
                 return@async
             }
+
             if (!response.isSuccessful) {
                 Log.d("MyLog", "loadBookByUrl: errorBody : ${response.errorBody()}")
                 serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
@@ -156,18 +151,33 @@ class DownloadFileService : Service() {
                 }
             }
         }
-
         loading.await()
-        Log.d("MyLog", "SERVICE loading coroutine isComplete : ${loading.isCompleted}")
+        Log.d("MyLog", "SERVICE loading isComplete : ${loading.isCompleted} ")
         if (loading.isCompleted) {
-            serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.STATE_COMPLETE)
+            removeFromQueueLoadings(bookData)
+            checkServiceComplete()
         }
     }
 
+    private fun checkServiceComplete() {
+        if (queueLoadingFile.isEmpty()) serviceStateByTag = LoadingBookStateByName("", LoadingBookState.STATE_COMPLETE)
+    }
+
+    private fun removeFromQueueLoadings(loadBookData: LoadBookData) {
+        val key = loadBookData.defaultNameBook
+        if (queueLoadingFile.containsKey(key)) queueLoadingFile.remove(key)
+    }
+
+    private fun addToQueueLoadings(loadBookData: LoadBookData) {
+        val key = loadBookData.defaultNameBook
+        if (!queueLoadingFile.containsKey(key)) queueLoadingFile[key] = loadBookData
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startForeground(NOTIFICATION_ID, buildNotification(serviceStateByTag.state).build())
         val loadBookData =
             intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData?
-        Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData?.defaultNameBook}")
+        Log.d("MyLog", "LOADS SERVICE onStartCommand nameBook:  ${loadBookData?.defaultNameBook}")
 
         CoroutineScope(Dispatchers.IO).launch {
             if (loadBookData != null) {
