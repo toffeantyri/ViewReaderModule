@@ -7,7 +7,7 @@ class ApiProvider {
     private val emptyRetrofit by lazy { initApi() }
 
     private fun initApi() : Retrofit = Retrofit.Builder()
-        .baseUrl("")
+        .baseUrl("https://t.me") //todo default url
         .build()
 
     fun provideLoaderFileByUrl(): LoadFileByUrlApi = emptyRetrofit.create(LoadFileByUrlApi::class.java)

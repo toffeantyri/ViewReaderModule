@@ -15,12 +15,13 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
-import ru.reader.viewpagermodule.util.UtilZip
+import ru.reader.viewpagermodule.data.busines.storage.StorageHelper
+import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.view.adapters.LoadBookData
+import ru.reader.viewpagermodule.view.adapters.MemoryLocation
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 
@@ -53,7 +54,18 @@ class MainFragment : Fragment() {
         button_test_load.setOnClickListener {
             Log.d("MyLog", "(View) test click btn load")
             val arrayList: List<String> = resources.getStringArray(R.array.array_url_bhagavad_gita).toList()
+            val bookCardData = BookCardData(
+                author = "-",
+                nameBook = "БхагавадГита0",
+                imageValue = "",
+                fileFullPath = "",
+                byWay = MemoryLocation.NOT_DOWNLOADED,
+                urlForLoad = arrayList,
+                isFavorite = false,
+                bookNameDefault = "БхагавадГита0",
+            ).apply { isLoading = false }
             val loadBook = LoadBookData("БхагавадГита1", "", arrayList.drop(1))
+            viewModel.dataListBook.value?.add(bookCardData)
             viewModel.loadBookByUrl(
                 loadBookData = loadBook,
                 itemPosition = 0,
@@ -72,11 +84,13 @@ class MainFragment : Fragment() {
 
     private fun getFileAndUnzip() {
         val bh = BookListHelper()
+        val sh = StorageHelper()
         val file = bh.getFileFromAssetsAndCache("bgzip.fb2.zip")
+
 
         file?.exists().let {
             if (file != null) {
-                UtilZip.unzipFile(file, App.getDirDownloads.path)
+                sh.unzipFile(file, App.getDirDownloads.path, "bgzip")
             }
         }
 

@@ -6,7 +6,7 @@ import android.os.Environment
 import java.io.File
 
 
-lateinit var APP_CONTEXT: Application
+lateinit var APP_CONTEXT: App
 
 class App : Application() {
 
