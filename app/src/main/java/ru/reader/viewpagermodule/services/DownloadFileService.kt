@@ -155,6 +155,7 @@ class DownloadFileService : Service() {
                         removeFromQueueLoadings(bookData)
                         serviceStateByTag =
                             LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
+                        //throw e
                         return@async
                     }
                 }

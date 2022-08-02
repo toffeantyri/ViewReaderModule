@@ -7,6 +7,7 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.nio.charset.Charset
 import java.util.zip.ZipFile
 
 class StorageHelper {
@@ -45,10 +46,13 @@ class StorageHelper {
                 mkdirs()
             }
         }
-        ZipFile(zipFilePath).use { zip ->
+        val zipFile = ZipFile(zipFilePath, Charset.forName(Charsets.UTF_8.toString()))
+        zipFile.use { zip ->
             zip.entries().asSequence().forEach { entry ->
                 zip.getInputStream(entry).use { input ->
-                    val filePath = "${localPathFile.path}/$defaultNameFile"
+                    Log.d("MyLog", "UNZIP ENTRY :$entry")
+                    Log.d("MyLog", "UNZIP ENTRY name :${entry.name}")
+                    val filePath = "${localPathFile.path}/$entry" // todo default name
                     if (!entry.isDirectory) {
                         // if the entry is a file, extracts it
                         extractFile(input, filePath)
