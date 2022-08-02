@@ -12,6 +12,11 @@ import java.util.zip.ZipFile
 class StorageHelper {
 
     fun saveFileToPublicLocalPath(responseBody: ResponseBody, toWillFileNameWithFormat: String): StateSave {
+        File(localPathFile.path).run {
+            if (!exists()) {
+                mkdirs()
+            }
+        }
         var inputStream: InputStream? = null
         try {
             inputStream = responseBody.byteStream()
@@ -34,8 +39,8 @@ class StorageHelper {
     }
 
 
-    fun unzipFile(zipFilePath: File, targetPath: String, defaultNameFile: String) {
-        File(targetPath).run {
+    fun unzipFile(zipFilePath: File, defaultNameFile: String) {
+        File(localPathFile.path).run {
             if (!exists()) {
                 mkdirs()
             }
@@ -43,7 +48,7 @@ class StorageHelper {
         ZipFile(zipFilePath).use { zip ->
             zip.entries().asSequence().forEach { entry ->
                 zip.getInputStream(entry).use { input ->
-                    val filePath = "$targetPath/$defaultNameFile"
+                    val filePath = "${localPathFile.path}/$defaultNameFile"
                     if (!entry.isDirectory) {
                         // if the entry is a file, extracts it
                         extractFile(input, filePath)

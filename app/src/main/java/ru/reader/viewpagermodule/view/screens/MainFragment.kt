@@ -45,53 +45,6 @@ class MainFragment : Fragment() {
         super.onResume()
         btn_open_list.setOnClickListener {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
-            CoroutineScope(Dispatchers.IO).launch {
-                //getFileAndUnzip()
-                Log.d("MyLog", " MY PATH" + App.getMyPublicPath)
-            }
-        }
-
-        button_test_load.setOnClickListener {
-            Log.d("MyLog", "(View) test click btn load")
-            val arrayList: List<String> = resources.getStringArray(R.array.array_url_bhagavad_gita).toList()
-            val bookCardData = BookCardData(
-                author = "-",
-                nameBook = "БхагавадГита0",
-                imageValue = "",
-                fileFullPath = "",
-                byWay = MemoryLocation.NOT_DOWNLOADED,
-                urlForLoad = arrayList,
-                isFavorite = false,
-                bookNameDefault = "БхагавадГита0",
-            ).apply { isLoading = false }
-            val loadBook = LoadBookData("БхагавадГита0", "", arrayList.drop(1))
-            viewModel.dataListBook.value?.add(bookCardData)
-            viewModel.loadBookByUrl(
-                loadBookData = loadBook,
-                itemPosition = 0,
-                onSuccess = {
-                    Log.d("MyLog", "(View) test onSuccess")
-                },
-                onFail = {
-                    Log.d("MyLog", "(View) test onFail")
-                },
-                onLoading = {
-                    Log.d("MyLog", "(View) test onLoading")
-                }
-            )
-        }
-    }
-
-    private fun getFileAndUnzip() {
-        val bh = BookListHelper()
-        val sh = StorageHelper()
-        val file = bh.getFileFromAssetsAndCache("bgzip.fb2.zip")
-
-
-        file?.exists().let {
-            if (file != null) {
-                sh.unzipFile(file, App.getDirDownloads.path, "bgzip")
-            }
         }
 
     }
