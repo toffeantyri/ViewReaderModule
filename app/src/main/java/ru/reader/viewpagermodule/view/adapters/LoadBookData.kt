@@ -6,4 +6,9 @@ data class LoadBookData(
     val defaultNameBook: String,
     val absolutePath: String,
     val listOfUrls: List<String>
-) : Serializable
+) : Serializable {
+
+    companion object {
+        fun emtpyIntance(): LoadBookData = LoadBookData("", "", emptyList())
+    }
+}

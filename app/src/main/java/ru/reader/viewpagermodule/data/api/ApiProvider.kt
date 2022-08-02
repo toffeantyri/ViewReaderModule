@@ -2,14 +2,17 @@ package ru.reader.viewpagermodule.data.api
 
 import retrofit2.Retrofit
 
-class ApiProvider {
+class ApiProviderForDownload() {
 
-    private val emptyRetrofit by lazy { initApi() }
+    private val emptyRetrofit by lazy { initApi("") }
 
-    private fun initApi() : Retrofit = Retrofit.Builder()
-        .baseUrl("https://t.me") //todo default url
+    private fun initApi(url: String): Retrofit = Retrofit.Builder()
+        .baseUrl("$url/")
         .build()
 
-    fun provideLoaderFileByUrl(): LoadFileByUrlApi = emptyRetrofit.create(LoadFileByUrlApi::class.java)
+    fun provideLoaderFile(): LoadFileByUrlApi = emptyRetrofit.create(LoadFileByUrlApi::class.java)
+
+    fun provideLoaderFileByUrl(url: String): LoadFileByUrlApi = initApi(url).create(LoadFileByUrlApi::class.java)
+
 
 }

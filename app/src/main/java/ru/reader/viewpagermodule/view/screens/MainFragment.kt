@@ -64,7 +64,7 @@ class MainFragment : Fragment() {
                 isFavorite = false,
                 bookNameDefault = "БхагавадГита0",
             ).apply { isLoading = false }
-            val loadBook = LoadBookData("БхагавадГита1", "", arrayList.drop(1))
+            val loadBook = LoadBookData("БхагавадГита0", "", arrayList.drop(1))
             viewModel.dataListBook.value?.add(bookCardData)
             viewModel.loadBookByUrl(
                 loadBookData = loadBook,

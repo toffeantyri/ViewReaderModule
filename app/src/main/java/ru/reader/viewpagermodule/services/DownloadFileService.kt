@@ -8,7 +8,9 @@ import android.os.Binder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
-import ru.reader.viewpagermodule.data.api.ApiProvider
+import okhttp3.ResponseBody
+import retrofit2.Response
+import ru.reader.viewpagermodule.data.api.ApiProviderForDownload
 import ru.reader.viewpagermodule.data.busines.repository.BROADCAST_SERVICE_LOAD_STATE
 import ru.reader.viewpagermodule.data.busines.repository.LoadingBookState
 import ru.reader.viewpagermodule.data.busines.repository.LoadingBookStateByName
@@ -16,13 +18,14 @@ import ru.reader.viewpagermodule.data.busines.repository.TAG_NEW_DOWNLOAD_SERVIC
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.view.adapters.LoadBookData
 import ru.reader.viewpagermodule.data.busines.storage.StorageHelper
+import java.lang.Exception
 
 const val CHANNEL_ID = "CHANNEL_DOWNLOAD_SERVICE"
 const val NOTIFICATION_ID = 123
 
 class DownloadFileService : Service() {
 
-    private val api by lazy { ApiProvider() }
+    private val api by lazy { ApiProviderForDownload() }
     private val sh by lazy { StorageHelper() }
 
     private val iBinder: LocalBinder = LocalBinder()
@@ -105,14 +108,23 @@ class DownloadFileService : Service() {
             Log.d("MyLog", bookData.listOfUrls[urlIndex])
         }
 
-        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            Log.d("MyLog", "SERVICE CoroutineExceptionHandler : " + exception.message.toString())
-            serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
-        }
+//        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+//            Log.d("MyLog", "SERVICE CoroutineExceptionHandler : " + exception.message.toString())
+//            serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
+//            throw exception
+//        }
 
-        val loading = CoroutineScope(Dispatchers.IO).async(exceptionHandler) {
-            val response = withContext(Dispatchers.IO) {
-                api.provideLoaderFileByUrl().getBookByUrl(bookData.listOfUrls[0])
+        val loading = CoroutineScope(Dispatchers.IO).async(/*exceptionHandler*/) {
+            var response : Response<ResponseBody>? = null
+            try {
+                response = withContext(Dispatchers.IO) {
+                    Log.d("MyLog", "loadBookByUrl inResponse")
+                    api.provideLoaderFileByUrl(bookData.listOfUrls[0]).getBookByUrl(bookData.listOfUrls[0])
+                }
+            } catch (e : Exception){
+                Log.d("MyLog", "loadBookByUrl catch inResponse ${e.message}")
+                serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
+                return@async
             }
             if (!response.isSuccessful) {
                 Log.d("MyLog", "loadBookByUrl: errorBody : ${response.errorBody()}")
@@ -122,9 +134,11 @@ class DownloadFileService : Service() {
 
             if (response.isSuccessful) {
                 Log.d("MyLog", "SERVICE response isSuccessful")
-                val saveState: StorageHelper.Companion.StateSave = response.body()?.let {
-                    sh.saveFileToPublicLocalPath(responseBody = it, bookData.defaultNameBook)
-                } ?: StorageHelper.Companion.StateSave.STATE_RESPONSE_BODY_NULL
+                val saveState: StorageHelper.Companion.StateSave = withContext(Dispatchers.IO) {
+                    response.body()?.let {
+                        sh.saveFileToPublicLocalPath(responseBody = it, bookData.defaultNameBook)
+                    } ?: StorageHelper.Companion.StateSave.STATE_RESPONSE_BODY_NULL
+                }
                 Log.d("MyLog", "SERVICE response saveState $saveState")
                 if (saveState != StorageHelper.Companion.StateSave.STATE_SAVED) {
                     serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL)
@@ -151,11 +165,14 @@ class DownloadFileService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val loadBookData = intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData
-        Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData.defaultNameBook}")
+        val loadBookData =
+            intent?.getSerializableExtra(BookListHelper.BOOK_LIST_DATA_FOR_LOAD) as LoadBookData?
+        Log.d("MyLog", "LOADSERVICE onStartCommand nameBook:  ${loadBookData?.defaultNameBook}")
 
         CoroutineScope(Dispatchers.IO).launch {
-            loadBookByUrl(loadBookData)
+            if (loadBookData != null) {
+                loadBookByUrl(loadBookData)
+            }
         }
 
         return super.onStartCommand(intent, flags, startId)

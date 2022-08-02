@@ -1,7 +1,6 @@
 package ru.reader.viewpagermodule.data.busines.storage
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import android.util.Log
 import okhttp3.ResponseBody
 import ru.reader.viewpagermodule.App
 import java.io.BufferedOutputStream
@@ -12,14 +11,26 @@ import java.util.zip.ZipFile
 
 class StorageHelper {
 
-    suspend fun saveFileToPublicLocalPath(responseBody: ResponseBody, toWillFileName: String): StateSave {
-        withContext(Dispatchers.IO) {
-
+    fun saveFileToPublicLocalPath(responseBody: ResponseBody, toWillFileName: String): StateSave {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = responseBody.byteStream()
+            val outputFile = FileOutputStream("${localPathFile.path}/$toWillFileName")
+            outputFile.use { output ->
+                val buffer = ByteArray(BUFFER_SIZE_FOR_SAVE)
+                var read: Int
+                while (inputStream.read(buffer).also { read = it } != -1) {
+                    output.write(buffer, 0, read)
+                }
+                output.flush()
+            }
+            return StateSave.STATE_SAVED
+        } catch (e: Exception) {
+            Log.d("MyLog", "saveFile Error : ${e.message}")
+            return StateSave.STATE_NOT_SAVED
+        } finally {
+            inputStream?.close()
         }
-
-
-
-        return StateSave.STATE_SAVED
     }
 
 
@@ -59,7 +70,8 @@ class StorageHelper {
 
     companion object {
         private const val BUFFER_SIZE_ZIP = 8096
-        val localPathFile = App.getMyPublicPath
+        private const val BUFFER_SIZE_FOR_SAVE = 8096
+        val localPathFile: File = App.getMyPublicPath
 
         enum class StateSave {
             STATE_SAVED,
