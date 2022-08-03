@@ -40,26 +40,24 @@ class StorageHelper {
     }
 
 
-    fun unzipFile(zipFilePath: File, defaultNameFile: String) {
+    fun unzipFb2File(zipFilePath: File, defaultNameFile: String) {
         File(localPathFile.path).run {
             if (!exists()) {
                 mkdirs()
             }
         }
-        val zipFile = ZipFile(zipFilePath, Charset.forName(Charsets.UTF_8.toString()))
-        zipFile.use { zip ->
+        ZipFile(zipFilePath, ZipFile.OPEN_READ, Charsets.ISO_8859_1).use { zip ->
             zip.entries().asSequence().forEach { entry ->
                 zip.getInputStream(entry).use { input ->
-                    Log.d("MyLog", "UNZIP ENTRY :$entry")
-                    Log.d("MyLog", "UNZIP ENTRY name :${entry.name}")
-                    val filePath = "${localPathFile.path}/$entry" // todo default name
-                    if (!entry.isDirectory) {
-                        // if the entry is a file, extracts it
-                        extractFile(input, filePath)
-                    } else {
-                        // if the entry is a directory, make the directory
-                        val dir = File(filePath)
-                        dir.mkdir()
+                    val format = entry.name.split(".").last()
+                    if (format == FORMAT_FB2) {
+                        val filePath = "${localPathFile.path}/$defaultNameFile.$FORMAT_FB2"
+                        if (!entry.isDirectory) {
+                            extractFile(input, filePath)
+                        } else {
+                            val dir = File(filePath)
+                            dir.mkdir()
+                        }
                     }
                 }
             }
@@ -78,6 +76,7 @@ class StorageHelper {
 
 
     companion object {
+        private const val FORMAT_FB2 = "fb2"
         private const val BUFFER_SIZE_ZIP = 8096
         private const val BUFFER_SIZE_FOR_SAVE = 8096
         val localPathFile: File = App.getMyPublicPath

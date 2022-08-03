@@ -4,15 +4,13 @@ import retrofit2.Retrofit
 
 class ApiProviderForDownload() {
 
-    private val emptyRetrofit by lazy { initApi("") }
+    private val emptyRetrofit by lazy { initApi() }
 
-    private fun initApi(url: String): Retrofit = Retrofit.Builder()
-        .baseUrl("$url/")
+    private fun initApi(): Retrofit = Retrofit.Builder()
+        .baseUrl("http://localhost/")
         .build()
 
-    fun provideLoaderFile(): LoadFileByUrlApi = emptyRetrofit.create(LoadFileByUrlApi::class.java)
-
-    fun provideLoaderFileByUrl(url: String): LoadFileByUrlApi = initApi(url).create(LoadFileByUrlApi::class.java)
+    fun provideLoaderFileApi(): LoadFileByUrlApi = emptyRetrofit.create(LoadFileByUrlApi::class.java)
 
 
 }

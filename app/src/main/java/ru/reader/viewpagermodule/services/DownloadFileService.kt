@@ -105,8 +105,8 @@ class DownloadFileService : Service() {
     private suspend fun loadBookByUrl(bookData: LoadBookData) {
         addToQueueLoadings(bookData)
         val urlIndex = 0
-        var currentState : LoadingBookState
-        for(urlIndex in bookData.listOfUrls.indices){
+        var currentState: LoadingBookState
+        for (urlIndex in bookData.listOfUrls.indices) {
 
 
         }
@@ -117,19 +117,20 @@ class DownloadFileService : Service() {
             var response: Response<ResponseBody>? = null
             try {
                 response = withContext(Dispatchers.IO) {
-                    api.provideLoaderFileByUrl(bookData.listOfUrls[urlIndex])
-                        .getBookByUrl(bookData.listOfUrls[urlIndex])
+                    api.provideLoaderFileApi().getBookByUrl(bookData.listOfUrls[urlIndex])
                 }
             } catch (e: Exception) {
                 Log.d("MyLog", "SERVICE: Response Error: ${e.message}")
                 removeFromQueueLoadings(bookData)
-                serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
+                serviceStateByTag =
+                    LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
                 return@async
             }
 
             if (!response.isSuccessful) {
                 Log.d("MyLog", "SERVICE: loadBookByUrl: errorBody : ${response.errorBody()}")
-                serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
+                serviceStateByTag =
+                    LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
                 return@async
             }
 
@@ -143,7 +144,8 @@ class DownloadFileService : Service() {
                 }
                 Log.d("MyLog", "SERVICE saveSTATE $saveState")
                 if (saveState != StorageHelper.Companion.StateSave.STATE_SAVED) {
-                    serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
+                    serviceStateByTag =
+                        LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
                     return@async
                 } else {
 
@@ -151,10 +153,13 @@ class DownloadFileService : Service() {
                         withContext(Dispatchers.IO) {
                             Log.d("MyLog", "SERVICE: UNZIPing to ${StorageHelper.localPathFile.path}/$willFileName")
                             val filePath = File("${StorageHelper.localPathFile.path}/$willFileName")
-                            sh.unzipFile(filePath, bookData.defaultNameBook)
+                            sh.unzipFb2File(filePath, bookData.defaultNameBook)
                         }
                         serviceStateByTag =
-                            LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.SUCCESS_LOAD) // todo to flag
+                            LoadingBookStateByName(
+                                bookData.defaultNameBook,
+                                LoadingBookState.SUCCESS_LOAD
+                            ) // todo to flag
                     } catch (e: Exception) {
                         Log.d("MyLog", "SERVICE: loadBookByUrl catch unzip ${e.message}")
                         removeFromQueueLoadings(bookData)
