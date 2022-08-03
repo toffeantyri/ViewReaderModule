@@ -116,44 +116,42 @@ class DownloadFileService : Service() {
                         api.provideLoaderFileApi().getBookByUrl(bookData.listOfUrls[urlIndex])
                     }
                 } catch (e: Exception) {
-                    Log.d("MyLog", "SERVICE: Response Error: ${e.message}")
+                    Log.d("MyLog", "SERVICE: ResponseApi Error: ${e.message}")
                     removeFromQueueLoadings(bookData)
                     currentState = LoadingBookState.LOAD_FAIL
                     return@async
                 }
 
                 if (!response.isSuccessful) {
-                    Log.d("MyLog", "SERVICE: loadBookByUrl: errorBody : ${response.errorBody()}")
+                    Log.d("MyLog", "SERVICE: Response notSuccess errorBody : ${response.errorBody()}")
                     currentState = LoadingBookState.LOAD_FAIL
                     return@async
                 }
 
                 if (response.isSuccessful) {
-                    Log.d("MyLog", "SERVICE response isSuccessful")
                     val saveState: StorageHelper.Companion.StateSave = withContext(Dispatchers.IO) {
                         response.body()?.let {
-                            Log.d("MyLog", "SERVICE SAVE FILE NAME : $willFileName")
                             sh.saveFileToPublicLocalPath(responseBody = it, willFileName)
                         } ?: StorageHelper.Companion.StateSave.STATE_RESPONSE_BODY_NULL
                     }
-                    Log.d("MyLog", "SERVICE saveSTATE $saveState")
                     if (saveState != StorageHelper.Companion.StateSave.STATE_SAVED) {
                         currentState = LoadingBookState.LOAD_FAIL
                         return@async
                     } else {
                         try {
                             withContext(Dispatchers.IO) {
-                                Log.d("MyLog", "SERVICE: UNZIPing to ${StorageHelper.localPathFile.path}/$willFileName")
                                 val filePath = File("${StorageHelper.localPathFile.path}/$willFileName")
                                 sh.unzipFb2File(filePath, bookData.defaultNameBook)
                             }
                             currentState = LoadingBookState.SUCCESS_LOAD
                         } catch (e: Exception) {
-                            Log.d("MyLog", "SERVICE: loadBookByUrl catch unzip ${e.message}")
+                            Log.d("MyLog", "SERVICE: loadBookByUrl UNZIP catch  ${e.message}")
                             removeFromQueueLoadings(bookData)
                             currentState = LoadingBookState.LOAD_FAIL
                             //throw e
                             return@async
+                        } finally {
+                            File("${StorageHelper.localPathFile.path}/$willFileName").delete()
                         }
                     }
                 }
@@ -172,7 +170,7 @@ class DownloadFileService : Service() {
                 checkServiceComplete()
                 break
             } else continue
-        }//end for
+        }
     }
 
     private fun checkServiceComplete() {
