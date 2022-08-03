@@ -42,9 +42,7 @@ class StorageHelper {
 
     fun unzipFb2File(zipFilePath: File, defaultNameFile: String) {
         File(localPathFile.path).run {
-            if (!exists()) {
-                mkdirs()
-            }
+            if (!exists()) mkdirs()
         }
         ZipFile(zipFilePath, ZipFile.OPEN_READ, Charsets.ISO_8859_1).use { zip ->
             zip.entries().asSequence().forEach { entry ->
@@ -54,9 +52,6 @@ class StorageHelper {
                         val filePath = "${localPathFile.path}/$defaultNameFile.$FORMAT_FB2"
                         if (!entry.isDirectory) {
                             extractFile(input, filePath)
-                        } else {
-                            val dir = File(filePath)
-                            dir.mkdir()
                         }
                     }
                 }
