@@ -104,81 +104,75 @@ class DownloadFileService : Service() {
 
     private suspend fun loadBookByUrl(bookData: LoadBookData) {
         addToQueueLoadings(bookData)
-        val urlIndex = 0
-        var currentState: LoadingBookState
+        lateinit var currentState: LoadingBookState
         for (urlIndex in bookData.listOfUrls.indices) {
-
-
-        }
-        Log.d("MyLog", bookData.listOfUrls[urlIndex])
-        val url = bookData.listOfUrls[urlIndex]
-        val willFileName = url.substring(url.lastIndexOf("/") + 1)
-        val loading = CoroutineScope(Dispatchers.IO).async {
-            var response: Response<ResponseBody>? = null
-            try {
-                response = withContext(Dispatchers.IO) {
-                    api.provideLoaderFileApi().getBookByUrl(bookData.listOfUrls[urlIndex])
-                }
-            } catch (e: Exception) {
-                Log.d("MyLog", "SERVICE: Response Error: ${e.message}")
-                removeFromQueueLoadings(bookData)
-                serviceStateByTag =
-                    LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
-                return@async
-            }
-
-            if (!response.isSuccessful) {
-                Log.d("MyLog", "SERVICE: loadBookByUrl: errorBody : ${response.errorBody()}")
-                serviceStateByTag =
-                    LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
-                return@async
-            }
-
-            if (response.isSuccessful) {
-                Log.d("MyLog", "SERVICE response isSuccessful")
-                val saveState: StorageHelper.Companion.StateSave = withContext(Dispatchers.IO) {
-                    response.body()?.let {
-                        Log.d("MyLog", "SERVICE SAVE FILE NAME : $willFileName")
-                        sh.saveFileToPublicLocalPath(responseBody = it, willFileName)
-                    } ?: StorageHelper.Companion.StateSave.STATE_RESPONSE_BODY_NULL
-                }
-                Log.d("MyLog", "SERVICE saveSTATE $saveState")
-                if (saveState != StorageHelper.Companion.StateSave.STATE_SAVED) {
-                    serviceStateByTag =
-                        LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
+            Log.d("MyLog", bookData.listOfUrls[urlIndex])
+            val url = bookData.listOfUrls[urlIndex]
+            val willFileName = url.substring(url.lastIndexOf("/") + 1)
+            val loading = CoroutineScope(Dispatchers.IO).async {
+                val response: Response<ResponseBody>
+                try {
+                    response = withContext(Dispatchers.IO) {
+                        api.provideLoaderFileApi().getBookByUrl(bookData.listOfUrls[urlIndex])
+                    }
+                } catch (e: Exception) {
+                    Log.d("MyLog", "SERVICE: Response Error: ${e.message}")
+                    removeFromQueueLoadings(bookData)
+                    currentState = LoadingBookState.LOAD_FAIL
                     return@async
-                } else {
+                }
 
-                    try {
-                        withContext(Dispatchers.IO) {
-                            Log.d("MyLog", "SERVICE: UNZIPing to ${StorageHelper.localPathFile.path}/$willFileName")
-                            val filePath = File("${StorageHelper.localPathFile.path}/$willFileName")
-                            sh.unzipFb2File(filePath, bookData.defaultNameBook)
-                        }
-                        serviceStateByTag =
-                            LoadingBookStateByName(
-                                bookData.defaultNameBook,
-                                LoadingBookState.SUCCESS_LOAD
-                            ) // todo to flag
-                    } catch (e: Exception) {
-                        Log.d("MyLog", "SERVICE: loadBookByUrl catch unzip ${e.message}")
-                        removeFromQueueLoadings(bookData)
-                        serviceStateByTag =
-                            LoadingBookStateByName(bookData.defaultNameBook, LoadingBookState.LOAD_FAIL) // todo to flag
-                        //throw e
+                if (!response.isSuccessful) {
+                    Log.d("MyLog", "SERVICE: loadBookByUrl: errorBody : ${response.errorBody()}")
+                    currentState = LoadingBookState.LOAD_FAIL
+                    return@async
+                }
+
+                if (response.isSuccessful) {
+                    Log.d("MyLog", "SERVICE response isSuccessful")
+                    val saveState: StorageHelper.Companion.StateSave = withContext(Dispatchers.IO) {
+                        response.body()?.let {
+                            Log.d("MyLog", "SERVICE SAVE FILE NAME : $willFileName")
+                            sh.saveFileToPublicLocalPath(responseBody = it, willFileName)
+                        } ?: StorageHelper.Companion.StateSave.STATE_RESPONSE_BODY_NULL
+                    }
+                    Log.d("MyLog", "SERVICE saveSTATE $saveState")
+                    if (saveState != StorageHelper.Companion.StateSave.STATE_SAVED) {
+                        currentState = LoadingBookState.LOAD_FAIL
                         return@async
+                    } else {
+                        try {
+                            withContext(Dispatchers.IO) {
+                                Log.d("MyLog", "SERVICE: UNZIPing to ${StorageHelper.localPathFile.path}/$willFileName")
+                                val filePath = File("${StorageHelper.localPathFile.path}/$willFileName")
+                                sh.unzipFb2File(filePath, bookData.defaultNameBook)
+                            }
+                            currentState = LoadingBookState.SUCCESS_LOAD
+                        } catch (e: Exception) {
+                            Log.d("MyLog", "SERVICE: loadBookByUrl catch unzip ${e.message}")
+                            removeFromQueueLoadings(bookData)
+                            currentState = LoadingBookState.LOAD_FAIL
+                            //throw e
+                            return@async
+                        }
                     }
                 }
             }
-        }
-        loading.await()
-
-        //todo check flag if fail - continue / else success check completely and break
-        Log.d("MyLog", "SERVICE loading isComplete : ${loading.isCompleted} ")
-        if (loading.isCompleted) {
-            removeFromQueueLoadings(bookData)
-            checkServiceComplete()
-        }
+            loading.await()
+            Log.d("MyLog", "SERVICE loading isComplete : ${loading.isCompleted} state : $currentState")
+            if (currentState == LoadingBookState.SUCCESS_LOAD) {
+                serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, currentState)
+                removeFromQueueLoadings(bookData)
+                checkServiceComplete()
+                break
+            }
+            if (urlIndex == (bookData.listOfUrls.size - 1)) {
+                serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, currentState)
+                removeFromQueueLoadings(bookData)
+                checkServiceComplete()
+                break
+            } else continue
+        }//end for
     }
 
     private fun checkServiceComplete() {
