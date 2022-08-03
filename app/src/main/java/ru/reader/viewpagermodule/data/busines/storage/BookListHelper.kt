@@ -9,7 +9,6 @@ import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.view.adapters.BookCardData
-import ru.reader.viewpagermodule.view.adapters.MemoryLocation
 import java.io.*
 import java.lang.NullPointerException
 import java.util.concurrent.TimeoutException
@@ -138,15 +137,17 @@ class BookListHelper() {
         return hashSet
     }
 
-    private fun FictionBook.toBookCardData(fileFullPath: String, defaultName :String = ""): BookCardData {
+    private fun FictionBook.toBookCardData(fullPath: String, defaultName: String = ""): BookCardData {
+        val fb = this
         return BookCardData(
-            author = this.description.titleInfo.authors?.let { if (it.size != 0) it[0]?.fullName ?: "" else "" } ?: "",
-            nameBook = this.description.titleInfo.bookTitle ?: "",
-            fileFullPath = fileFullPath,
-            imageValue = this.getTitleImageBinaryString(),
-            byWay = MemoryLocation.IN_DEVICE_MEMORY,
-            bookNameDefault = defaultName
-        ).apply { isLoading = false }
+            tagName = defaultName
+        ).apply {
+            isLoading = false
+            author = fb.description.titleInfo.authors?.let { if (it.size != 0) it[0]?.fullName ?: "" else "" } ?: ""
+            nameBook = fb.description.titleInfo.bookTitle ?: ""
+            fileFullPath = fullPath
+            imageValue = fb.getTitleImageBinaryString()
+        }
     }
 
     private fun FictionBook.getTitleImageBinaryString(): String {
@@ -157,7 +158,7 @@ class BookListHelper() {
         return binaries?.get(imageName)?.binary ?: ""
     }
 
-    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String, defaultName: String = ""): BookCardData? {
+    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String, defaultName: String): BookCardData? {
         try {
             Log.d("MyLog", "$------------------------------------------- $fb2File")
             val fb2 = FictionBook(fb2File)
@@ -184,11 +185,11 @@ class BookListHelper() {
         }
 
         for (data in listEmptyBooks) {
-            val name = "${data.bookNameDefault}.fb2"
+            val name = "${data.tagName}.fb2"
             Log.d("MyLogFiles", "path contains $name: ${listBookFromPath.contains(name)}")
             if (listBookFromPath.contains(name)) {
                 val path = "${App.getMyPublicPath.path}/$name"
-                val bookData = tryFileToFb2ToBookItem(File(path), path, data.bookNameDefault)
+                val bookData = tryFileToFb2ToBookItem(File(path), path, data.tagName)
                 Log.d("MyLogFiles", "bookData : $bookData")
                 if (bookData != null) {
                     resultList.add(bookData)
@@ -204,15 +205,14 @@ class BookListHelper() {
 
     fun getDummyBook(): BookCardData {
         return BookCardData(
-            author = DUMMY_BOOK,
-            nameBook = "",
-            imageValue = "",
-            fileFullPath = "",
-            byWay = MemoryLocation.NOT_DOWNLOADED,
-            urlForLoad = listOf(),
-            isFavorite = false,
-            bookNameDefault = "",
-        ).apply { isLoading = false }
+            tagName = DUMMY_BOOK
+        ).apply {
+            isLoading = false
+            author = DUMMY_BOOK
+            nameBook = ""
+            imageValue = ""
+            fileFullPath = ""
+        }
     }
 
 }

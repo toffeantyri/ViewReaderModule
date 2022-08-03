@@ -1,14 +1,26 @@
 package ru.reader.viewpagermodule.view.adapters
 
 data class BookCardData(
-    val author: String,
-    val nameBook: String,
-    val imageValue: String,
-    val fileFullPath : String,
-    val byWay : MemoryLocation,
-    val bookNameDefault : String = "",
-    val urlForLoad : List<String> = emptyList(),
+    val tagName: String,
+) {
+    var isLoading: Boolean = false
+    lateinit var author: String
+    lateinit var nameBook: String
+    lateinit var imageValue: String
+    lateinit var fileFullPath: String
+    var urlForLoad: List<String> = emptyList()
     var isFavorite: Boolean = false
-){
-    var isLoading : Boolean = false
+
+    fun copyAllField() = BookCardData(this@BookCardData.tagName).apply {
+        isLoading = this@BookCardData.isLoading
+        author = this@BookCardData.author
+        nameBook = this@BookCardData.nameBook
+        imageValue = this@BookCardData.imageValue
+        fileFullPath = this@BookCardData.fileFullPath
+        urlForLoad = this@BookCardData.urlForLoad
+        isFavorite = this@BookCardData.isFavorite
+    }
+
 }
+
+

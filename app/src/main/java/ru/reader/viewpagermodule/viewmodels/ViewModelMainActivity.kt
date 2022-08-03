@@ -45,7 +45,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) {
                 var subscriber: Disposable? = null
                 subscriber = repo.dataEmitter.subscribe { bookItem ->
-                    Log.d("MyLog", "(VM) test getPreloadBooks book: ${bookItem.bookNameDefault}")
+                    Log.d("MyLog", "(VM) test getPreloadBooks book: ${bookItem.tagName}")
                     if (bookItem.author != BookListHelper.DUMMY_BOOK) replaceOrAddItem(bookItem)
                 }
 
@@ -60,7 +60,7 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
     private fun replaceOrAddItem(item: BookCardData) {
         var ind = -1
         for (index in listBookData.indices) {
-            if (listBookData[index].bookNameDefault == item.bookNameDefault) {
+            if (listBookData[index].tagName == item.tagName) {
                 ind = index
                 break
             }
@@ -117,9 +117,8 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         onFail: () -> Unit,
         onLoading: () -> Unit
     ) {
-        val updatedItem = listBookData[itemPosition].copy().apply { isLoading = true }
+        val updatedItem = listBookData[itemPosition].apply { isLoading = true }
         listBookData.setToListLiveData(itemPosition, updatedItem, onLoading)
-
         viewModelScope.launch {
             repo.loadBook(loadBookData,
                 onSuccess = {

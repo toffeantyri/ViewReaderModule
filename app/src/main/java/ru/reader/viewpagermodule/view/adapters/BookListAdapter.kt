@@ -1,6 +1,5 @@
 package ru.reader.viewpagermodule.view.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +52,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 
     fun updateItemByPos(item: BookCardData, pos: Int) {
         if (bookList.size < (pos + 1)) return
-        if (item.bookNameDefault == bookList[pos].bookNameDefault) {
+        if (item.tagName == bookList[pos].tagName) {
             bookList[pos] = item
             notifyItemChanged(pos)
         }
@@ -67,12 +66,6 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
     fun clearAdapterData() {
         bookList.clear()
         notifyDataSetChanged()
-    }
-
-    fun setLoadingByPos(pos: Int, isLoadingNext: Boolean) {
-        val updatedItem = bookList[pos].copy().apply { isLoading = isLoadingNext }
-        bookList[pos] = updatedItem
-        notifyItemChanged(pos)
     }
 
     interface ItemBookClickListener {
@@ -104,7 +97,7 @@ class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
                     bookListUrl.addAll(bookList[pos].urlForLoad)
                     itemBookClickListener.clickOpenBook(
                         LoadBookData(
-                            defaultNameBook = bookList[pos].bookNameDefault,
+                            defaultNameBook = bookList[pos].tagName,
                             absolutePath = bookList[pos].fileFullPath, bookListUrl
                         ),
                         adapterPos = adapterPosition

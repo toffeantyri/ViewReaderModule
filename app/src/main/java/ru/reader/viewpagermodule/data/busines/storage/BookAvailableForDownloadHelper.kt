@@ -3,7 +3,6 @@ package ru.reader.viewpagermodule.data.busines.storage
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.view.adapters.BookCardData
-import ru.reader.viewpagermodule.view.adapters.MemoryLocation
 
 
 class BookAvailableForDownloadHelper {
@@ -21,15 +20,14 @@ class BookAvailableForDownloadHelper {
     }
 
     private fun getEmptyBookCardData(name: String, listUrl: List<String>) = BookCardData(
-        author = "-",
-        nameBook = name,
-        imageValue = "",
-        fileFullPath = "",
-        byWay = MemoryLocation.NOT_DOWNLOADED,
-        urlForLoad = listUrl,
-        isFavorite = false,
-        bookNameDefault = name,
-    ).apply { isLoading = false }
+        tagName = name,
+    ).apply { isLoading = false
+        author = "-"
+        nameBook = name
+        imageValue = ""
+        fileFullPath = ""
+        urlForLoad = listUrl
+    }
 
     private fun createListEmptyBooks(): ArrayList<BookCardData> {
         return arrayListOf<BookCardData>().apply {

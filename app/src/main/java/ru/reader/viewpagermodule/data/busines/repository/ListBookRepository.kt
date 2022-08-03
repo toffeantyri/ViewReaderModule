@@ -26,7 +26,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                 valueNames.forEach { name ->
                     bh.getFileFromAssetsAndCache(name)?.let {
                         val path = App.getDirCache.toString() + "/" + name
-                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path)
+                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path, it.name)
                         bookItem?.let { dataEmitter.onNext(bookItem) }
                     }
                 }
@@ -44,7 +44,8 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                             Environment.getExternalStoragePublicDirectory(
                                 Environment.DIRECTORY_DOWNLOADS
                             ).path + "/" + name
-                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path)
+                        val bookItem =
+                            bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path, defaultName = it.name)
                         dataEmitter.onNext(bookItem)
                     }
                 }
@@ -63,7 +64,8 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                             Environment.getExternalStoragePublicDirectory(
                                 Environment.DIRECTORY_DOCUMENTS
                             ).path + "/" + name
-                        val bookItem = bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path)
+                        val bookItem =
+                            bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path, defaultName = it.name)
                         dataEmitter.onNext(bookItem)
                     }
                 }

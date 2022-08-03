@@ -12,16 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
-import ru.reader.viewpagermodule.data.busines.storage.StorageHelper
-import ru.reader.viewpagermodule.view.adapters.BookCardData
-import ru.reader.viewpagermodule.view.adapters.LoadBookData
-import ru.reader.viewpagermodule.view.adapters.MemoryLocation
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 
