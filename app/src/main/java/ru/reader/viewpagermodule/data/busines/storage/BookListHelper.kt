@@ -3,10 +3,11 @@ package ru.reader.viewpagermodule.data.busines.storage
 import android.os.Environment
 import android.util.Log
 import com.kursx.parser.fb2.FictionBook
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
-import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.view.adapters.MemoryLocation
 import java.io.*
@@ -73,7 +74,7 @@ class BookListHelper() {
                 }
             }
         }
-        listFilesName.forEach { Log.d("MyLog", "cache file name - $it") }
+        //listFilesName.forEach { Log.d("MyLog", "cache file name - $it") }
         return listFilesName
     }
 
@@ -87,7 +88,7 @@ class BookListHelper() {
                 }
             }
         }
-        listFilesName.forEach { Log.d("MyLog", "asset file name - $it") }
+        //listFilesName.forEach { Log.d("MyLog", "asset file name - $it") }
         return listFilesName
     }
 
@@ -96,7 +97,7 @@ class BookListHelper() {
 
         listFileNames = listFileNames.getEnvironmentPathListNames(Environment.DIRECTORY_DOWNLOADS)
 
-        listFileNames.forEach { Log.d("MyLog", "all files DOWNLOADS : $it") }
+        //listFileNames.forEach { Log.d("MyLog", "all files DOWNLOADS : $it") }
         return listFileNames
     }
 
@@ -105,7 +106,21 @@ class BookListHelper() {
 
         listFileNames = listFileNames.getEnvironmentPathListNames(Environment.DIRECTORY_DOCUMENTS)
 
-        listFileNames.forEach { Log.d("MyLog", "all files DOCUMENTS : $it") }
+        //listFileNames.forEach { Log.d("MyLog", "all files DOCUMENTS : $it") }
+        return listFileNames
+    }
+
+    private fun getListFB2NameFromMyPublicPath(): HashSet<String> {
+        val listFileNames: HashSet<String> = hashSetOf()
+        App.getMyPublicPath.list()?.let { listFiles ->
+            for (name in listFiles) {
+                val listName = name.split(".")
+                if (listName.size >= 2 && listName.last() == "fb2") {
+                    listFileNames.add(name)
+                }
+            }
+        }
+        //listFileNames.forEach { Log.d("MyLogFiles", "all files MyPath : $it") }
         return listFileNames
     }
 
@@ -123,15 +138,15 @@ class BookListHelper() {
         return hashSet
     }
 
-    private fun FictionBook.toBookCardData(fileFullPath: String): BookCardData {
+    private fun FictionBook.toBookCardData(fileFullPath: String, defaultName :String = ""): BookCardData {
         return BookCardData(
             author = this.description.titleInfo.authors?.let { if (it.size != 0) it[0]?.fullName ?: "" else "" } ?: "",
             nameBook = this.description.titleInfo.bookTitle ?: "",
             fileFullPath = fileFullPath,
             imageValue = this.getTitleImageBinaryString(),
             byWay = MemoryLocation.IN_DEVICE_MEMORY,
+            bookNameDefault = defaultName
         ).apply { isLoading = false }
-
     }
 
     private fun FictionBook.getTitleImageBinaryString(): String {
@@ -142,31 +157,11 @@ class BookListHelper() {
         return binaries?.get(imageName)?.binary ?: ""
     }
 
-    fun getListBookItemsFromAssetCacheDownDocsByName(namesOfFiles: HashSet<String>): List<BookCardData> {
-        val list = hashSetOf<BookCardData>()
-
-        for (name in namesOfFiles) {
-            var file = getFileFromAssetsAndCache(name)
-            if (file != null) {
-                tryFileToFb2ToBookItem(file, name)?.let { list.add(it) }
-            } else {
-                file = getFileFromPathDownloads(name)
-                if (file != null) tryFileToFb2ToBookItem(file, name)?.let { list.add(it) }
-                else {
-                    file = getFileFromPathDocuments(name)
-                    if (file != null) tryFileToFb2ToBookItem(file, name)?.let { list.add(it) }
-                    else Log.d("MyLog", "file $name is not exist always")
-                }
-            }
-        }
-        return list.toList()
-    }
-
-    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String): BookCardData? {
+    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String, defaultName: String = ""): BookCardData? {
         try {
             Log.d("MyLog", "$------------------------------------------- $fb2File")
             val fb2 = FictionBook(fb2File)
-            return fb2.toBookCardData(fileFullPath)
+            return fb2.toBookCardData(fileFullPath, defaultName)
         } catch (e: ParserConfigurationException) {
             Log.d("MyLog", e.stackTraceToString())
         } catch (e: IOException) {
@@ -181,11 +176,30 @@ class BookListHelper() {
         return null
     }
 
-    fun getBookListForDownloading(): ArrayList<BookCardData> {
-        val listBooks = BookAvailableForDownloadHelper().getListAvailableBooksForDownloads()
-        //todo check if book is here - return book else return empty book
+    suspend fun getBookListForDownloading(): ArrayList<BookCardData> {
+        val resultList: ArrayList<BookCardData> = arrayListOf()
+        val listEmptyBooks = BookAvailableForDownloadHelper().getListAvailableBooksForDownloads()
+        val listBookFromPath = withContext(Dispatchers.IO) {
+            getListFB2NameFromMyPublicPath()
+        }
 
-        return listBooks
+        for (data in listEmptyBooks) {
+            val name = "${data.bookNameDefault}.fb2"
+            Log.d("MyLogFiles", "path contains $name: ${listBookFromPath.contains(name)}")
+            if (listBookFromPath.contains(name)) {
+                val path = "${App.getMyPublicPath.path}/$name"
+                val bookData = tryFileToFb2ToBookItem(File(path), path, data.bookNameDefault)
+                Log.d("MyLogFiles", "bookData : $bookData")
+                if (bookData != null) {
+                    resultList.add(bookData)
+                } else {
+                    resultList.add(data)
+                }
+            } else {
+                resultList.add(data)
+            }
+        }
+        return resultList
     }
 
     fun getDummyBook(): BookCardData {
