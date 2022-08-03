@@ -3,6 +3,8 @@ package ru.reader.viewpagermodule.services
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Binder
 import android.util.Log
@@ -10,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 import okhttp3.ResponseBody
 import retrofit2.Response
+import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.data.api.ApiProviderForDownload
 import ru.reader.viewpagermodule.data.busines.repository.BROADCAST_SERVICE_LOAD_STATE
 import ru.reader.viewpagermodule.data.busines.repository.LoadingBookState
@@ -57,31 +60,21 @@ class DownloadFileService : Service() {
 
     private fun buildNotification(serviceStateIn: LoadingBookState): NotificationCompat.Builder {
         val notificationAction = android.R.drawable.stat_sys_download
-        var notRemoveOnSwipe = true
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val textList = queueLoadingFile.map { it.key + ", " }
         val name = "LoadService"
         val importance = NotificationManager.IMPORTANCE_LOW
         val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
             lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
         }
         notificationManager.createNotificationChannel(channel)
-
-        when (serviceStateIn) {
-            LoadingBookState.LOADING -> {
-            }
-            LoadingBookState.IDLE_LOAD -> {
-                notRemoveOnSwipe = false
-            }
-            LoadingBookState.SUCCESS_LOAD -> {
-                notRemoveOnSwipe = false
-            }
-            LoadingBookState.LOAD_FAIL -> {
-                notRemoveOnSwipe = false
-            }
-            LoadingBookState.STATE_COMPLETE -> {
-                notRemoveOnSwipe = false
-            }
+        val notRemoveOnSwipe = when (serviceStateIn) {
+            LoadingBookState.LOADING -> true
+            LoadingBookState.IDLE_LOAD -> false
+            LoadingBookState.SUCCESS_LOAD -> false
+            LoadingBookState.LOAD_FAIL -> false
+            LoadingBookState.STATE_COMPLETE -> false
         }
 
         val notificationBuilder: NotificationCompat.Builder =
@@ -91,8 +84,10 @@ class DownloadFileService : Service() {
                     androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle()
                 )
                 .setDefaults(0)
-                .setColor(Color.WHITE)
+                .setColor(Color.LTGRAY)
                 .setColorized(true)
+                .setContentTitle(getString(R.string.toast_loading))
+                .setContentText(textList.toString())
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(notificationAction)
@@ -104,6 +99,7 @@ class DownloadFileService : Service() {
 
     private suspend fun loadBookByUrl(bookData: LoadBookData) {
         addToQueueLoadings(bookData)
+        buildNotification(LoadingBookState.LOADING)
         lateinit var currentState: LoadingBookState
         for (urlIndex in bookData.listOfUrls.indices) {
             Log.d("MyLog", bookData.listOfUrls[urlIndex])
@@ -161,12 +157,14 @@ class DownloadFileService : Service() {
             if (currentState == LoadingBookState.SUCCESS_LOAD) {
                 serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, currentState)
                 removeFromQueueLoadings(bookData)
+                buildNotification(LoadingBookState.LOADING)
                 checkServiceComplete()
                 break
             }
             if (urlIndex == (bookData.listOfUrls.size - 1)) {
                 serviceStateByTag = LoadingBookStateByName(bookData.defaultNameBook, currentState)
                 removeFromQueueLoadings(bookData)
+                buildNotification(LoadingBookState.LOADING)
                 checkServiceComplete()
                 break
             } else continue

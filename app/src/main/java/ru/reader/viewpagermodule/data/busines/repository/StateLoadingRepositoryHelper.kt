@@ -63,7 +63,7 @@ class StateLoadingRepositoryHelper : BaseRepository<LoadingBookStateByName>() {
                     stateEmitter.onNext(intentState)
                 }
                 LoadingBookState.LOADING -> {
-                    stateEmitter.onNext(intentState)
+                    //state used only for build Notification
                 }
                 LoadingBookState.STATE_COMPLETE -> {
                     loadingIsComplete = true
