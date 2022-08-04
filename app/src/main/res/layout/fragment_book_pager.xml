@@ -10,7 +10,7 @@
 
     <ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
         android:layout_marginTop="@dimen/info_panel_height"
-        android:id="@+id/tv_book_text"
+        android:id="@+id/ptv_book_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/margin_medium"
