@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.view.screens.listfragment
+package ru.reader.viewpagermodule.view.screens
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -24,8 +24,8 @@ import ru.reader.viewpagermodule.helpers.DialogHelper
 import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.view.adapters.BookListAdapter
 import ru.reader.viewpagermodule.view.adapters.LoadBookData
-import ru.reader.viewpagermodule.view.screens.MainActivity
 import ru.reader.viewpagermodule.view.util.MyViewAnimator
+import ru.reader.viewpagermodule.viewmodels.ByMemoryState
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {

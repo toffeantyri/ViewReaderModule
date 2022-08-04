@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.view.screens.listfragment
+package ru.reader.viewpagermodule.viewmodels
 
 enum class ByMemoryState {
     FROM_DEVICE,

@@ -11,7 +11,6 @@ import ru.reader.viewpagermodule.view.adapters.BookCardData
 import ru.reader.viewpagermodule.data.busines.repository.ListBookRepository
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.view.adapters.LoadBookData
-import ru.reader.viewpagermodule.view.screens.listfragment.ByMemoryState
 
 
 class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
