@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import ru.reader.viewpagermodule.R
 
 
-class ViewPagerFragment : Fragment() {
+class BookPagerFragment : Fragment() {
 
     companion object {
         @JvmStatic
@@ -19,7 +19,7 @@ class ViewPagerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view0 = inflater.inflate(R.layout.fragment_view_pager, container, false)
+        val view0 = inflater.inflate(R.layout.fragment_book_pager, container, false)
 
         return view0
     }

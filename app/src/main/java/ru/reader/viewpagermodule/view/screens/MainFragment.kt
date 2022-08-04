@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import kotlinx.android.synthetic.main.dialog_book_loading.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
@@ -37,6 +38,10 @@ class MainFragment : Fragment() {
         btn_open_list.setOnClickListener {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
         }
+        btn_test_open_book.setOnClickListener {
+           parentActivity.navHostController.navigate(R.id.action_mainFragment_to_bookPagerFragment)
+        }
+
 
     }
 

@@ -13,10 +13,10 @@
         android:text="open book list" />
 
     <Button
-        android:id="@+id/button_test_load"
+        android:id="@+id/btn_test_open_book"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="test load book" />
+        android:text="test open book" />
 
 </FrameLayout>
