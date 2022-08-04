@@ -121,12 +121,16 @@ class ViewModelMainActivity(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             repo.loadBook(loadBookData,
                 onSuccess = {
-                    Log.d("MyLog", "(VM) : onSuccess ${loadBookData.defaultNameBook}")
-                    getPreloadBooks(onSuccess)
+                    if (fromMemoryState.value == ByMemoryState.FROM_DOWNLOAD) {
+                        Log.d("MyLog", "(VM) : onSuccess ${loadBookData.defaultNameBook}")
+                        getPreloadBooks(onSuccess)
+                    }
                 }, onFail = {
-                    Log.d("MyLog", "(VM) : onFail ${loadBookData.defaultNameBook}")
-                    getPreloadBooks(onSuccess)
-                    onFail()
+                    if (fromMemoryState.value == ByMemoryState.FROM_DOWNLOAD) {
+                        Log.d("MyLog", "(VM) : onFail ${loadBookData.defaultNameBook}")
+                        getPreloadBooks(onSuccess)
+                        onFail()
+                    }
                 })
         }
     }

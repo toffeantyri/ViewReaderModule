@@ -74,6 +74,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             btnChooseMemorySetState(state)
             adapter.clearAdapterData()
             if (!configChanged) {
+                lockRotation(false)
                 viewModel.clearBookList()
             }
             if (viewModel.dataListBook.value.isNullOrEmpty()) {
@@ -103,16 +104,6 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                 }
             }
             configChanged = false
-        }
-    }
-
-
-    private fun setLoadingAndHideBtnChoose(flag: Boolean) {
-        progressBarLoading.visibility = if (flag) View.VISIBLE else View.GONE
-        if (flag) {
-            btnChangeMemory.hide()
-        } else {
-            btnChangeMemory.show()
         }
     }
 
@@ -164,6 +155,15 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         } else {
             showToast(loadBookData.absolutePath)
             //todo open book
+        }
+    }
+
+    private fun setLoadingAndHideBtnChoose(flag: Boolean) {
+        progressBarLoading.visibility = if (flag) View.VISIBLE else View.GONE
+        if (flag) {
+            btnChangeMemory.hide()
+        } else {
+            btnChangeMemory.show()
         }
     }
 
