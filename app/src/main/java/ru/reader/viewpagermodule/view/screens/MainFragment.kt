@@ -14,6 +14,8 @@ import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.dialog_book_loading.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import ru.reader.viewpagermodule.R
+import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
+import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 
@@ -38,8 +40,20 @@ class MainFragment : Fragment() {
         btn_open_list.setOnClickListener {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
         }
+
+        val bundle : Bundle = Bundle()
+        val bookBundle: BookStateForBundle = BookStateForBundle(
+            resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
+            resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
+            "data/user/0/ru.reader.viewpagermodule/cache/bg_fb2.fb2",
+            ReadState(
+                0, 100, 0f,
+                "123123123123123123qwrvgqabwcrqiw4yrt78qyb278ry7q82yr82783y"
+            )
+        )
+        bundle.putSerializable("BOOK", bookBundle)
         btn_test_open_book.setOnClickListener {
-           parentActivity.navHostController.navigate(R.id.action_mainFragment_to_bookPagerFragment)
+            parentActivity.navHostController.navigate(R.id.action_mainFragment_to_bookPagerFragment, bundle)
         }
 
 

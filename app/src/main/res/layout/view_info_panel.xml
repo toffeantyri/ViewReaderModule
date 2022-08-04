@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/margin_medium">
 
     <TextView
-        android:id="@+id/tv_book_name"
+        android:id="@+id/tv_book_name_panel"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -18,14 +18,14 @@
         tools:text="Young giant" />
 
     <TextView
-        android:id="@+id/tv_pages_read"
+        android:id="@+id/tv_pages_read_panel"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         tools:text="1/13" />
 
     <TextView
-        android:id="@+id/tv_percent_read"
+        android:id="@+id/tv_percent_read_panel"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
