@@ -7,27 +7,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
+import kotlinx.android.synthetic.main.dialog_book_loading.*
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.view.models.BookStateForBundle
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 
 const val REQUEST_CODE_PERMISSION = 1007
-const val BOOK_BUNDLE = "BOOK_BUNDLE"
 
 class MainFragment : Fragment() {
 
     private val viewModel: ViewModelMainActivity by activityViewModels()
-
-    lateinit var dialogLoading: AlertDialog
 
     private lateinit var parentActivity: MainActivity
     override fun onCreateView(
@@ -44,25 +38,11 @@ class MainFragment : Fragment() {
         btn_open_list.setOnClickListener {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
         }
-
-        val bundle: Bundle = Bundle()
-        val bookBundle = BookStateForBundle(
-            resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
-            resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
-            "data/user/0/ru.reader.viewpagermodule/cache/bg_fb2.fb2",
-            0,
-            1
-        )
-        bundle.putSerializable(BOOK_BUNDLE, bookBundle)
-
-
-
         btn_test_open_book.setOnClickListener {
-            lifecycleScope.launch {
-                // parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
-                parentActivity.navHostController.navigate(R.id.action_mainFragment_to_customViewPagerFragment, bundle)
-            }
+           parentActivity.navHostController.navigate(R.id.action_mainFragment_to_bookPagerFragment)
         }
+
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

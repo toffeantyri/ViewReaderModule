@@ -13,41 +13,15 @@
               android:label="MainFragment">
         <action android:id="@+id/action_mainFragment_to_listFragment" app:destination="@id/listFragment"/>
         <action
-            android:id="@+id/action_mainFragment_to_viewBookPager"
-            app:destination="@id/viewBookPager" />
-        <action
-            android:id="@+id/action_mainFragment_to_webPagerFragment"
-            app:destination="@id/webPagerFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_customViewPagerFragment"
-            app:destination="@id/customViewPagerFragment" />
+            android:id="@+id/action_mainFragment_to_bookPagerFragment"
+            app:destination="@id/bookPagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookPagerFragment"
-        android:name="ru.reader.viewpagermodule.view.screens.ChapterPagerFragment"
-        android:label="BookPagerFragment" />
-    <fragment
-        android:id="@+id/viewBookPager"
-        android:name="ru.reader.viewpagermodule.view.screens.ViewBookPagerFragment"
-        android:label="ViewBookPager" >
+        android:name="ru.reader.viewpagermodule.view.screens.BookPagerFragment"
+        android:label="BookPagerFragment" >
         <action
-            android:id="@+id/action_viewBookPager_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/webPagerFragment"
-        android:name="ru.reader.viewpagermodule.view.screens.WebPagerFragment"
-        android:label="WebPagerFragment" >
-        <action
-            android:id="@+id/action_webPagerFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/customViewPagerFragment"
-        android:name="ru.reader.viewpagermodule.view.screens.ViewPagerBookFragment"
-        android:label="CustomViewPagerFragment" >
-        <action
-            android:id="@+id/action_customViewPagerFragment_to_mainFragment"
+            android:id="@+id/action_bookPagerFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

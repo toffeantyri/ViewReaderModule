@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.screens.BookPagerFragment">
+
+    <include layout="@layout/view_info_panel" />
+
+    <ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
+        android:layout_marginTop="@dimen/info_panel_height"
+        android:id="@+id/tv_book_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/margin_medium"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:text="@string/choose_memory_storage" />
+
+</FrameLayout>
