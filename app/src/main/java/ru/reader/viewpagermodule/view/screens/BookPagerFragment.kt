@@ -10,6 +10,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_book_pager.*
 import kotlinx.android.synthetic.main.fragment_book_pager.view.*
 import ru.reader.viewpagermodule.R
+import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.paginatedtextview.view.OnActionListener
 import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
@@ -22,15 +23,19 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     private lateinit var tvNameBook: TextView
     private lateinit var tvPage: TextView
     private lateinit var tvPercent: TextView
-
     private lateinit var tvBookContent : PaginatedTextView
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view0 = inflater.inflate(R.layout.fragment_book_pager, container, false)
+        val arg = arguments?.getSerializable("BOOK") as BookStateForBundle
 
 
         tvBookContent = view0.ptv_book_text
