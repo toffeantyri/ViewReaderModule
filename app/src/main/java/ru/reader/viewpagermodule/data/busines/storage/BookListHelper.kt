@@ -158,11 +158,11 @@ class BookListHelper() {
         return binaries?.get(imageName)?.binary ?: ""
     }
 
-    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String, defaultName: String): BookCardData? {
+    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String, tagName: String): BookCardData? {
         try {
-            Log.d("MyLog", "$------------------------------------------- $fb2File")
+            Log.d("MyLog", "$-----------------------------try to fb2 $fb2File")
             val fb2 = FictionBook(fb2File)
-            return fb2.toBookCardData(fileFullPath, defaultName)
+            return fb2.toBookCardData(fileFullPath, tagName)
         } catch (e: ParserConfigurationException) {
             Log.d("MyLog", e.stackTraceToString())
         } catch (e: IOException) {

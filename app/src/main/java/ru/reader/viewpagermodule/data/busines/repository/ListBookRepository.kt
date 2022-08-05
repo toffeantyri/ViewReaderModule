@@ -45,7 +45,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                                 Environment.DIRECTORY_DOWNLOADS
                             ).path + "/" + name
                         val bookItem =
-                            bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path, defaultName = it.name)
+                            bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path, tagName = it.name)
                         dataEmitter.onNext(bookItem)
                     }
                 }
@@ -65,7 +65,7 @@ class ListBookRepository() : BaseRepository<BookCardData>() {
                                 Environment.DIRECTORY_DOCUMENTS
                             ).path + "/" + name
                         val bookItem =
-                            bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path, defaultName = it.name)
+                            bh.tryFileToFb2ToBookItem(fb2File = it, fileFullPath = path, tagName = it.name)
                         dataEmitter.onNext(bookItem)
                     }
                 }
