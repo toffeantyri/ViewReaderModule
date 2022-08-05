@@ -1,16 +1,15 @@
 package ru.reader.viewpagermodule.view.screens
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
-import kotlinx.android.synthetic.main.fragment_book_pager.*
-import kotlinx.android.synthetic.main.fragment_book_pager.view.*
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
@@ -35,17 +34,19 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     @BindView(R.id.ptv_book_text)
     lateinit var tvBookContent: PaginatedTextView
 
-    private lateinit var parentActivity : MainActivity
+    private lateinit var parentActivity: MainActivity
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentActivity = activity as MainActivity
+        lockRotationPortrait(true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         parentActivity.supportActionBar?.show()
+        lockRotationPortrait(false)
 
     }
 
@@ -58,7 +59,9 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         val arg = arguments?.getSerializable("BOOK") as BookStateForBundle?
 
         tvNameBook.text = arg?.bookName ?: getString(R.string.unknown_name_book)
-        tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)))
+        if (arg != null) {
+            tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), arg.pageIndex)
+        }
 
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
@@ -100,6 +103,15 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
             .append("/")
             .append("${readState.pagesCount}").toString()
         tvPercent.text = "${readState.readPercent.toInt()}%"
+    }
+
+    private fun lockRotationPortrait(value: Boolean) {
+        if (value) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        }
     }
 
 }

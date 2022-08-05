@@ -40,15 +40,18 @@ class PaginatedTextView @JvmOverloads constructor(
      * Setup the TextView
      * @param text text to set
      */
-    fun setup(text: CharSequence) {
+    fun setup(text: CharSequence, pageIndex : Int) {
+
         if (isMeasured) {
-            loadFirstPage(text)
+            //loadFirstPage(text)
+            loadSelectedPage(text, pageIndex)
         } else {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     isMeasured = true
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    loadFirstPage(text)
+                    //loadFirstPage(text)
+                    loadSelectedPage(text, pageIndex)
                 }
             })
         }
@@ -95,6 +98,21 @@ class PaginatedTextView @JvmOverloads constructor(
                 lineSpacingMultiplier,
                 lineSpacingExtra
         )
+        setPageState(controller.getCurrentPage())
+    }
+
+    private fun loadSelectedPage(text: CharSequence, pageIndex : Int) {
+        val effectWidth = width - (paddingLeft + paddingRight)
+        val effectHeight = height - (paddingTop + paddingBottom)
+        controller = PaginationController(
+            text,
+            effectWidth,
+            effectHeight,
+            textPaint,
+            lineSpacingMultiplier,
+            lineSpacingExtra
+        )
+        controller.setCurrentPage(pageIndex)
         setPageState(controller.getCurrentPage())
     }
 

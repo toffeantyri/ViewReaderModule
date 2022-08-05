@@ -26,6 +26,10 @@ class PaginationController(
             paginator.getCurrentPage()
     )
 
+    fun setCurrentPage(pageIndex : Int) {
+        paginator.currentIndex = pageIndex - 1
+    }
+
     /**
      * Get state of next page
      * @return next page state, or null, if this page is last
