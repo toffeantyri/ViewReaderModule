@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/nav_host_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph"
@@ -20,7 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:background="@color/colorPrimary"
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
