@@ -3,19 +3,28 @@ package ru.reader.viewpagermodule.view.screens
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.kursx.parser.fb2.FictionBook
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.reader.viewpagermodule.R
+import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.paginatedtextview.view.OnActionListener
 import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
 import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
+import java.io.File
 import java.io.InputStream
 import java.lang.StringBuilder
 
@@ -36,6 +45,8 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     lateinit var tvBookContent: PaginatedTextView
 
     private var pageNum = 1
+    private val bh = BookListHelper()
+    private var currentFullText: String = ""
 
     var durationAnimationBySwipe = 150L
     private lateinit var inRight: Animation
@@ -64,9 +75,15 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         ButterKnife.bind(this, view0)
         val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookStateForBundle?
         arg?.let {
-            pageNum = arg.pageIndex
-            tvNameBook.text = arg.bookName
+            pageNum = it.pageIndex
+            tvNameBook.text = it.bookName
+
+
+            tvBookContent.setup(getDataByFb2(it), pageNum)
+
+
         }
+
         setupAnimationRightLeft()
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
@@ -79,16 +96,9 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         super.onStart()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), pageNum)
-    }
-
-
     override fun onSwipeLeft() {
         tvBookContent.startAnimation(inLeft)
     }
-
 
     override fun onSwipeRight() {
         tvBookContent.startAnimation(inRight)
@@ -103,7 +113,6 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     override fun onPageLoaded(state: ReadState) {
         displayReadState(state)
     }
-
 
     private fun getText(inputStream: InputStream): String {
         val bytes = ByteArray(inputStream.available())
@@ -136,5 +145,11 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         inLeft.duration = durationAnimationBySwipe
     }
 
+    private fun getDataByFb2(bookState: BookStateForBundle): CharSequence {
+        val fb2File = File(bookState.absolutePath)
+        val fb2 = FictionBook(fb2File)
+        val fullText = fb2.authors[0].fullName
 
+        return fullText
+    }
 }
