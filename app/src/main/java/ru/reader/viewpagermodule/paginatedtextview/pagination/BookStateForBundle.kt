@@ -7,5 +7,5 @@ data class BookStateForBundle(
     val bookName: String,
     val tagName: String,
     val absolutePath : String,
-    val readState: ReadState
+    val pageIndex : Int
 ) : Serializable
