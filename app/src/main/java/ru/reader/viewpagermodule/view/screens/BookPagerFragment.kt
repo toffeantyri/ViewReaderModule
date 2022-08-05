@@ -1,15 +1,19 @@
 package ru.reader.viewpagermodule.view.screens
 
+import android.annotation.SuppressLint
+import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.animation.AnimationUtils
+import android.widget.TextSwitcher
 import android.widget.TextView
+import android.widget.ViewSwitcher
+import androidx.core.view.setPadding
 import butterknife.BindView
 import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_book_pager.view.*
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
@@ -19,6 +23,7 @@ import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
 import java.io.InputStream
 import java.lang.StringBuilder
 
+const val BOOK_BUNDLE = "BOOK_BUNDLE_STATE"
 
 class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
@@ -34,6 +39,8 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     @BindView(R.id.ptv_book_text)
     lateinit var tvBookContent: PaginatedTextView
 
+    private var pageNum = 1
+
     private lateinit var parentActivity: MainActivity
 
 
@@ -47,7 +54,6 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         super.onDestroy()
         parentActivity.supportActionBar?.show()
         lockRotationPortrait(false)
-
     }
 
     override fun onCreateView(
@@ -56,12 +62,13 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     ): View? {
         val view0 = inflater.inflate(R.layout.fragment_book_pager, container, false)
         ButterKnife.bind(this, view0)
-        val arg = arguments?.getSerializable("BOOK") as BookStateForBundle?
-
-        tvNameBook.text = arg?.bookName ?: getString(R.string.unknown_name_book)
-        if (arg != null) {
-            tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), arg.pageIndex)
+        val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookStateForBundle?
+        arg?.let {
+            pageNum = arg.pageIndex
+            tvNameBook.text = arg.bookName
         }
+        val outAnim = AnimationUtils.loadAnimation(this.context, android.R.anim.slide_out_right)
+        val inAnim = AnimationUtils.loadAnimation(this.context, android.R.anim.slide_in_left)
 
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
@@ -71,23 +78,32 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
     override fun onStart() {
         parentActivity.supportActionBar?.hide()
+
+
         super.onStart()
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), pageNum)
+    }
+
 
     override fun onSwipeLeft() {
     }
 
-    override fun onSwipeRight() {
-    }
 
-    override fun onPageLoaded(state: ReadState) {
-        displayReadState(state)
+    override fun onSwipeRight() {
     }
 
     override fun onClick(paragraph: String) {
     }
 
     override fun onLongClick(word: String) {
+    }
+
+    override fun onPageLoaded(state: ReadState) {
+        displayReadState(state)
     }
 
 
@@ -97,12 +113,13 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         return String(bytes)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayReadState(readState: ReadState) {
         tvPage.text = StringBuilder()
             .append("${readState.currentIndex}")
             .append("/")
             .append("${readState.pagesCount}").toString()
-        tvPercent.text = "${readState.readPercent.toInt()}%"
+        tvPercent.text = readState.readPercent.toInt().toString() + "%"
     }
 
     private fun lockRotationPortrait(value: Boolean) {
@@ -113,5 +130,7 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         }
     }
+
+
 
 }

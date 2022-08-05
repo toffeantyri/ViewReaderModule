@@ -46,9 +46,9 @@ class MainFragment : Fragment() {
             resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
             resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
             "data/user/0/ru.reader.viewpagermodule/cache/bg_fb2.fb2",
-            5
+            4
         )
-        bundle.putSerializable("BOOK", bookBundle)
+        bundle.putSerializable(BOOK_BUNDLE, bookBundle)
         btn_test_open_book.setOnClickListener {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_bookPagerFragment, bundle)
         }

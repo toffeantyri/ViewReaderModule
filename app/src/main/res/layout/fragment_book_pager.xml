@@ -8,14 +8,6 @@
 
     <include layout="@layout/view_info_panel" />
 
-    <ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
-        android:layout_marginTop="@dimen/info_panel_height"
-        android:id="@+id/ptv_book_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/margin_medium"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
-        android:text="@string/choose_memory_storage" />
+    <include layout="@layout/paginated_text_view"/>
 
 </FrameLayout>
