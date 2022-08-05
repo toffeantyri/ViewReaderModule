@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import org.xml.sax.SAXException
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.App
-import ru.reader.viewpagermodule.view.adapters.models.BookCardData
+import ru.reader.viewpagermodule.view.adapters.BookCardData
 import java.io.*
 import java.lang.NullPointerException
 import java.util.concurrent.TimeoutException
@@ -158,7 +158,7 @@ class BookListHelper() {
         return binaries?.get(imageName)?.binary ?: ""
     }
 
-    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String, tagName: String=""): BookCardData? {
+    fun tryFileToFb2ToBookItem(fb2File: File, fileFullPath: String, tagName: String): BookCardData? {
         try {
             Log.d("MyLog", "$-----------------------------try to fb2 $fb2File")
             val fb2 = FictionBook(fb2File)
