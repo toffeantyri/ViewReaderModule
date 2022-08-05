@@ -1,6 +1,11 @@
 package ru.reader.viewpagermodule.paginatedtextview.pagination
 
+/**
+ * ru.mamykin.widget:paginatedtextview:0.1.1
+ * */
+
 import android.text.TextPaint
+import androidx.annotation.RequiresPermission
 
 /**
  * Helper class for work with text pages
