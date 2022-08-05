@@ -201,7 +201,7 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
             } else activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         } else {
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         }
     }
 
