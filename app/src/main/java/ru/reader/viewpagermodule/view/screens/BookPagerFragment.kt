@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import butterknife.BindView
+import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.fragment_book_pager.*
 import kotlinx.android.synthetic.main.fragment_book_pager.view.*
 import ru.reader.viewpagermodule.R
@@ -16,18 +18,35 @@ import ru.reader.viewpagermodule.paginatedtextview.view.OnActionListener
 import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
 import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
 import java.io.InputStream
+import java.lang.StringBuilder
 
 
 class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
-    private lateinit var tvNameBook: TextView
-    private lateinit var tvPage: TextView
-    private lateinit var tvPercent: TextView
-    private lateinit var tvBookContent : PaginatedTextView
+    @BindView(R.id.tv_book_name_panel)
+    lateinit var tvNameBook: TextView
+
+    @BindView(R.id.tv_pages_read_panel)
+    lateinit var tvPage: TextView
+
+    @BindView(R.id.tv_percent_read_panel)
+    lateinit var tvPercent: TextView
+
+    @BindView(R.id.ptv_book_text)
+    lateinit var tvBookContent: PaginatedTextView
+
+    private lateinit var parentActivity : MainActivity
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        parentActivity = activity as MainActivity
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        parentActivity.supportActionBar?.show()
+
     }
 
     override fun onCreateView(
@@ -35,14 +54,21 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         savedInstanceState: Bundle?
     ): View? {
         val view0 = inflater.inflate(R.layout.fragment_book_pager, container, false)
-        val arg = arguments?.getSerializable("BOOK") as BookStateForBundle
+        ButterKnife.bind(this, view0)
+        val arg = arguments?.getSerializable("BOOK") as BookStateForBundle?
 
-
-        tvBookContent = view0.ptv_book_text
+        tvNameBook.text = arg?.bookName ?: getString(R.string.unknown_name_book)
         tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)))
+
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
+
         return view0
+    }
+
+    override fun onStart() {
+        parentActivity.supportActionBar?.hide()
+        super.onStart()
     }
 
     override fun onSwipeLeft() {
@@ -52,6 +78,7 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     }
 
     override fun onPageLoaded(state: ReadState) {
+        displayReadState(state)
     }
 
     override fun onClick(paragraph: String) {
@@ -65,6 +92,14 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         val bytes = ByteArray(inputStream.available())
         inputStream.read(bytes)
         return String(bytes)
+    }
+
+    private fun displayReadState(readState: ReadState) {
+        tvPage.text = StringBuilder()
+            .append("${readState.currentIndex}")
+            .append("/")
+            .append("${readState.pagesCount}").toString()
+        tvPercent.text = "${readState.readPercent.toInt()}%"
     }
 
 }

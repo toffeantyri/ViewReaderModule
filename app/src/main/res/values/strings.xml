@@ -16,5 +16,6 @@
 
     <string name="toast_error_load">Ошибка загрузки</string>
     <string name="toast_loading">Загружается</string>
+    <string name="unknown_name_book">Неизвестное название</string>
 
 </resources>
