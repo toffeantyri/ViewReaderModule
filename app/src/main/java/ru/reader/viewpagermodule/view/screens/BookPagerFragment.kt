@@ -1,19 +1,15 @@
 package ru.reader.viewpagermodule.view.screens
 
 import android.annotation.SuppressLint
-import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.*
+import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
-import android.widget.TextSwitcher
 import android.widget.TextView
-import android.widget.ViewSwitcher
-import androidx.core.view.setPadding
 import butterknife.BindView
 import butterknife.ButterKnife
-import kotlinx.android.synthetic.main.fragment_book_pager.view.*
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
@@ -41,6 +37,10 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
     private var pageNum = 1
 
+    var durationAnimationBySwipe = 150L
+    private lateinit var inRight: Animation
+    private lateinit var inLeft: Animation
+
     private lateinit var parentActivity: MainActivity
 
 
@@ -67,9 +67,7 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
             pageNum = arg.pageIndex
             tvNameBook.text = arg.bookName
         }
-        val outAnim = AnimationUtils.loadAnimation(this.context, android.R.anim.slide_out_right)
-        val inAnim = AnimationUtils.loadAnimation(this.context, android.R.anim.slide_in_left)
-
+        setupAnimationRightLeft()
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
 
@@ -78,8 +76,6 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
     override fun onStart() {
         parentActivity.supportActionBar?.hide()
-
-
         super.onStart()
     }
 
@@ -90,10 +86,12 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
 
     override fun onSwipeLeft() {
+        tvBookContent.startAnimation(inLeft)
     }
 
 
     override fun onSwipeRight() {
+        tvBookContent.startAnimation(inRight)
     }
 
     override fun onClick(paragraph: String) {
@@ -131,6 +129,12 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         }
     }
 
+    private fun setupAnimationRightLeft() {
+        inRight = AnimationUtils.loadAnimation(this.context, R.anim.slide_in_right)
+        inLeft = AnimationUtils.loadAnimation(this.context, R.anim.slide_in_left)
+        inRight.duration = durationAnimationBySwipe
+        inLeft.duration = durationAnimationBySwipe
+    }
 
 
 }
