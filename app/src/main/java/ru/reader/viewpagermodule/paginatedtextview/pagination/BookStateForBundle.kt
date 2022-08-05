@@ -1,5 +1,9 @@
 package ru.reader.viewpagermodule.paginatedtextview.pagination
 
+/**
+ * ru.mamykin.widget:paginatedtextview:0.1.1
+ * */
+
 import java.io.Serializable
 import java.nio.file.Path
 

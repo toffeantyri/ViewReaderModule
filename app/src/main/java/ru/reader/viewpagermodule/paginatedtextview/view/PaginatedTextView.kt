@@ -1,5 +1,9 @@
 package ru.reader.viewpagermodule.paginatedtextview.view
 
+/**
+ * ru.mamykin.widget:paginatedtextview:0.1.1
+ * */
+
 import android.content.Context
 import android.graphics.Color
 import android.text.Spannable
