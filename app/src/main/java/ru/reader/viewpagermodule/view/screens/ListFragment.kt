@@ -58,8 +58,13 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         progressBarLoading = view0.progress_bar_rv
         recycler = view0.list_rv
         initRv()
-
+        parentActivity.supportActionBar?.hide()
         return view0
+    }
+
+    override fun onDestroy() {
+        parentActivity.supportActionBar?.show()
+        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

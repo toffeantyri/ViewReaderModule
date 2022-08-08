@@ -10,7 +10,9 @@ import android.text.Spannable
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import android.view.ViewParent
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
@@ -23,9 +25,9 @@ import ru.reader.viewpagermodule.APP_CONTEXT
  * An extended TextView, which support pagination, clicks by paragraphs and long clicks by words
  */
 class PaginatedTextView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
 ) : AppCompatTextView(context, attrs, defStyle) {
 
     private val textPaint = TextPaint(paint)
@@ -44,7 +46,7 @@ class PaginatedTextView @JvmOverloads constructor(
      * Setup the TextView
      * @param text text to set
      */
-    fun setup(text: CharSequence, pageIndex : Int) {
+    fun setup(text: CharSequence, pageIndex: Int) {
 
         if (isMeasured) {
             loadSelectedPage(text, pageIndex)
@@ -89,19 +91,6 @@ class PaginatedTextView @JvmOverloads constructor(
         return text.subSequence(selectionStart, selectionEnd).trim(' ').toString()
     }
 
-    private fun loadFirstPage(text: CharSequence) {
-        val effectWidth = width - (paddingLeft + paddingRight)
-        val effectHeight = height - (paddingTop + paddingBottom)
-        controller = PaginationController(
-                text,
-                effectWidth,
-                effectHeight,
-                textPaint,
-                lineSpacingMultiplier,
-                lineSpacingExtra
-        )
-        setPageState(controller.getCurrentPage())
-    }
 
     private fun loadSelectedPage(text: CharSequence, pageIndex : Int) {
         val effectWidth = width - (paddingLeft + paddingRight)
