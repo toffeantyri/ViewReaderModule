@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/bookPagerFragment"
-        android:name="ru.reader.viewpagermodule.view.screens.BookPagerFragment"
+        android:name="ru.reader.viewpagermodule.view.screens.ChapterPagerFragment"
         android:label="BookPagerFragment" />
     <fragment
         android:id="@+id/viewBookPager"

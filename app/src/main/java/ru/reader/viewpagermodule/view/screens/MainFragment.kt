@@ -7,15 +7,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import kotlinx.android.synthetic.main.dialog_book_loading.*
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
-import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 
@@ -24,6 +25,8 @@ const val REQUEST_CODE_PERMISSION = 1007
 class MainFragment : Fragment() {
 
     private val viewModel: ViewModelMainActivity by activityViewModels()
+
+    lateinit var dialogLoading: AlertDialog
 
     private lateinit var parentActivity: MainActivity
     override fun onCreateView(
@@ -41,7 +44,7 @@ class MainFragment : Fragment() {
             parentActivity.navHostController.navigate(R.id.action_mainFragment_to_listFragment)
         }
 
-        val bundle : Bundle = Bundle()
+        val bundle: Bundle = Bundle()
         val bookBundle = BookStateForBundle(
             resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
             resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
@@ -51,10 +54,10 @@ class MainFragment : Fragment() {
         )
         bundle.putSerializable(BOOK_BUNDLE, bookBundle)
         btn_test_open_book.setOnClickListener {
-            parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
+            lifecycleScope.launch {
+                    parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
+            }
         }
-
-
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
