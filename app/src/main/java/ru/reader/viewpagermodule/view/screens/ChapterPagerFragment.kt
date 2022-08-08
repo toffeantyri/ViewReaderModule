@@ -3,17 +3,16 @@ package ru.reader.viewpagermodule.view.screens
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import butterknife.BindView
-import butterknife.BindViews
 import butterknife.ButterKnife
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.paginatedtextview.pagination.BookBodyData
-import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
+import ru.reader.viewpagermodule.view.adapters.BookBodyData
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.paginatedtextview.view.OnActionListener
 import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
@@ -27,7 +26,9 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
     companion object {
         fun newInstance(bookBodyData: BookBodyData): Fragment = ChapterPagerFragment().apply {
-            arguments?.putSerializable(BOOK_BUNDLE_CHAPTER, bookBodyData)
+            arguments = Bundle().apply {
+                putSerializable(BOOK_BUNDLE_CHAPTER, bookBodyData)
+            }
         }
     }
 
@@ -53,6 +54,7 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     private var pageNum = 1
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,9 +62,11 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         val view0 = inflater.inflate(R.layout.fragment_chapter_page, container, false)
         ButterKnife.bind(this, view0)
         val arg = arguments?.getSerializable(BOOK_BUNDLE_CHAPTER) as BookBodyData?
+
+        Log.d("MyLog", "ChapterPagerFragment : onCreateView ars : $arg")
         arg?.let {
-            tvNameBook.text = it.chapterName
-            pageNum = it.currentPage
+            tvNameBook.text = "test"//it.chapterName
+            pageNum = 1 //it.currentPage
 
             tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), pageNum)
             //tvBookContent.setup(it.stringBody, pageNum) //todo
@@ -83,14 +87,9 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        parentActivity.supportActionBar?.show()
         lockRotationPortrait(false)
     }
 
-    override fun onStart() {
-        parentActivity.supportActionBar?.hide()
-        super.onStart()
-    }
 
     override fun onSwipeLeft() {
         tvBookContent.startAnimation(inLeft)
@@ -107,6 +106,7 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     }
 
     override fun onPageLoaded(state: ReadState) {
+        Log.d("MyLog", "ChapterPagerFrag : onPageLoaded")
         displayReadState(state)
     }
 
