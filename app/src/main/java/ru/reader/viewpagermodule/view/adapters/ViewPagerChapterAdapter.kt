@@ -4,16 +4,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import ru.reader.viewpagermodule.paginatedtextview.pagination.BookBodyData
+import ru.reader.viewpagermodule.view.screens.ChapterPagerFragment
 
-class ViewPagerChapterAdapter(val fm: FragmentManager, private val lifecycle: Lifecycle) : FragmentStateAdapter(fm, lifecycle) {
+class ViewPagerChapterAdapter(val fm: FragmentManager, lifecycle: Lifecycle) :
+    FragmentStateAdapter(fm, lifecycle) {
 
-    private var chapters: ArrayList<String> = arrayListOf()
+    private var chapters: ArrayList<BookBodyData> = arrayListOf()
 
     override fun getItemCount(): Int = chapters.size
 
     override fun createFragment(position: Int): Fragment {
-
-        TODO("Not yet implemented")
+        return ChapterPagerFragment.newInstance(chapters[position])
     }
 
 }
