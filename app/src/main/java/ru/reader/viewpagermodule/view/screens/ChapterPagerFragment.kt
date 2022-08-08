@@ -67,9 +67,6 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         arg?.let {
             tvNameBook.text = "test"//it.chapterName
             pageNum = 1 //it.currentPage
-
-            tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), pageNum)
-            //tvBookContent.setup(it.stringBody, pageNum) //todo
         }
 
         setupAnimationRightLeft()
@@ -77,6 +74,22 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         tvBookContent.setOnSwipeListener(this)
 
         return view0
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("MyLog", "ChapterPagerFragment : onViewCreated")
+        tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), pageNum)
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onStart() {
+        Log.d("MyLog", "ChapterPagerFragment : onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("MyLog", "ChapterPagerFragment : onResume")
+        super.onResume()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
