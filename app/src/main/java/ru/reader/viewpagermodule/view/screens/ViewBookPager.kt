@@ -5,31 +5,32 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.github.ybq.android.spinkit.SpinKitView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.view.adapters.BookStateForBundle
 import ru.reader.viewpagermodule.view.adapters.ViewPagerChapterAdapter
 import ru.reader.viewpagermodule.view.parceradapter.ParcelAdapter
+import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModelSingleton
 
 const val BOOK_BUNDLE = "BOOK_BUNDLE_STATE"
 
 class ViewBookPager : Fragment() {
 
+    private lateinit var viewModelSingleton : ViewPagerViewModelSingleton
 
     @BindView(R.id.vp_chapter)
     lateinit var viewPager: ViewPager2
+
+    var vpUnblocking = false
 
     @BindView(R.id.progress_load_v_pager)
     lateinit var loadingBar: SpinKitView
@@ -50,6 +51,7 @@ class ViewBookPager : Fragment() {
         Log.d("MyLog", "ViewPagerBook : onCreateView")
         val view0 = inflater.inflate(R.layout.fragment_view_book_pager, container, false)
         ButterKnife.bind(this, view0)
+        viewModelSingleton = ViewPagerViewModelSingleton.getInstanceOfVM()
         val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookStateForBundle?
         arg?.let {
             chapterIndex = it.chapterIndex
@@ -58,8 +60,16 @@ class ViewBookPager : Fragment() {
             countOfChapters = 10 //todo
         }
         loadingBar.isVisible = true
+
+        viewModelSingleton.dataTest.observe(viewLifecycleOwner) {
+            Log.d("MyLog", "P: $it")
+        }
+
+
         return view0
     }
+
+
 
     override fun onStart() {
         CoroutineScope(Dispatchers.Default).launch {
@@ -87,7 +97,7 @@ class ViewBookPager : Fragment() {
 
         viewPager.currentItem = chapterIndex
         adapterVp.createEmptyListWithSize(countOfChapters)
-        viewPager.isUserInputEnabled = false
+        viewPager.isUserInputEnabled = vpUnblocking
 
         withContext(Dispatchers.Main) {
             viewPager.adapter = adapterVp
