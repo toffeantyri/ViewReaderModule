@@ -87,7 +87,7 @@ class ViewBookPager : Fragment() {
 
         viewPager.currentItem = chapterIndex
         adapterVp.createEmptyListWithSize(countOfChapters)
-
+        viewPager.isUserInputEnabled = false
 
         withContext(Dispatchers.Main) {
             viewPager.adapter = adapterVp
