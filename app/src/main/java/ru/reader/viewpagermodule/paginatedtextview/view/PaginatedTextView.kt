@@ -23,10 +23,10 @@ import ru.reader.viewpagermodule.APP_CONTEXT
  * An extended TextView, which support pagination, clicks by paragraphs and long clicks by words
  */
 class PaginatedTextView @JvmOverloads constructor(
-        context: Context? = null,
+        context: Context,
         attrs: AttributeSet? = null,
         defStyle: Int = 0
-) : AppCompatTextView(APP_CONTEXT, attrs, defStyle) {
+) : AppCompatTextView(context, attrs, defStyle) {
 
     private val textPaint = TextPaint(paint)
     private var swipeListener: OnSwipeListener? = null
@@ -47,14 +47,12 @@ class PaginatedTextView @JvmOverloads constructor(
     fun setup(text: CharSequence, pageIndex : Int) {
 
         if (isMeasured) {
-            //loadFirstPage(text)
             loadSelectedPage(text, pageIndex)
         } else {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     isMeasured = true
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    //loadFirstPage(text)
                     loadSelectedPage(text, pageIndex)
                 }
             })

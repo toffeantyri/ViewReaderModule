@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.paginatedtextview.pagination
+package ru.reader.viewpagermodule.view.adapters
 
 /**
  * ru.mamykin.widget:paginatedtextview:0.1.1
