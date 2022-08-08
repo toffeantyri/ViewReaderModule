@@ -9,14 +9,20 @@ import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import androidx.fragment.app.viewModels
 import butterknife.BindView
 import butterknife.ButterKnife
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.view.adapters.BookBodyData
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.paginatedtextview.view.OnActionListener
 import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
 import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
+import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModelSingleton
 import java.io.InputStream
 import java.lang.StringBuilder
 
@@ -31,6 +37,8 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
             }
         }
     }
+
+    private lateinit var viewModelSingleton : ViewPagerViewModelSingleton
 
 
     @BindView(R.id.tv_book_name_panel)
@@ -61,8 +69,8 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     ): View? {
         val view0 = inflater.inflate(R.layout.fragment_chapter_page, container, false)
         ButterKnife.bind(this, view0)
+        viewModelSingleton = ViewPagerViewModelSingleton.getInstanceOfVM()
         val arg = arguments?.getSerializable(BOOK_BUNDLE_CHAPTER) as BookBodyData?
-
         Log.d("MyLog", "ChapterPagerFragment : onCreateView ars : $arg")
         arg?.let {
             tvNameBook.text = "test"//it.chapterName
@@ -73,7 +81,24 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
 
+        viewModelSingleton.dataTest.observe(viewLifecycleOwner){
+            Log.d("MyLog", "VP: $it")
+        }
+
+        startCount()
+
         return view0
+    }
+
+    private fun startCount() {
+        CoroutineScope(Dispatchers.Main).launch {
+
+            for (i in 0..10) {
+                delay(1000)
+                viewModelSingleton.dataTest.value = i
+            }
+
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
