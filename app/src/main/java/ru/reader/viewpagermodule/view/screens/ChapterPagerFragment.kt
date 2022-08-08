@@ -21,9 +21,16 @@ import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
 import java.io.InputStream
 import java.lang.StringBuilder
 
-const val BOOK_BUNDLE = "BOOK_BUNDLE_STATE"
+const val BOOK_BUNDLE_CHAPTER = "BOOK_BUNDLE_CHAPTER_STATE"
 
-class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
+class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
+
+    companion object {
+        fun newInstance(bookBodyData: BookBodyData): Fragment = ChapterPagerFragment().apply {
+            arguments?.putSerializable(BOOK_BUNDLE_CHAPTER, bookBodyData)
+        }
+    }
+
 
     @BindView(R.id.tv_book_name_panel)
     lateinit var tvNameBook: TextView
@@ -52,7 +59,7 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     ): View? {
         val view0 = inflater.inflate(R.layout.fragment_chapter_page, container, false)
         ButterKnife.bind(this, view0)
-        val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookBodyData?
+        val arg = arguments?.getSerializable(BOOK_BUNDLE_CHAPTER) as BookBodyData?
         arg?.let {
             tvNameBook.text = it.chapterName
             pageNum = it.currentPage
