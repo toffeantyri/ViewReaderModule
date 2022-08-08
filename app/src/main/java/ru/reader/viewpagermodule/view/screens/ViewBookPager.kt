@@ -1,14 +1,14 @@
 package ru.reader.viewpagermodule.view.screens
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withCreated
 import androidx.viewpager2.widget.ViewPager2
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
+import ru.reader.viewpagermodule.view.adapters.BookStateForBundle
 import ru.reader.viewpagermodule.view.adapters.ViewPagerChapterAdapter
 import ru.reader.viewpagermodule.view.parceradapter.ParcelAdapter
 
@@ -32,14 +32,16 @@ class ViewBookPager : Fragment() {
     lateinit var viewPager: ViewPager2
 
     @BindView(R.id.progress_load_v_pager)
-    lateinit var loadingBar : SpinKitView
+    lateinit var loadingBar: SpinKitView
 
     private lateinit var adapterVp: ViewPagerChapterAdapter
+
+    private lateinit var parentActivity: MainActivity
 
     private var chapterIndex = 0
     private var pageNum = 1
     private var filePath = ""
-
+    private var countOfChapters = 10
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +55,7 @@ class ViewBookPager : Fragment() {
             chapterIndex = it.chapterIndex
             pageNum = it.pageNum
             filePath = it.absolutePath
+            countOfChapters = 10 //todo
         }
         loadingBar.isVisible = true
         return view0
@@ -62,15 +65,30 @@ class ViewBookPager : Fragment() {
         CoroutineScope(Dispatchers.Default).launch {
             setupViewPagerAdapter(filePath)
         }
+        parentActivity.supportActionBar?.hide()
         super.onStart()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        parentActivity = activity as MainActivity
+        super.onCreate(savedInstanceState)
+    }
 
+    override fun onDestroy() {
+        parentActivity.supportActionBar?.show()
+        super.onDestroy()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private suspend fun setupViewPagerAdapter(filePath: String) {
         adapterVp = ViewPagerChapterAdapter(childFragmentManager, lifecycle)
         val pAdapter = ParcelAdapter()
         pAdapter.setFb2File(filePath)
+
         viewPager.currentItem = chapterIndex
+        adapterVp.createEmptyListWithSize(countOfChapters)
+
+
         withContext(Dispatchers.Main) {
             viewPager.adapter = adapterVp
             loadingBar.isVisible = false
