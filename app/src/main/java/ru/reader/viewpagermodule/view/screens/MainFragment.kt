@@ -42,15 +42,16 @@ class MainFragment : Fragment() {
         }
 
         val bundle : Bundle = Bundle()
-        val bookBundle: BookStateForBundle = BookStateForBundle(
+        val bookBundle = BookStateForBundle(
             resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
             resources.getStringArray(R.array.array_url_bhagavad_gita)[0],
             "data/user/0/ru.reader.viewpagermodule/cache/bg_fb2.fb2",
+            0,
             1
         )
         bundle.putSerializable(BOOK_BUNDLE, bookBundle)
         btn_test_open_book.setOnClickListener {
-            parentActivity.navHostController.navigate(R.id.action_mainFragment_to_bookPagerFragment, bundle)
+            parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
         }
 
 
