@@ -13,15 +13,19 @@
               android:label="MainFragment">
         <action android:id="@+id/action_mainFragment_to_listFragment" app:destination="@id/listFragment"/>
         <action
-            android:id="@+id/action_mainFragment_to_bookPagerFragment"
-            app:destination="@id/bookPagerFragment" />
+            android:id="@+id/action_mainFragment_to_viewBookPager"
+            app:destination="@id/viewBookPager" />
     </fragment>
     <fragment
         android:id="@+id/bookPagerFragment"
         android:name="ru.reader.viewpagermodule.view.screens.BookPagerFragment"
-        android:label="BookPagerFragment" >
+        android:label="BookPagerFragment" />
+    <fragment
+        android:id="@+id/viewBookPager"
+        android:name="ru.reader.viewpagermodule.view.screens.ViewBookPager"
+        android:label="ViewBookPager" >
         <action
-            android:id="@+id/action_bookPagerFragment_to_mainFragment"
+            android:id="@+id/action_viewBookPager_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

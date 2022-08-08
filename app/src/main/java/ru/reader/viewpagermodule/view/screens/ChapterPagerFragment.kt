@@ -3,28 +3,21 @@ package ru.reader.viewpagermodule.view.screens
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
 import butterknife.BindView
+import butterknife.BindViews
 import butterknife.ButterKnife
-import com.kursx.parser.fb2.FictionBook
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
+import ru.reader.viewpagermodule.paginatedtextview.pagination.BookBodyData
 import ru.reader.viewpagermodule.paginatedtextview.pagination.BookStateForBundle
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.paginatedtextview.view.OnActionListener
 import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
 import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
-import java.io.File
 import java.io.InputStream
 import java.lang.StringBuilder
 
@@ -44,16 +37,36 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     @BindView(R.id.ptv_book_text)
     lateinit var tvBookContent: PaginatedTextView
 
-    private var pageNum = 1
-    private val bh = BookListHelper()
-    private var currentFullText: String = ""
+    private lateinit var parentActivity: MainActivity
 
-    var durationAnimationBySwipe = 150L
+    private var durationAnimationBySwipe = 150L
     private lateinit var inRight: Animation
     private lateinit var inLeft: Animation
 
-    private lateinit var parentActivity: MainActivity
+    private var pageNum = 1
 
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view0 = inflater.inflate(R.layout.fragment_chapter_page, container, false)
+        ButterKnife.bind(this, view0)
+        val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookBodyData?
+        arg?.let {
+            tvNameBook.text = it.chapterName
+            pageNum = it.currentPage
+
+            tvBookContent.setup(getText(resources.openRawResource(R.raw.sample_text)), pageNum)
+            //tvBookContent.setup(it.stringBody, pageNum) //todo
+        }
+
+        setupAnimationRightLeft()
+        tvBookContent.setOnActionListener(this)
+        tvBookContent.setOnSwipeListener(this)
+
+        return view0
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,30 +78,6 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         super.onDestroy()
         parentActivity.supportActionBar?.show()
         lockRotationPortrait(false)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view0 = inflater.inflate(R.layout.fragment_book_pager, container, false)
-        ButterKnife.bind(this, view0)
-        val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookStateForBundle?
-        arg?.let {
-            pageNum = it.pageIndex
-            tvNameBook.text = it.bookName
-
-
-            tvBookContent.setup(getDataByFb2(it), pageNum)
-
-
-        }
-
-        setupAnimationRightLeft()
-        tvBookContent.setOnActionListener(this)
-        tvBookContent.setOnSwipeListener(this)
-
-        return view0
     }
 
     override fun onStart() {
@@ -145,11 +134,5 @@ class BookPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         inLeft.duration = durationAnimationBySwipe
     }
 
-    private fun getDataByFb2(bookState: BookStateForBundle): CharSequence {
-        val fb2File = File(bookState.absolutePath)
-        val fb2 = FictionBook(fb2File)
-        val fullText = fb2.authors[0].fullName
 
-        return fullText
-    }
 }
