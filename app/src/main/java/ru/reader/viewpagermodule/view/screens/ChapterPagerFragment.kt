@@ -9,7 +9,7 @@ import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,7 @@ import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
 import ru.reader.viewpagermodule.paginatedtextview.view.OnActionListener
 import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
 import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
-import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModelSingleton
+import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModel
 import java.io.InputStream
 import java.lang.StringBuilder
 
@@ -38,8 +38,7 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         }
     }
 
-    private lateinit var viewModelSingleton : ViewPagerViewModelSingleton
-
+    private lateinit var viewModel : ViewPagerViewModel
 
     @BindView(R.id.tv_book_name_panel)
     lateinit var tvNameBook: TextView
@@ -54,6 +53,7 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     lateinit var tvBookContent: PaginatedTextView
 
     private lateinit var parentActivity: MainActivity
+    private lateinit var parFrag: ViewBookPagerFragment
 
     private var durationAnimationBySwipe = 150L
     private lateinit var inRight: Animation
@@ -69,7 +69,9 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     ): View? {
         val view0 = inflater.inflate(R.layout.fragment_chapter_page, container, false)
         ButterKnife.bind(this, view0)
-        viewModelSingleton = ViewPagerViewModelSingleton.getInstanceOfVM()
+        parFrag = parentFragment as ViewBookPagerFragment
+        viewModel = parFrag.getParentViewModel()
+
         val arg = arguments?.getSerializable(BOOK_BUNDLE_CHAPTER) as BookBodyData?
         Log.d("MyLog", "ChapterPagerFragment : onCreateView ars : $arg")
         arg?.let {
@@ -81,25 +83,11 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
 
-        viewModelSingleton.dataTest.observe(viewLifecycleOwner){
-            Log.d("MyLog", "VP: $it")
-        }
-
-        startCount()
 
         return view0
     }
 
-    private fun startCount() {
-        CoroutineScope(Dispatchers.Main).launch {
 
-            for (i in 0..10) {
-                delay(1000)
-                viewModelSingleton.dataTest.value = i
-            }
-
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d("MyLog", "ChapterPagerFragment : onViewCreated")
