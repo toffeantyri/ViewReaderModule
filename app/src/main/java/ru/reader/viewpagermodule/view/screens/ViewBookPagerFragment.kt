@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import androidx.viewpager2.widget.ViewPager2
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -19,13 +20,13 @@ import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.view.adapters.BookStateForBundle
 import ru.reader.viewpagermodule.view.adapters.ViewPagerChapterAdapter
 import ru.reader.viewpagermodule.view.parceradapter.ParcelAdapter
-import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModelSingleton
+import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModel
 
 const val BOOK_BUNDLE = "BOOK_BUNDLE_STATE"
 
-class ViewBookPager : Fragment() {
+class ViewBookPagerFragment : Fragment() {
 
-    private lateinit var viewModelSingleton : ViewPagerViewModelSingleton
+    private val viewModel: ViewPagerViewModel by viewModels()
 
     @BindView(R.id.vp_chapter)
     lateinit var viewPager: ViewPager2
@@ -51,7 +52,8 @@ class ViewBookPager : Fragment() {
         Log.d("MyLog", "ViewPagerBook : onCreateView")
         val view0 = inflater.inflate(R.layout.fragment_view_book_pager, container, false)
         ButterKnife.bind(this, view0)
-        viewModelSingleton = ViewPagerViewModelSingleton.getInstanceOfVM()
+
+
         val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookStateForBundle?
         arg?.let {
             chapterIndex = it.chapterIndex
@@ -61,14 +63,13 @@ class ViewBookPager : Fragment() {
         }
         loadingBar.isVisible = true
 
-        viewModelSingleton.dataTest.observe(viewLifecycleOwner) {
+        viewModel.dataTest.observe(viewLifecycleOwner) {
             Log.d("MyLog", "P: $it")
         }
 
 
         return view0
     }
-
 
 
     override fun onStart() {
@@ -108,5 +109,6 @@ class ViewBookPager : Fragment() {
         //todo update adapter
     }
 
+    fun getParentViewModel(): ViewPagerViewModel = viewModel
 
 }
