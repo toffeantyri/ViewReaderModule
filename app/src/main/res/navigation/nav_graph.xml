@@ -22,7 +22,7 @@
         android:label="BookPagerFragment" />
     <fragment
         android:id="@+id/viewBookPager"
-        android:name="ru.reader.viewpagermodule.view.screens.ViewBookPager"
+        android:name="ru.reader.viewpagermodule.view.screens.ViewBookPagerFragment"
         android:label="ViewBookPager" >
         <action
             android:id="@+id/action_viewBookPager_to_mainFragment"
