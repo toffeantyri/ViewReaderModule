@@ -31,8 +31,6 @@ class ViewBookPagerFragment : Fragment() {
     @BindView(R.id.vp_chapter)
     lateinit var viewPager: ViewPager2
 
-    var vpUnblocking = false
-
     @BindView(R.id.progress_load_v_pager)
     lateinit var loadingBar: SpinKitView
 
@@ -53,7 +51,6 @@ class ViewBookPagerFragment : Fragment() {
         val view0 = inflater.inflate(R.layout.fragment_view_book_pager, container, false)
         ButterKnife.bind(this, view0)
 
-
         val arg = arguments?.getSerializable(BOOK_BUNDLE) as BookStateForBundle?
         arg?.let {
             chapterIndex = it.chapterIndex
@@ -63,10 +60,9 @@ class ViewBookPagerFragment : Fragment() {
         }
         loadingBar.isVisible = true
 
-        viewModel.dataTest.observe(viewLifecycleOwner) {
-            Log.d("MyLog", "P: $it")
+        viewModel.viewPagerUnblock.observe(viewLifecycleOwner){
+            viewPager.isUserInputEnabled = it
         }
-
 
         return view0
     }
@@ -98,7 +94,6 @@ class ViewBookPagerFragment : Fragment() {
 
         viewPager.currentItem = chapterIndex
         adapterVp.createEmptyListWithSize(countOfChapters)
-        viewPager.isUserInputEnabled = vpUnblocking
 
         withContext(Dispatchers.Main) {
             viewPager.adapter = adapterVp

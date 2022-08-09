@@ -10,4 +10,12 @@ class ViewPagerViewModel : ViewModel() {
         MutableLiveData()
     }
 
+    val viewPagerUnblock : MutableLiveData<Boolean> by lazy {
+        MutableLiveData()
+    }
+
+    init {
+        viewPagerUnblock.value = false
+    }
+
 }
