@@ -55,7 +55,8 @@ class MainFragment : Fragment() {
         bundle.putSerializable(BOOK_BUNDLE, bookBundle)
         btn_test_open_book.setOnClickListener {
             lifecycleScope.launch {
-                    parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
+                   // parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
+                   parentActivity.navHostController.navigate(R.id.action_mainFragment_to_webPagerFragment, bundle)
             }
         }
     }

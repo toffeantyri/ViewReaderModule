@@ -5,15 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.github.ybq.android.spinkit.SpinKitView
+import kotlinx.android.synthetic.main.fragment_view_book_pager.*
 import kotlinx.coroutines.*
 
 import ru.reader.viewpagermodule.R
@@ -21,6 +23,7 @@ import ru.reader.viewpagermodule.view.adapters.BookStateForBundle
 import ru.reader.viewpagermodule.view.adapters.ViewPagerChapterAdapter
 import ru.reader.viewpagermodule.view.parceradapter.ParcelAdapter
 import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModel
+import java.lang.Exception
 
 const val BOOK_BUNDLE = "BOOK_BUNDLE_STATE"
 
@@ -43,6 +46,7 @@ class ViewBookPagerFragment : Fragment() {
     private var filePath = ""
     private var countOfChapters = 10
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,9 +64,6 @@ class ViewBookPagerFragment : Fragment() {
         }
         loadingBar.isVisible = true
 
-        viewModel.viewPagerUnblock.observe(viewLifecycleOwner){
-            viewPager.isUserInputEnabled = it
-        }
 
         return view0
     }
@@ -99,6 +100,20 @@ class ViewBookPagerFragment : Fragment() {
             viewPager.adapter = adapterVp
             loadingBar.isVisible = false
         }
+
+
+        viewPager.isUserInputEnabled = false
+        viewPager.requestDisallowInterceptTouchEvent(false)
+
+
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                Log.d("MyLog", "onPageScrollState state: $state")
+                viewPager.isUserInputEnabled = chapterIndex == state
+            }
+        })
+
         Log.d("MyLog", "ViewPagerBook : end setup viewPager")
 
         //todo update adapter
@@ -106,4 +121,12 @@ class ViewBookPagerFragment : Fragment() {
 
     fun getParentViewModel(): ViewPagerViewModel = viewModel
 
+
+}
+
+enum class SwipeDirection {
+    ALL,
+    RIGHTTOLEFT,
+    LEFTTORIGHT,
+    NONE
 }
