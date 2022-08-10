@@ -26,7 +26,7 @@ class ViewPagerChapterAdapter(val fm: FragmentManager, lifecycle: Lifecycle) :
     }
 
     fun updateAdapter(pos: Int, bookBodyData: BookBodyData) {
-
+        //todo
     }
 
 

@@ -9,13 +9,9 @@ import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.view.adapters.BookBodyData
 import ru.reader.viewpagermodule.paginatedtextview.pagination.ReadState
@@ -24,11 +20,12 @@ import ru.reader.viewpagermodule.paginatedtextview.view.OnSwipeListener
 import ru.reader.viewpagermodule.paginatedtextview.view.PaginatedTextView
 import ru.reader.viewpagermodule.viewmodels.ViewPagerViewModel
 import java.io.InputStream
+import java.lang.Exception
 import java.lang.StringBuilder
 
 const val BOOK_BUNDLE_CHAPTER = "BOOK_BUNDLE_CHAPTER_STATE"
 
-class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
+class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener, View.OnTouchListener {
 
     companion object {
         fun newInstance(bookBodyData: BookBodyData): Fragment = ChapterPagerFragment().apply {
@@ -38,7 +35,9 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         }
     }
 
-    private lateinit var viewModel : ViewPagerViewModel
+    var swipeDirection = SwipeDirection.NONE
+
+    private lateinit var viewModel: ViewPagerViewModel
 
     @BindView(R.id.tv_book_name_panel)
     lateinit var tvNameBook: TextView
@@ -61,8 +60,10 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
 
     private var pageNum = 1
 
+    lateinit var currentReadState: ReadState
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,8 +73,9 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         parFrag = parentFragment as ViewBookPagerFragment
         viewModel = parFrag.getParentViewModel()
 
+
         val arg = arguments?.getSerializable(BOOK_BUNDLE_CHAPTER) as BookBodyData?
-        Log.d("MyLog", "ChapterPagerFragment : onCreateView ars : $arg")
+
         arg?.let {
             tvNameBook.text = "test"//it.chapterName
             pageNum = 1 //it.currentPage
@@ -82,11 +84,11 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         setupAnimationRightLeft()
         tvBookContent.setOnActionListener(this)
         tvBookContent.setOnSwipeListener(this)
+        tvBookContent.setOnTouchListener(this)
 
-
+        Log.d("MyLog", "ChapterPagerFragment : onCreateView")
         return view0
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -134,6 +136,20 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
     override fun onPageLoaded(state: ReadState) {
         Log.d("MyLog", "ChapterPagerFrag : onPageLoaded")
         displayReadState(state)
+        currentReadState = state
+
+        swipeDirection = when (currentReadState.currentIndex) {
+            currentReadState.pagesCount -> {
+                SwipeDirection.RIGHTTOLEFT
+            }
+            1 -> {
+                SwipeDirection.LEFTTORIGHT
+            }
+            else -> {
+                SwipeDirection.NONE
+            }
+        }
+
     }
 
     private fun getText(inputStream: InputStream): String {
@@ -167,5 +183,58 @@ class ChapterPagerFragment : Fragment(), OnSwipeListener, OnActionListener {
         inLeft.duration = durationAnimationBySwipe
     }
 
+
+    var initialX: Float? = null
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        event?.let {
+
+            if (event.action == MotionEvent.ACTION_UP) return false
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                initialX = event.x
+                return false
+            }
+
+            if (!isSwipeAllowed(event)) {
+                Log.d("MyLog", "onTouch P")
+                tvBookContent.onTouchEvent(event)
+            } else {
+                Log.d("MyLog", "onTouch VP")
+                parFrag.viewPager.apply {
+                        isUserInputEnabled=true
+                        onInterceptTouchEvent(event)
+                }
+            }
+        }
+        return true
+    }
+
+
+    private fun isSwipeAllowed(event: MotionEvent): Boolean {
+        if (swipeDirection == SwipeDirection.ALL) return true
+        if (swipeDirection == SwipeDirection.NONE) return false
+//        if (event.action == MotionEvent.ACTION_UP) return false
+//        if (event.action == MotionEvent.ACTION_DOWN) {
+//            initialX = event.x
+//            return false
+//        }
+
+        if (event.action == MotionEvent.ACTION_MOVE) {
+            try {
+                val diffX: Float = if (initialX != null) {
+                    event.x - initialX!!
+                } else 0f
+                if (diffX > 0 && swipeDirection == SwipeDirection.RIGHTTOLEFT) {
+                    return false
+                } else if (diffX < 0 && swipeDirection == SwipeDirection.LEFTTORIGHT) {
+                    return false
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return true
+    }
 
 }
