@@ -4,6 +4,7 @@ package ru.reader.viewpagermodule.paginatedtextview.view
  * ru.mamykin.widget:paginatedtextview:0.1.1
  * */
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.Spannable
@@ -68,12 +69,21 @@ class PaginatedTextView @JvmOverloads constructor(
         this.actionListener = listener
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    override fun setOnTouchListener(listener: OnTouchListener){
+        super.setOnTouchListener(listener)
+    }
+
+
+
+
     /**
      * Setting up a listener, which will receive swipe callbacks
      * @param [swipeListener] a listener which will receive swipe callbacks
      */
     fun setOnSwipeListener(swipeListener: OnSwipeListener) {
         this.swipeListener = swipeListener
+
     }
 
     private fun initPaginatedTextView() {
