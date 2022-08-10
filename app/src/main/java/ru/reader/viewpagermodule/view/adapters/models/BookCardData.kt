@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.view.adapters
+package ru.reader.viewpagermodule.view.adapters.models
 
 data class BookCardData(
     val tagName: String,

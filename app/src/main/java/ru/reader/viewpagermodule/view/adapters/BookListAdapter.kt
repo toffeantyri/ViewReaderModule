@@ -14,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.util.convertToBitmap
+import ru.reader.viewpagermodule.view.adapters.models.BookCardData
+import ru.reader.viewpagermodule.view.models.LoadBookData
 
 class BookListAdapter : RecyclerView.Adapter<BookListAdapter.BookNameHolder>() {
 

@@ -3,8 +3,6 @@ package ru.reader.viewpagermodule.services
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Binder
 import android.util.Log
@@ -19,7 +17,7 @@ import ru.reader.viewpagermodule.data.busines.repository.LoadingBookState
 import ru.reader.viewpagermodule.data.busines.repository.LoadingBookStateByName
 import ru.reader.viewpagermodule.data.busines.repository.TAG_NEW_DOWNLOAD_SERVICE_STATE
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
-import ru.reader.viewpagermodule.view.adapters.LoadBookData
+import ru.reader.viewpagermodule.view.models.LoadBookData
 import ru.reader.viewpagermodule.data.busines.storage.StorageHelper
 import java.io.File
 import java.lang.Exception

@@ -21,9 +21,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.helpers.DialogHelper
-import ru.reader.viewpagermodule.view.adapters.BookCardData
+import ru.reader.viewpagermodule.view.adapters.models.BookCardData
 import ru.reader.viewpagermodule.view.adapters.BookListAdapter
-import ru.reader.viewpagermodule.view.adapters.LoadBookData
+import ru.reader.viewpagermodule.view.models.LoadBookData
 import ru.reader.viewpagermodule.view.util.MyViewAnimator
 import ru.reader.viewpagermodule.viewmodels.ByMemoryState
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
