@@ -16,7 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.view.adapters.BookStateForBundle
+import ru.reader.viewpagermodule.view.models.BookStateForBundle
 import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 

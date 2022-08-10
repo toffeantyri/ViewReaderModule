@@ -6,8 +6,8 @@ import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.*
 import ru.reader.viewpagermodule.App
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
-import ru.reader.viewpagermodule.view.adapters.BookCardData
-import ru.reader.viewpagermodule.view.adapters.LoadBookData
+import ru.reader.viewpagermodule.view.adapters.models.BookCardData
+import ru.reader.viewpagermodule.view.models.LoadBookData
 
 class ListBookRepository() : BaseRepository<BookCardData>() {
 

@@ -1,8 +1,4 @@
-package ru.reader.viewpagermodule.view.adapters
-
-/**
- * ru.mamykin.widget:paginatedtextview:0.1.1
- * */
+package ru.reader.viewpagermodule.view.models
 
 import java.io.Serializable
 import java.nio.file.Path

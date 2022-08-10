@@ -12,7 +12,7 @@ import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.data.busines.storage.BookListHelper
 import ru.reader.viewpagermodule.services.DownloadFileService
 import ru.reader.viewpagermodule.services.DownloadFileServiceBroadcastReceiver
-import ru.reader.viewpagermodule.view.adapters.LoadBookData
+import ru.reader.viewpagermodule.view.models.LoadBookData
 
 const val BROADCAST_SERVICE_LOAD_STATE = "BROADCAST_SERVICE_LOAD_STATE"
 const val TAG_NEW_DOWNLOAD_SERVICE_STATE = "TAG_NEW_DOWNLOAD_SERVICE_STATE "

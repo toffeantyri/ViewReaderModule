@@ -1,4 +1,4 @@
-package ru.reader.viewpagermodule.view.adapters
+package ru.reader.viewpagermodule.view.models
 
 import java.io.Serializable
 

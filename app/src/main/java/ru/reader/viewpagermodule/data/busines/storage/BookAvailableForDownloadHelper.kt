@@ -2,7 +2,7 @@ package ru.reader.viewpagermodule.data.busines.storage
 
 import ru.reader.viewpagermodule.APP_CONTEXT
 import ru.reader.viewpagermodule.R
-import ru.reader.viewpagermodule.view.adapters.BookCardData
+import ru.reader.viewpagermodule.view.adapters.models.BookCardData
 
 
 class BookAvailableForDownloadHelper {
