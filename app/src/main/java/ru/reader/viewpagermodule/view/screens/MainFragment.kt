@@ -21,6 +21,7 @@ import ru.reader.viewpagermodule.viewmodels.ViewModelMainActivity
 
 
 const val REQUEST_CODE_PERMISSION = 1007
+const val BOOK_BUNDLE = "BOOK_BUNDLE"
 
 class MainFragment : Fragment() {
 
@@ -53,6 +54,11 @@ class MainFragment : Fragment() {
             1
         )
         bundle.putSerializable(BOOK_BUNDLE, bookBundle)
+
+
+        //parentActivity.navHostController.navigate(R.id.action_mainFragment_to_webPagerFragment, bundle)
+        parentActivity.navHostController.navigate(R.id.action_mainFragment_to_customViewPagerFragment, bundle)
+
         btn_test_open_book.setOnClickListener {
             lifecycleScope.launch {
                    // parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
