@@ -8,4 +8,10 @@
     <color name="bg_green_100">#D1FFCB</color>
 
     <color name="delim_blue_500">#CD369FFF</color>
+
+    <color name="blue">#CD369FFF</color>
+    <color name="green">#CD7CFF36</color>
+    <color name="red">#CDFF3636</color>
+    <color name="black">#CD444444</color>
+    <color name="white">#CDF7F7F7</color>
 </resources>

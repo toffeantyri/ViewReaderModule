@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.screens.ViewPagerBookFragment">
+
+
+   <include layout="@layout/view_info_panel"/>
+
+   <androidx.recyclerview.widget.RecyclerView
+       android:layout_marginTop="@dimen/info_panel_height"
+      android:id="@+id/rv_pager"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_gravity="center_horizontal"
+       tools:listitem="@layout/custom_color_item"/>
+
+</FrameLayout>

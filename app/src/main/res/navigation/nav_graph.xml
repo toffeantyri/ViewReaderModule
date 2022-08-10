@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_mainFragment_to_webPagerFragment"
             app:destination="@id/webPagerFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_customViewPagerFragment"
+            app:destination="@id/customViewPagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookPagerFragment"
@@ -37,6 +40,14 @@
         android:label="WebPagerFragment" >
         <action
             android:id="@+id/action_webPagerFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/customViewPagerFragment"
+        android:name="ru.reader.viewpagermodule.view.screens.ViewPagerBookFragment"
+        android:label="CustomViewPagerFragment" >
+        <action
+            android:id="@+id/action_customViewPagerFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>
