@@ -8,12 +8,11 @@
 
    <include layout="@layout/view_info_panel"/>
 
-   <androidx.recyclerview.widget.RecyclerView
+   <ru.reader.viewpagermodule.view.adapters.pagination.PagedTextView
        android:layout_marginTop="@dimen/info_panel_height"
-      android:id="@+id/rv_pager"
+       android:id="@+id/outside_tv_pag"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:layout_gravity="center_horizontal"
-       tools:listitem="@layout/custom_color_item"/>
+       android:textSize="18sp"/>
 
 </FrameLayout>
