@@ -87,27 +87,21 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                     setLoadingAndHideBtnChoose(true)
                     viewModel.getPreloadBooks(onSuccess = {
                         setLoadingAndHideBtnChoose(false)
-                        view?.let {
-                            viewModel.dataListBook.value?.let { list -> adapter.fillAdapter(list) }
-                        }
                     })
                 } else if (state == ByMemoryState.FROM_DEVICE) {
                     setLoadingAndHideBtnChoose(true)
                     viewModel.getBooks(
                         onSuccess = { setLoadingAndHideBtnChoose(false) },
-                        onSuccessStep = {
-                            view?.let {
-                                viewModel.dataListBook.value?.let { list -> adapter.fillAdapter(list) }
-                            }
-                        }
+                        onSuccessStep = {}
                     )
                 }
-            } else {
-                viewModel.dataListBook.observe(viewLifecycleOwner) { list ->
-                    Log.d("MyLog", "view : list observers $list")
-                    adapter.fillAdapter(list)
-                }
             }
+
+            viewModel.dataListBook.observe(viewLifecycleOwner) { list ->
+                Log.d("MyLog", "view : list observers $list")
+                adapter.fillAdapter(list)
+            }
+
             configChanged = false
         }
     }
