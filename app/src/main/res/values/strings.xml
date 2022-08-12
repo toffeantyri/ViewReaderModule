@@ -18,5 +18,6 @@
     <string name="toast_loading">Загружается</string>
     <string name="unknown_name_book">Неизвестное название</string>
     <string name="unknown_author_book">Автор неизвестен</string>
+    <string name="book_is_empty">Книга пуста</string>
 
 </resources>

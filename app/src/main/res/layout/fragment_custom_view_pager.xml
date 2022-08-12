@@ -3,12 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.screens.ViewPagerBookFragment">
+    tools:context=".view.screens.ViewPagerBookFragment"
+    android:background="@color/book_bg">
 
 
    <include layout="@layout/view_info_panel"/>
 
+   <ProgressBar
+       android:indeterminateTint="@color/delim_blue_500"
+       android:id="@+id/progress_loading_text"
+       android:layout_gravity="center"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"/>
+
    <ru.reader.viewpagermodule.view.adapters.pagination.PagedTextView
+       android:layout_marginStart="10dp"
+       android:layout_marginEnd="10dp"
+       android:layout_marginBottom="10dp"
        android:layout_marginTop="@dimen/info_panel_height"
        android:id="@+id/outside_tv_pag"
        android:layout_width="match_parent"

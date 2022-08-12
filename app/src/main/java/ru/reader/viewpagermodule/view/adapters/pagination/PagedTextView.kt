@@ -9,6 +9,11 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ru.reader.viewpagermodule.view.util.LoadingListener
 import kotlin.math.min
 
 
@@ -24,17 +29,23 @@ class PagedTextView @JvmOverloads constructor(
     private var pageIndex: Int = 0
     private var pageHeight: Int = 0
     private var originalText: CharSequence = ""
+    private var loadingListener: LoadingListener? = null
+
+    fun pageIndex() = pageIndex
 
     fun size(): Int = pageList.size
 
 
-    fun getPageIndex() : Int = pageIndex
-
+    fun getPageIndex(): Int = pageIndex
 
 
     fun next(index: Int) {
         pageIndex = index
         setPageText()
+    }
+
+    fun setLoadingListener(listener: LoadingListener) {
+        this.loadingListener = listener
     }
 
     private fun setPageText() {
@@ -108,7 +119,6 @@ class PagedTextView @JvmOverloads constructor(
 
     override fun setLines(lines: Int) {
         super.setLines(lines)
-
         if (lines != this.lineCount) {
             needPaginate = true
         }
@@ -122,15 +132,18 @@ class PagedTextView @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-
-        if (changed || needPaginate) {
-            paginate()
-            setPageText()
-            needPaginate = false
+        CoroutineScope(Dispatchers.Main).launch {
+            if (changed || needPaginate) {
+                withContext(Dispatchers.IO) {
+                    paginate()
+                }
+                setPageText()
+                needPaginate = false
+            }
         }
     }
 
-    private fun paginate() {
+    private suspend fun paginate() {
         pageList.clear()
 
         val layout = from(layout)
@@ -153,6 +166,9 @@ class PagedTextView @JvmOverloads constructor(
                     layout.text.subSequence(startOffset, layout.getLineEnd(i))
                 )
             }
+        }
+        withContext(Dispatchers.Main){
+            loadingListener?.loadingIsEnd()
         }
     }
 
