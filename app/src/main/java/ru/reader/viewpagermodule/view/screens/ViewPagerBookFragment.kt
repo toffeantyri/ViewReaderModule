@@ -11,7 +11,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import butterknife.BindView
 import butterknife.ButterKnife
 import kotlinx.coroutines.*
@@ -23,7 +22,6 @@ import ru.reader.viewpagermodule.view.adapters.pagination.PagedTextView
 import ru.reader.viewpagermodule.view.bookparcer.ParserBookToString
 import ru.reader.viewpagermodule.view.models.BookStateForBundle
 import ru.reader.viewpagermodule.view.util.LoadingListener
-import kotlin.math.roundToInt
 
 class ViewPagerBookFragment : Fragment(), OnSwipeListener, LoadingListener {
 
@@ -46,7 +44,7 @@ class ViewPagerBookFragment : Fragment(), OnSwipeListener, LoadingListener {
 
     lateinit var filePath: String
 
-    private var savedIndex = 1850
+    private var savedIndex = 1
 
     var durationAnimationBySwipe = 150L
     private lateinit var inRight: Animation
@@ -66,6 +64,7 @@ class ViewPagerBookFragment : Fragment(), OnSwipeListener, LoadingListener {
         args?.let {
             filePath = it.absolutePath
             infoNameBook.text = it.bookName
+            savedIndex = it.pageNum
         }
         setupAnimationRightLeft()
         tvBook.setLoadingListener(this)
@@ -92,13 +91,12 @@ class ViewPagerBookFragment : Fragment(), OnSwipeListener, LoadingListener {
     }
 
 
-    override fun onStart() {
+    override fun onResume() {
         parentActivity.supportActionBar?.hide()
-        super.onStart()
+        super.onResume()
     }
 
     override fun onDestroy() {
-        parentActivity.supportActionBar?.show()
         job?.cancel()
         super.onDestroy()
     }

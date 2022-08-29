@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ybq.android.spinkit.SpinKitView
@@ -23,6 +24,7 @@ import ru.reader.viewpagermodule.R
 import ru.reader.viewpagermodule.helpers.DialogHelper
 import ru.reader.viewpagermodule.view.adapters.models.BookCardData
 import ru.reader.viewpagermodule.view.adapters.BookListAdapter
+import ru.reader.viewpagermodule.view.models.BookStateForBundle
 import ru.reader.viewpagermodule.view.models.LoadBookData
 import ru.reader.viewpagermodule.view.util.MyViewAnimator
 import ru.reader.viewpagermodule.viewmodels.ByMemoryState
@@ -58,13 +60,17 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
         progressBarLoading = view0.progress_bar_rv
         recycler = view0.list_rv
         initRv()
-        parentActivity.supportActionBar?.hide()
         return view0
     }
 
     override fun onDestroy() {
         parentActivity.supportActionBar?.show()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        parentActivity.supportActionBar?.hide()
+        super.onResume()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -152,8 +158,16 @@ class ListFragment : Fragment(), BookListAdapter.ItemBookClickListener {
                 }
             }
         } else {
-            showToast(loadBookData.absolutePath)
-            //todo open book
+            val bundle = Bundle()
+            val bookBundle = BookStateForBundle(
+                bookName = loadBookData.defaultNameBook,
+                tagName = loadBookData.defaultNameBook,
+                absolutePath = loadBookData.absolutePath,
+                0,
+                1
+            )
+            bundle.putSerializable(BOOK_BUNDLE, bookBundle)
+            findNavController().navigate(R.id.action_global_bookReaderFragment, bundle)
         }
     }
 

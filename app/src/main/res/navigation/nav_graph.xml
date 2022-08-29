@@ -1,53 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/nav_graph" app:startDestination="@id/mainFragment">
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/mainFragment">
 
     <fragment android:id="@+id/listFragment" android:name="ru.reader.viewpagermodule.view.screens.ListFragment"
-              android:label="ListFragment">
+              android:label="ListFragment" tools:layout="@layout/fragment_list">
         <action android:id="@+id/action_listFragment_to_mainFragment" app:destination="@id/mainFragment"
                 app:launchSingleTop="true" app:enterAnim="@anim/nav_default_enter_anim"
                 app:exitAnim="@anim/nav_default_exit_anim"/>
     </fragment>
     <fragment android:id="@+id/mainFragment" android:name="ru.reader.viewpagermodule.view.screens.MainFragment"
-              android:label="MainFragment">
+              android:label="MainFragment" tools:layout="@layout/fragment_main">
         <action android:id="@+id/action_mainFragment_to_listFragment" app:destination="@id/listFragment"/>
-        <action
-            android:id="@+id/action_mainFragment_to_viewBookPager"
-            app:destination="@id/viewBookPager" />
-        <action
-            android:id="@+id/action_mainFragment_to_webPagerFragment"
-            app:destination="@id/webPagerFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_customViewPagerFragment"
-            app:destination="@id/customViewPagerFragment" />
     </fragment>
     <fragment
-        android:id="@+id/bookPagerFragment"
-        android:name="ru.reader.viewpagermodule.view.screens.ChapterPagerFragment"
-        android:label="BookPagerFragment" />
-    <fragment
-        android:id="@+id/viewBookPager"
-        android:name="ru.reader.viewpagermodule.view.screens.ViewBookPagerFragment"
-        android:label="ViewBookPager" >
-        <action
-            android:id="@+id/action_viewBookPager_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/webPagerFragment"
-        android:name="ru.reader.viewpagermodule.view.screens.WebPagerFragment"
-        android:label="WebPagerFragment" >
-        <action
-            android:id="@+id/action_webPagerFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/customViewPagerFragment"
-        android:name="ru.reader.viewpagermodule.view.screens.ViewPagerBookFragment"
-        android:label="CustomViewPagerFragment" >
-        <action
-            android:id="@+id/action_customViewPagerFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
+            android:id="@+id/viewBookPager"
+            android:name="ru.reader.viewpagermodule.view.screens.ViewPagerBookFragment"
+            android:label="ViewBookPager" tools:layout="@layout/fragment_custom_view_pager"/>
+
+    <action android:id="@+id/action_global_bookReaderFragment" app:destination="@+id/viewBookPager"
+            app:enterAnim="@anim/nav_default_enter_anim" app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim" app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+
 </navigation>
