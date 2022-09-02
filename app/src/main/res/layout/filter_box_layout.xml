@@ -2,11 +2,10 @@
 <androidx.appcompat.widget.AppCompatCheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/shape_corner_r10"
-    android:backgroundTint="@android:color/transparent"
+    android:background="@android:color/transparent"
     android:id="@+id/filterCheckedBox"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:text="Дешевле"
+    tools:text="Сначала дешевле"
     android:ellipsize="middle"
-    android:padding="10dp"/>
+    android:padding="8dp" />

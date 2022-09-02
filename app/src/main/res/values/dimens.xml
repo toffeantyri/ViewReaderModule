@@ -3,4 +3,5 @@
     <dimen name="info_panel_height">25dp</dimen>
     <dimen name="margin_medium">8dp</dimen>
     <dimen name="default_margin">16dp</dimen>
+    <dimen name="favorite_filter_width">200dp</dimen>
 </resources>

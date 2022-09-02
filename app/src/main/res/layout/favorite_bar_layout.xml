@@ -41,16 +41,30 @@
             app:layout_constraintTop_toTopOf="parent"
             android:text="@string/favorite_title" />
 
-        <Spinner
-            android:id="@+id/filterList"
+        <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginStart="@dimen/default_margin"
             app:layout_constraintTop_toBottomOf="@id/productCardCategoryTitle"
             app:layout_constraintStart_toStartOf="parent"
-            tools:listitem="@layout/item_favorite_filter"
-            />
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginStart="@dimen/default_margin"
+            app:cardBackgroundColor="@color/gray_light"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            android:clipToPadding="true">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/filterList"
+                android:layout_width="@dimen/favorite_filter_width"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/filter_box_layout"
+                android:popupBackground="@drawable/shape_corner_r10"
+                android:spinnerMode="dropdown"
+                android:gravity="start"
+                style="@style/favorite_filter_spinner_style"
+                />
+
+        </androidx.cardview.widget.CardView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

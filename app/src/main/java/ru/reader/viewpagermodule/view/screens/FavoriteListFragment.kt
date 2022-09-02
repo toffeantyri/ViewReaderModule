@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.SpinnerAdapter
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -24,7 +26,7 @@ class FavoriteListFragment : Fragment() {
     lateinit var parentActivity: MainActivity
 
     @BindView(R.id.filterList)
-    lateinit var filterExpandableList: Spinner
+    lateinit var filterExpandableList: AppCompatSpinner
 
     @BindView(R.id.mainRecycler)
     lateinit var mainRecyclerView: RecyclerView
@@ -46,9 +48,9 @@ class FavoriteListFragment : Fragment() {
             ArrayAdapter.createFromResource(
                 parentActivity,
                 R.array.favorite_filter,
-                R.layout.item_favorite_filter
+                R.layout.filter_box_layout
             )
-        filterAdapter.setDropDownViewResource(R.layout.filter_box_layout)
+        filterAdapter.setDropDownViewResource(R.layout.item_favorite_filter)
         filterExpandableList.adapter = filterAdapter
 
         return view

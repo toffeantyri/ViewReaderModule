@@ -32,4 +32,9 @@
             #2C2828
         </item>
     </style>
+
+    <style name="favorite_filter_spinner_style">
+        <item name="android:dropDownWidth">@dimen/favorite_filter_width</item>
+    </style>
+
 </resources>

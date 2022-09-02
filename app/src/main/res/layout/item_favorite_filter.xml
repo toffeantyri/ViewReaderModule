@@ -2,11 +2,11 @@
 <androidx.appcompat.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/shape_corner_r5"
-    android:backgroundTint="@android:color/transparent"
+    android:background="@android:color/transparent"
     android:id="@+id/tvFilterName"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="по цене"
     android:textSize="14dp"
-    android:padding="8dp"/>
+    android:padding="8dp"
+    android:textColor="@color/black"/>

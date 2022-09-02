@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="favorite_filter">
-        <item>Дешевле</item>
-        <item>Дороже</item>
-        <item>Новее</item>
-        <item>Старее</item>
+        <item>Сначала дешевле</item>
+        <item>Сначала дороже</item>
+        <item>Сначала новее</item>
+        <item>Сначала старее</item>
     </string-array>
 
 </resources>
