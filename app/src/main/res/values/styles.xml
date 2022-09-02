@@ -14,4 +14,22 @@
 
     </style>
 
+
+    <style name="product_card_title_style">
+        <item name="android:textSize">
+            20sp
+        </item>
+        <item name="android:textColor">
+            #2C2828
+        </item>
+    </style>
+
+    <style name="basket_name">
+        <item name="android:textSize">
+            24sp
+        </item>
+        <item name="android:textColor">
+            #2C2828
+        </item>
+    </style>
 </resources>

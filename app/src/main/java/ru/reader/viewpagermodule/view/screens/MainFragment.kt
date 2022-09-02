@@ -13,6 +13,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.launch
 import ru.reader.viewpagermodule.R
@@ -59,13 +62,17 @@ class MainFragment : Fragment() {
 
         btn_test_open_book.setOnClickListener {
             lifecycleScope.launch {
-                // parentActivity.navHostController.navigate(R.id.action_mainFragment_to_viewBookPager, bundle)
-                parentActivity.navHostController.navigate(R.id.action_global_bookReaderFragment, bundle)
+                //findNavController().navigate(R.id.action_global_bookReaderFragment, bundle)
+                findNavController().navigate(R.id.action_global_favoriteListFfragment)
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         @Suppress("DEPRECATION")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -78,7 +85,8 @@ class MainFragment : Fragment() {
     }
 
     private fun checkAndTakePermission() {
-        val permStatRead = ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.READ_EXTERNAL_STORAGE)
+        val permStatRead =
+            ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.READ_EXTERNAL_STORAGE)
         val permStatWrite =
             ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (permStatRead != PackageManager.PERMISSION_GRANTED) {

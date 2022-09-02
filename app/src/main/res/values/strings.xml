@@ -20,4 +20,6 @@
     <string name="unknown_author_book">Автор неизвестен</string>
     <string name="book_is_empty">Книга пуста</string>
 
+    <string name="favorite_title">Избранное</string>
+
 </resources>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/mainFragment">
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
+            app:startDestination="@id/mainFragment">
 
     <fragment android:id="@+id/listFragment" android:name="ru.reader.viewpagermodule.view.screens.ListFragment"
               android:label="ListFragment" tools:layout="@layout/fragment_list">
@@ -16,10 +17,27 @@
     <fragment
             android:id="@+id/viewBookPager"
             android:name="ru.reader.viewpagermodule.view.screens.ViewPagerBookFragment"
-            android:label="ViewBookPager" tools:layout="@layout/fragment_custom_view_pager"/>
+            android:label="ViewBookPager" tools:layout="@layout/fragment_custom_view_pager">
+        <argument
+                android:name="page"
+                app:argType="integer"/>
+    </fragment>
 
     <action android:id="@+id/action_global_bookReaderFragment" app:destination="@+id/viewBookPager"
             app:enterAnim="@anim/nav_default_enter_anim" app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim" app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim" app:popExitAnim="@anim/nav_default_pop_exit_anim">
+    </action>
+    <action
+        android:id="@+id/action_global_favoriteListFfragment"
+        app:destination="@+id/favoriteListFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"></action>
+    <fragment
+        android:id="@+id/favoriteListFragment"
+        android:name="ru.reader.viewpagermodule.view.screens.FavoriteListFragment"
+        android:label="FavoriteListFragment" />
+
 
 </navigation>
